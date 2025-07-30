@@ -1,0 +1,92 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{22DA6CCB-4843-4C1B-A694-F9EA750CE13F}|TicketingSystemBackend.Api\\TicketingSystemBackend.Api.csproj|c:\\users\\user\\source\\repos\\ticketingsystemapp\\ticketingsystembackend\\ticketingsystembackend.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{22DA6CCB-4843-4C1B-A694-F9EA750CE13F}|TicketingSystemBackend.Api\\TicketingSystemBackend.Api.csproj|solutionrelative:ticketingsystembackend.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B2E9E0CE-2058-451A-AA45-114D58387C74}|TicketingSystemBackend.Infrastructure\\TicketingSystemBackend.Infrastructure.csproj|c:\\users\\user\\source\\repos\\ticketingsystemapp\\ticketingsystembackend\\ticketingsystembackend.infrastructure\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B2E9E0CE-2058-451A-AA45-114D58387C74}|TicketingSystemBackend.Infrastructure\\TicketingSystemBackend.Infrastructure.csproj|solutionrelative:ticketingsystembackend.infrastructure\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3166D2C-75EB-497E-B758-0EAE6C8DB9E5}|TicketingSystemBackend.Application\\TicketingSystemBackend.Application.csproj|c:\\users\\user\\source\\repos\\ticketingsystemapp\\ticketingsystembackend\\ticketingsystembackend.application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3166D2C-75EB-497E-B758-0EAE6C8DB9E5}|TicketingSystemBackend.Application\\TicketingSystemBackend.Application.csproj|solutionrelative:ticketingsystembackend.application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F8DA2A76-F95D-4163-ADC0-8EA6864ACFA7}|TicketingSystemBackend.Domain\\TicketingSystemBackend.Domain.csproj|c:\\users\\user\\source\\repos\\ticketingsystemapp\\ticketingsystembackend\\ticketingsystembackend.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F8DA2A76-F95D-4163-ADC0-8EA6864ACFA7}|TicketingSystemBackend.Domain\\TicketingSystemBackend.Domain.csproj|solutionrelative:ticketingsystembackend.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Api\\Program.cs",
+              "RelativeDocumentMoniker": "TicketingSystemBackend.Api\\Program.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Api\\Program.cs",
+              "RelativeToolTip": "TicketingSystemBackend.Api\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T14:24:51.057Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Infrastructure\\Class1.cs",
+              "RelativeDocumentMoniker": "TicketingSystemBackend.Infrastructure\\Class1.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Infrastructure\\Class1.cs",
+              "RelativeToolTip": "TicketingSystemBackend.Infrastructure\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T14:23:07.546Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Application\\Class1.cs",
+              "RelativeDocumentMoniker": "TicketingSystemBackend.Application\\Class1.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Application\\Class1.cs",
+              "RelativeToolTip": "TicketingSystemBackend.Application\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T14:22:45.202Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Domain\\Class1.cs",
+              "RelativeDocumentMoniker": "TicketingSystemBackend.Domain\\Class1.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\TicketingSystemApp\\TicketingSystemBackend\\TicketingSystemBackend.Domain\\Class1.cs",
+              "RelativeToolTip": "TicketingSystemBackend.Domain\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T14:21:09.161Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

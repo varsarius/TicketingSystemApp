@@ -1,0 +1,4 @@
+wwwroot\appsettings.Development.json
+wwwroot\appsettings.json
+C:\Users\User\source\repos\TicketingSystemApp\TicketingSystemFrontend\TicketingSystemFrontend\TicketingSystemFrontend.Client\wwwroot\appsettings.Development.json
+C:\Users\User\source\repos\TicketingSystemApp\TicketingSystemFrontend\TicketingSystemFrontend\TicketingSystemFrontend.Client\wwwroot\appsettings.json

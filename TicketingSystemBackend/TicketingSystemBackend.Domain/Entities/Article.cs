@@ -10,15 +10,15 @@ namespace TicketingSystemBackend.Domain.Entities;
 public class Article
 {
     public int Id { get; set; }
-    public int ArticleId { get; set; }
+    public int ArticleCategoryId { get; set; }
     [Required]
-    public string Title { get; set; }
+    public string Title { get; set; } = null!;
     [Required]
-    public string Description { get; set; }
-    //TODO: need correct type for Author
-    public string Author { get; set; }
+    public string Description { get; set; } = null!;
+    public int UserAuthorId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
+
 
 
 }

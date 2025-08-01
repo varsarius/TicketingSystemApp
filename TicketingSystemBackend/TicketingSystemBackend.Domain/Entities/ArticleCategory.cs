@@ -11,7 +11,6 @@ namespace TicketingSystemBackend.Domain.Entities;
 public class ArticleCategory
 {
     public int Id { get; set; }
-    public Category Category { get; set; }
     [Required]
-    public string CategoryName { get; set; }
+    public string CategoryName { get; set; } = null!;
 }

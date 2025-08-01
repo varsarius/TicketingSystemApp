@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
+using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Pages;
 using TicketingSystemFrontend.Components;
 
@@ -7,6 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddAuthorizationCore(); // It works without this line. May be soon will be deleted. The line below needs for <Auth> tags
+
+//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+
+//builder.Services.AddScoped<CustomAuthProvider>();
+//builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthProvider>());
+//builder.Services.AddSingleton<IAuthorizationPolicyProvider, DefaultAuthorizationPolicyProvider>();
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

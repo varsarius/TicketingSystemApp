@@ -1,23 +1,20 @@
-﻿@inherits LayoutComponentBase
+﻿@* This using is already in _include. May be need to be deleted from here, but then the  <AuthorizeView> doesn't work, unless with markdown *@
+@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<CascadingAuthenticationState>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <NavMenu />
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    @Body
+    HEY
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+    <AuthorizeView>
+        <Authorized>
+            asd
+        </Authorized>
+        <NotAuthorized>
+            def
+        </NotAuthorized>
+    </AuthorizeView>
+
+</CascadingAuthenticationState>

@@ -58,3 +58,33 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+
+/* added by grok*/
+.sidebar {
+    background-color: #343a40;
+    color: #fff;
+    top: 56px; /* Offset for navbar height */
+}
+
+.main {
+    background-color: #fff;
+    color: #000;
+}
+
+.sidebar-nav .nav-link {
+    color: #fff;
+}
+
+    .sidebar-nav .nav-link:hover {
+        background-color: #495057;
+    }
+
+    .sidebar-nav .nav-link.active {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .sidebar-nav .nav-link i {
+        margin-right: 0.5rem;
+    }

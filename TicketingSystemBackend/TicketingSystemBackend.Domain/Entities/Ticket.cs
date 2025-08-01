@@ -15,13 +15,13 @@ public class Ticket
     public int AgentId { get; set; }
     public int CategoryId { get; set; }
     [Required]
-    public string Title { get; set; }
+    public string Title { get; set; } = null!;
     [Required]
-    public string Description { get; set; }
+    public string Description { get; set; } = null!;
     public List<TicketComment> TicketComments { get; set; } = [];
     public DateTime CreatedAt { get; private set;} = DateTime.Now;
     public DateTime UpdatedAt { get; private set;}
     public Priority Priority { get; set; }
-    public Category Category { get; set; }
+    public TicketCategory Category { get; set; } = null!;
     public List<string> AttachmentFilePaths { get; set; } = [];
 }

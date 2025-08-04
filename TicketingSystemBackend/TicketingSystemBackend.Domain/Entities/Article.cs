@@ -11,11 +11,13 @@ public class Article
 {
     public int Id { get; set; }
     public int ArticleCategoryId { get; set; }
+    public int UserAuthorId { get; set; }
+
     [Required]
     public string Title { get; set; } = null!;
     [Required]
     public string Description { get; set; } = null!;
-    public int UserAuthorId { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
     

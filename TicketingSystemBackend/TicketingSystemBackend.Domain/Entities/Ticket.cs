@@ -14,6 +14,7 @@ public class Ticket
     public int UserId { get; set; }
     public int AgentId { get; set; }
     public int CategoryId { get; set; }
+
     [Required]
     public string Title { get; set; } = null!;
     [Required]
@@ -21,6 +22,7 @@ public class Ticket
     public DateTime CreatedAt { get; private set;} = DateTime.Now;
     public DateTime UpdatedAt { get; private set;}
     public Priority Priority { get; set; }
+
     public List<TicketComment> TicketComments { get; set; } = [];
     [Required]
     public TicketCategory Category { get; set; } = null!;

@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
 
 <PageTitle>Tickets</PageTitle>
 
@@ -74,31 +77,64 @@
             </div>
 
             <!-- Tickets List (Repeated Card Snippets) -->
-
-            @for (int i = 0; i < 4; i++)
+            @if (tickets.Count == 0)
             {
-                <div class="card mb-3">
-                    <div class="row g-0 align-items-center">
-                        <div class="col-md-3 p-3 border-end">
-                            <h5 class="card-title mb-1">Ticket #1234</h5>
-                            <p class="text-muted mb-0 small">Priority: <span class="badge bg-danger">High</span></p>
-                            <p class="text-muted mb-0 small">Category: <span class="badge bg-primary">Software</span></p>
-                            <p class="text-muted mb-0 small">Status: <span class="badge bg-warning text-dark">In Progress</span></p>
-                        </div>
-                        <div class="col-md-6 p-3">
-                            <h6 class="card-subtitle mb-2 text-truncate" title="Cannot access email account">Cannot access email account</h6>
-                            <p class="card-text text-truncate" title="When trying to login, the email client returns an authentication error.">When trying to login, the email client returns an authentication error.</p>
-                            <small class="text-muted">Submitted by: John Doe</small>
-                        </div>
-                        <div class="col-md-3 p-3 text-end">
-                            <p class="mb-1"><strong>Assigned to:</strong> Agent Smith</p>
-                            <p class="mb-0"><small class="text-muted">Created: 2025-08-02</small></p>
-                            <p><small class="text-muted">Last update: 2025-08-03</small></p>
-                            <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                <p>Loading tickets...</p>
+            }
+            else
+            {
+                @foreach (var ticket in tickets)
+                {
+                    <div class="card mb-3">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-3 p-3 border-end">
+                                <h5 class="card-title mb-1">Ticket #@ticket.Id</h5>
+                                <p class="text-muted mb-0 small">
+                                    Priority:
+                                    <span class="badge @(GetPriorityClass(ticket.Priority))">@ticket.Priority</span>
+                                </p>
+                                <p class="text-muted mb-0 small">
+                                    Category:
+                                    <span class="badge bg-primary">@ticket.CategoryName</span>
+                                </p>
+                                <p class="text-muted mb-0 small">
+                                    Status:
+                                    <span class="badge bg-warning text-dark">In Progress</span> <!-- fake for now -->
+                                </p>
+                            </div>
+                            <div class="col-md-6 p-3">
+                                <h6 class="card-subtitle mb-2 text-truncate" title="@ticket.Title">@ticket.Title</h6>
+                                <p class="card-text text-truncate" title="@ticket.Description">@ticket.Description</p>
+                                <small class="text-muted">Submitted by: John Doe</small> <!-- fake for now -->
+                            </div>
+                            <div class="col-md-3 p-3 text-end">
+                                <p class="mb-1"><strong>Assigned to:</strong> Agent Smith</p> <!-- fake for now -->
+                                <p class="mb-0"><small class="text-muted">Created: @ticket.CreatedAt.ToString("yyyy-MM-dd")</small></p>
+                                <p><small class="text-muted">Last update: @ticket.CreatedAt.AddHours(1).ToString("yyyy-MM-dd")</small></p>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             }
         </div>
     </div>
 </div>
+
+
+@code {
+    private List<TicketDto> tickets = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await TicketService.GetAllTicketsAsync();
+    }
+
+    private string GetPriorityClass(string priority) => priority switch
+    {
+        "High" => "bg-danger",
+        "Medium" => "bg-warning text-dark",
+        "Low" => "bg-success",
+        _ => "bg-secondary"
+    };
+}

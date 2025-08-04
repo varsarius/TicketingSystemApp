@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.Tickets;
-internal class UpdateTicketCommandHandler
+public class UpdateTicketCommandHandler
 {
 }

@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketingSystemBackend.Application.QueryHandlers.Tickets;
-internal class GetTicketByIdQueryHandler
+public class GetTicketByIdQueryHandler
 {
 }

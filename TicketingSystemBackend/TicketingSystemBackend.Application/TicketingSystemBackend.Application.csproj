@@ -21,4 +21,8 @@
     <Folder Include="DTOs\Tickets\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TicketingSystemBackend.Infrastructure\TicketingSystemBackend.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

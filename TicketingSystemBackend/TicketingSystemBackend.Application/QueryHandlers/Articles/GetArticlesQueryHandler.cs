@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TicketingSystemBackend.Application.QueryHandlers.Articles;
-internal class GetArticlesQueryHandler
+public class GetArticlesQueryHandler
 {
 }

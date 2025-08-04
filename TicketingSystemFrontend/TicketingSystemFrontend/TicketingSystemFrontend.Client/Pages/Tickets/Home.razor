@@ -1,0 +1,104 @@
+﻿@page "/"
+
+<PageTitle>Tickets</PageTitle>
+
+<div class="container mt-4">
+
+    <!--  Search Bar -->
+    <div class="row mb-3">
+        <div class="col">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search"></i> <!-- Bootstrap Icons -->
+                </span>
+                <input type="text" class="form-control border-start-0" placeholder="Search tickets..." />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!--  Filters Column -->
+        <div class="col-md-3 mt-5">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Filter
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label">Category</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Hardware</option>
+                            <option>Software</option>
+                            <option>Network</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Status</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Open</option>
+                            <option>In Progress</option>
+                            <option>Resolved</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-2">Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <!--  Ticket List and Sort Buttons -->
+        <div class="col-md-9">
+            <!-- Sort Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Tickets</h5>
+                <div>
+                    <a href="tickets/create" class="btn btn-primary me-2">+ Add Ticket</a>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-secondary btn-sm">Newest</button>
+                        <button class="btn btn-outline-secondary btn-sm">Oldest</button>
+                        <button class="btn btn-outline-secondary btn-sm">Priority ↑</button>
+                        <button class="btn btn-outline-secondary btn-sm">Priority ↓</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets List (Repeated Card Snippets) -->
+
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="card mb-3">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-3 p-3 border-end">
+                            <h5 class="card-title mb-1">Ticket #1234</h5>
+                            <p class="text-muted mb-0 small">Priority: <span class="badge bg-danger">High</span></p>
+                            <p class="text-muted mb-0 small">Category: <span class="badge bg-primary">Software</span></p>
+                            <p class="text-muted mb-0 small">Status: <span class="badge bg-warning text-dark">In Progress</span></p>
+                        </div>
+                        <div class="col-md-6 p-3">
+                            <h6 class="card-subtitle mb-2 text-truncate" title="Cannot access email account">Cannot access email account</h6>
+                            <p class="card-text text-truncate" title="When trying to login, the email client returns an authentication error.">When trying to login, the email client returns an authentication error.</p>
+                            <small class="text-muted">Submitted by: John Doe</small>
+                        </div>
+                        <div class="col-md-3 p-3 text-end">
+                            <p class="mb-1"><strong>Assigned to:</strong> Agent Smith</p>
+                            <p class="mb-0"><small class="text-muted">Created: 2025-08-02</small></p>
+                            <p><small class="text-muted">Last update: 2025-08-03</small></p>
+                            <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

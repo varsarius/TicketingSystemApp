@@ -1,0 +1,112 @@
+﻿@page "/tickets/create"
+
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Create Ticket</PageTitle>
+
+<h3>Create a New Ticket</h3>
+
+<EditForm Model="@ticketModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="title" class="form-label">Title</label>
+            <InputText id="title" class="form-control" @bind-Value="ticketModel.Title" />
+            <ValidationMessage For="@(() => ticketModel.Title)" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="category" class="form-label">Category</label>
+            <InputSelect id="category" class="form-select" @bind-Value="ticketModel.Category">
+                <option value="">-- Select --</option>
+                <option>Hardware</option>
+                <option>Software</option>
+                <option>Network</option>
+                <option>Account</option>
+                <option>Other</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => ticketModel.Category)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputTextArea id="description" class="form-control" rows="4" @bind-Value="ticketModel.Description" />
+        <ValidationMessage For="@(() => ticketModel.Description)" />
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="priority" class="form-label">Priority</label>
+            <InputSelect id="priority" class="form-select" @bind-Value="ticketModel.Priority">
+                <option value="">-- Select --</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => ticketModel.Priority)" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="file" class="form-label">Attachment (optional)</label>
+            <InputFile OnChange="HandleFileChange" />
+        </div>
+    </div>
+
+    @* adasdasdasasdasdasd *@
+
+
+    <div class="mb-3">
+        <label class="form-label">Assigned To</label>
+        <InputSelect class="form-select" @bind-Value="ticketModel.AssignedTo">
+            <option value="">-- Select Agent --</option>
+            @foreach (var agent in agents)
+            {
+                <option value="@agent">@agent</option>
+            }
+        </InputSelect>
+    </div>
+
+    @* asdasdasdasdasdasdasdasd *@
+
+    <button class="btn btn-primary" type="submit">Submit Ticket</button>
+</EditForm>
+
+@code {
+    private TicketInputModel ticketModel = new();
+    private List<string> agents = new() { "Alice", "Bob", "Charlie" };
+
+    private async Task HandleValidSubmit()
+    {
+        // Simulate saving to backend
+        Console.WriteLine($"[Create] Title: {ticketModel.Title}, Category: {ticketModel.Category}");
+        // TODO: Send to API, redirect, show toast, etc.
+    }
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        Console.WriteLine($"File selected: {file.Name} ({file.Size} bytes)");
+        // TODO: Save to backend or buffer
+    }
+
+    public class TicketInputModel
+    {
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public string Priority { get; set; }
+
+        public string AssignedTo { get; set; }
+    }
+}

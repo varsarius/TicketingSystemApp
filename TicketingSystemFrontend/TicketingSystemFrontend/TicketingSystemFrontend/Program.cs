@@ -2,7 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Pages;
+using TicketingSystemFrontend.Client.Services;
+using TicketingSystemFrontend.Client.Services.Interfaces;
 using TicketingSystemFrontend.Components;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,12 @@ builder.Services.AddRazorComponents()
 //builder.Services.AddScoped<CustomAuthProvider>();
 //builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthProvider>());
 //builder.Services.AddSingleton<IAuthorizationPolicyProvider, DefaultAuthorizationPolicyProvider>();
+
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
+});
 
 builder.Services.AddAuthorization();
 var app = builder.Build();

@@ -1,6 +1,8 @@
 ﻿@page "/tickets/create"
-
+@inject ITicketService TicketService
 @using System.ComponentModel.DataAnnotations
+@using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Interfaces
 
 <PageTitle>Create Ticket</PageTitle>
 
@@ -56,7 +58,6 @@
         </div>
     </div>
 
-    @* adasdasdasasdasdasd *@
 
 
     <div class="mb-3">
@@ -70,7 +71,6 @@
         </InputSelect>
     </div>
 
-    @* asdasdasdasdasdasdasdasd *@
 
     <button class="btn btn-primary" type="submit">Submit Ticket</button>
 </EditForm>
@@ -81,9 +81,23 @@
 
     private async Task HandleValidSubmit()
     {
-        // Simulate saving to backend
-        Console.WriteLine($"[Create] Title: {ticketModel.Title}, Category: {ticketModel.Category}");
-        // TODO: Send to API, redirect, show toast, etc.
+        var request = new TicketCreateRequest
+        {
+            Title = ticketModel.Title,
+            Description = ticketModel.Description,
+            Priority = ticketModel.Priority,
+            AssignedTo = ticketModel.AssignedTo
+        };
+
+        try
+        {
+            await TicketService.CreateTicketAsync(request);
+            // Optional: Navigate or show success message
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("Ticket creation failed: " + ex.Message);
+        }
     }
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)

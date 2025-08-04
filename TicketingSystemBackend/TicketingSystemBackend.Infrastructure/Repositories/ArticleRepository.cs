@@ -44,6 +44,7 @@ public class ArticleRepository
     }
     public async Task DeleteByIdAsync(int id)
     {
+        //FIXME: add await for GetByIdAsync
         var article = GetByIdAsync(id);
         if (article is not null)
         {

@@ -44,7 +44,8 @@ public class ArticleRepository
     }
     public async Task DeleteByIdAsync(int id)
     {
-        var article = GetByIdAsync(id);
+        var article = await GetByIdAsync(id);
+
         if (article is not null)
         {
             _context.Remove(article);

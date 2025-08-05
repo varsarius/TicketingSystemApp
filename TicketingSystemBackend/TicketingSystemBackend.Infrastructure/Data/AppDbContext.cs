@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,8 @@ using TicketingSystemBackend.Domain.Entities;
 using File = TicketingSystemBackend.Domain.Entities.File;
 
 namespace TicketingSystemBackend.Infrastructure.Data;
-public class AppDbContext : DbContext
+
+public class AppDbContext : IdentityDbContext
 {
     public DbSet<Article> Articles { get; set; }
     public DbSet<ArticleCategory> ArticleCategories { get; set; }

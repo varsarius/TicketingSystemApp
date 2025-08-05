@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using TicketingSystemBackend.Api.Models;
 using TicketingSystemBackend.Application.DTOs;
 

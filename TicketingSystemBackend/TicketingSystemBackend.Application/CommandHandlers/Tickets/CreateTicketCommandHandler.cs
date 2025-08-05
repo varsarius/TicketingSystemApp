@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketingSystemBackend.Api.Commands.Tickets;
+using TicketingSystemBackend.Application.Commands.Tickets;
 using TicketingSystemBackend.Domain.Entities;
 using TicketingSystemBackend.Infrastructure.Repositories;
 

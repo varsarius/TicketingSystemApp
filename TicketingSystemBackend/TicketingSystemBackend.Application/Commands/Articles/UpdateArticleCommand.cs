@@ -1,5 +1,13 @@
-﻿namespace TicketingSystemBackend.Api.Commands.Articles;
+﻿using MediatR;
+using System.ComponentModel.DataAnnotations;
 
-public class UpdateArticleCommand
-{
-}
+namespace TicketingSystemBackend.Application.Commands.Articles;
+
+public record UpdateArticleCommand
+(
+    [Required] string Title,
+    [Required] string Description,
+    int ArticleCategoryId,
+    int Id
+) : IRequest;
+

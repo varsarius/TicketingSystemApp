@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketingSystemBackend.Api.Commands.Articles;
+using TicketingSystemBackend.Application.Commands.Articles;
 using TicketingSystemBackend.Domain.Entities;
 using TicketingSystemBackend.Infrastructure.Repositories;
 
@@ -27,8 +27,8 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
             ArticleCategoryId = request.ArticleCategoryId,
             UserId = request.UserId,
             CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        };
+            UpdatedAt = null
+        }; 
         await _repository.CreateAsync(article);
     }
 }

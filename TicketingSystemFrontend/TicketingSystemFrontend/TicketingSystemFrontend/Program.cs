@@ -1,5 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
+using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Pages;
+using TicketingSystemFrontend.Client.Services;
+using TicketingSystemFrontend.Client.Services.Interfaces;
 using TicketingSystemFrontend.Components;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +13,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
+//builder.Services.AddAuthorizationCore(); // It works without this line. May be soon will be deleted. The line below needs for <Auth> tags
+
+//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+
+//builder.Services.AddScoped<CustomAuthProvider>();
+//builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthProvider>());
+//builder.Services.AddSingleton<IAuthorizationPolicyProvider, DefaultAuthorizationPolicyProvider>();
+
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
+});
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

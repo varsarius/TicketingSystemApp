@@ -1,0 +1,140 @@
+﻿@page "/"
+@using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+
+<PageTitle>Tickets</PageTitle>
+
+<div class="container mt-4">
+
+    <!--  Search Bar -->
+    <div class="row mb-3">
+        <div class="col">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search"></i> <!-- Bootstrap Icons -->
+                </span>
+                <input type="text" class="form-control border-start-0" placeholder="Search tickets..." />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!--  Filters Column -->
+        <div class="col-md-3 mt-5">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Filter
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label">Category</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Hardware</option>
+                            <option>Software</option>
+                            <option>Network</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Status</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Open</option>
+                            <option>In Progress</option>
+                            <option>Resolved</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-2">Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <!--  Ticket List and Sort Buttons -->
+        <div class="col-md-9">
+            <!-- Sort Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Tickets</h5>
+                <div>
+                    <a href="tickets/create" class="btn btn-primary me-2">+ Add Ticket</a>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-secondary btn-sm">Newest</button>
+                        <button class="btn btn-outline-secondary btn-sm">Oldest</button>
+                        <button class="btn btn-outline-secondary btn-sm">Priority ↑</button>
+                        <button class="btn btn-outline-secondary btn-sm">Priority ↓</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets List (Repeated Card Snippets) -->
+            @if (tickets.Count == 0)
+            {
+                <p>Loading tickets...</p>
+            }
+            else
+            {
+                @foreach (var ticket in tickets)
+                {
+                    <div class="card mb-3">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-3 p-3 border-end">
+                                <h5 class="card-title mb-1">Ticket #@ticket.Id</h5>
+                                <p class="text-muted mb-0 small">
+                                    Priority:
+                                    <span class="badge @(GetPriorityClass(ticket.Priority))">@ticket.Priority</span>
+                                </p>
+                                <p class="text-muted mb-0 small">
+                                    Category:
+                                    <span class="badge bg-primary">@ticket.CategoryName</span>
+                                </p>
+                                <p class="text-muted mb-0 small">
+                                    Status:
+                                    <span class="badge bg-warning text-dark">In Progress</span> <!-- fake for now -->
+                                </p>
+                            </div>
+                            <div class="col-md-6 p-3">
+                                <h6 class="card-subtitle mb-2 text-truncate" title="@ticket.Title">@ticket.Title</h6>
+                                <p class="card-text text-truncate" title="@ticket.Description">@ticket.Description</p>
+                                <small class="text-muted">Submitted by: John Doe</small> <!-- fake for now -->
+                            </div>
+                            <div class="col-md-3 p-3 text-end">
+                                <p class="mb-1"><strong>Assigned to:</strong> Agent Smith</p> <!-- fake for now -->
+                                <p class="mb-0"><small class="text-muted">Created: @ticket.CreatedAt.ToString("yyyy-MM-dd")</small></p>
+                                <p><small class="text-muted">Last update: @ticket.CreatedAt.AddHours(1).ToString("yyyy-MM-dd")</small></p>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<TicketDto> tickets = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await TicketService.GetAllTicketsAsync();
+    }
+
+    private string GetPriorityClass(string priority) => priority switch
+    {
+        "High" => "bg-danger",
+        "Medium" => "bg-warning text-dark",
+        "Low" => "bg-success",
+        _ => "bg-secondary"
+    };
+}

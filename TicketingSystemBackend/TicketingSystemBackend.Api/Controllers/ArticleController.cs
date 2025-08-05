@@ -5,8 +5,8 @@ using TicketingSystemBackend.Application.Queries.Articles;
 
 namespace TicketingSystemBackend.Api.Controllers;
 
-[Route("api/articles")]
 [ApiController]
+[Route("api/articles")]
 public class ArticleController : ControllerBase
 {
     private readonly IMediator _mediator;

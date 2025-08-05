@@ -27,4 +27,8 @@
     <ProjectReference Include="..\TicketingSystemBackend.Application\TicketingSystemBackend.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TicketingSystemBackend.Application\TicketingSystemBackend.Application.csproj" />
+  </ItemGroup>
+
 </Project>

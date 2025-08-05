@@ -26,7 +26,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 builder.Services.AddScoped<ArticleRepository>();
 builder.Services.AddScoped<TicketRepository>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly));
+builder.Services.AddMediatR(cfg => 
+    cfg.RegisterServicesFromAssembly(
+        typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)
+);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

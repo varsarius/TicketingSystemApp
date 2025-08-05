@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TicketingSystemBackend.Api.Commands.Articles;
+using TicketingSystemBackend.Application.Commands.Articles;
 
 namespace TicketingSystemBackend.Api.Controllers;
 
@@ -20,5 +20,6 @@ public class ArticleController : ControllerBase
         await _mediator.Send(command);
         return Ok();
     }
+
 
 }

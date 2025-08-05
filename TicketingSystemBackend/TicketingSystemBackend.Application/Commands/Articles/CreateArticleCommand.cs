@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.ComponentModel.DataAnnotations;
 
-namespace TicketingSystemBackend.Api.Commands.Articles;
+namespace TicketingSystemBackend.Application.Commands.Articles;
 
 public record CreateArticleCommand
 (

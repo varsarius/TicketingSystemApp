@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using TicketingSystemBackend.Domain.Enums;
 
-namespace TicketingSystemBackend.Api.Commands.Tickets;
+namespace TicketingSystemBackend.Application.Commands.Tickets;
 
 public record CreateTicketCommand
 (

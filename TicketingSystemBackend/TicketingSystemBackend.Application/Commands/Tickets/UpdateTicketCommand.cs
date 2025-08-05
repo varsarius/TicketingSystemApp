@@ -1,4 +1,4 @@
-﻿namespace TicketingSystemBackend.Api.Commands.Tickets;
+﻿namespace TicketingSystemBackend.Application.Commands.Tickets;
 
 public class UpdateTicketCommand
 {

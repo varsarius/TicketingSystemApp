@@ -1,5 +1,6 @@
-﻿namespace TicketingSystemBackend.Application.Queries.Articles;
+﻿using MediatR;
+using TicketingSystemBackend.Domain.Entities;
 
-public class GetArticleByIdQuery
-{
-}
+namespace TicketingSystemBackend.Application.Queries.Articles;
+
+public record GetArticleByIdQuery(int Id) : IRequest<Article>;

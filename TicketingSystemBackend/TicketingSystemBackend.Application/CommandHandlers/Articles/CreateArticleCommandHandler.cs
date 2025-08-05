@@ -27,8 +27,8 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
             ArticleCategoryId = request.ArticleCategoryId,
             UserId = request.UserId,
             CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        };
+            UpdatedAt = null
+        }; 
         await _repository.CreateAsync(article);
     }
 }

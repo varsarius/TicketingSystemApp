@@ -13,8 +13,10 @@
     <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
-<body>
-    <Routes @rendermode="InteractiveWebAssembly" />
+<body class="">
+    <CascadingAuthenticationState>
+        <Routes @rendermode="InteractiveWebAssembly" />
+    </CascadingAuthenticationState>
     <script src="_framework/blazor.web.js"></script>
 </body>
 

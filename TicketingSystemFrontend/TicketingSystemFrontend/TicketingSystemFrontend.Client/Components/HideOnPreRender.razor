@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@rendermode InteractiveWebAssembly
+@if (isInteractive)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    private bool isInteractive;
+
+    protected override void OnInitialized()
+    {
+        // Blazor sets RendererInfo.IsInteractive only when WebAssembly becomes interactive
+        isInteractive = RendererInfo.IsInteractive;
+    }
+}

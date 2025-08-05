@@ -22,6 +22,7 @@ builder.Services.AddRazorComponents()
 //builder.Services.AddSingleton<IAuthorizationPolicyProvider, DefaultAuthorizationPolicyProvider>();
 
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)

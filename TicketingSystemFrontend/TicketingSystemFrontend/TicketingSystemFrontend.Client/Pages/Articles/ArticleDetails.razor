@@ -1,0 +1,54 @@
+﻿@page "/articles/{id:int}"
+
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject IArticleService ArticleService
+@inject NavigationManager Navigation
+
+<h3>Article Details</h3>
+
+@if (article == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@article.Title</h5>
+            <h6 class="card-subtitle mb-2 text-muted">By @article.UserName</h6>
+            <p class="card-text">@article.Description</p>
+
+            <div class="mt-3">
+                <a class="btn btn-primary me-2" href="/articles/edit/@id">Update</a>
+                <button class="btn btn-danger" @onclick="DeleteArticle">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private ArticleDto? article;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        article = await ArticleService.GetArticleByIdAsync(id);
+    }
+
+    private async Task DeleteArticle()
+    {
+        var success = await ArticleService.DeleteArticleAsync(id);
+        if (success)
+        {
+            Navigation.NavigateTo("/articles");
+        }
+        else
+        {
+            // Optionally handle failure
+            Console.WriteLine("Failed to delete article");
+        }
+    }
+}

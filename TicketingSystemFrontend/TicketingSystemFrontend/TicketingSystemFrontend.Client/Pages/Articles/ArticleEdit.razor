@@ -1,0 +1,72 @@
+﻿@page "/articles/edit/{id:int}"
+
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject IArticleService ArticleService
+@inject NavigationManager Navigation
+
+<h3>Edit Article</h3>
+
+@if (article == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="articleEditRequest" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <InputText id="title" class="form-control" @bind-Value="articleEditRequest.Title" />
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <InputTextArea id="description" class="form-control" @bind-Value="articleEditRequest.Description" rows="5" />
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Category ID</label>
+            <InputNumber id="category" class="form-control" @bind-Value="articleEditRequest.ArticleCategoryId" />
+        </div>
+
+        <button type="submit" class="btn btn-success me-2">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private ArticleDto? article;
+    private ArticleCreateRequest articleEditRequest = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        article = await ArticleService.GetArticleByIdAsync(id);
+
+        if (article != null)
+        {
+            // Map ArticleDto to ArticleCreateRequest (or create an UpdateRequest DTO if you want)
+            articleEditRequest.ArticleCategoryId = article.ArticleCategoryId;
+            articleEditRequest.Title = article.Title;
+            articleEditRequest.Description = article.Description;
+            articleEditRequest.UserId = 0; // If needed, populate appropriately
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await ArticleService.UpdateArticleAsync(id, articleEditRequest);
+        Navigation.NavigateTo($"/articles/{id}");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo($"/articles/{id}");
+    }
+}

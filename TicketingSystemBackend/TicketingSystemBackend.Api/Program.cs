@@ -1,7 +1,12 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
+using System.Text;
+using TicketingSystemBackend.Api.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
 using TicketingSystemBackend.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
@@ -21,9 +26,60 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddControllers();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+// Add Identity + JWT
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
+builder.Services.AddScoped<CustomJwtTokenService>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+})
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAuthenticatedUser", policy =>
+        policy.RequireAuthenticatedUser());
+});
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(jwtOptions =>
+{
+    //jwtOptions.MetadataAddress = builder.Configuration["Api:MetadataAddress"] ?? throw new Exception("Missing metadata");
+    // Optional if the MetadataAddress is specified
+    //jwtOptions.Authority = builder.Configuration["Jwt:Authority"];
+    jwtOptions.Audience = builder.Configuration["Jwt:Audience"];
+    jwtOptions.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudiences = builder.Configuration.GetSection("Jwt:Audience").Get<string[]>(),
+        //ValidIssuers = builder.Configuration.GetSection("Jwt:Issuer").Get<string[]>(),                
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+    ?? throw new Exception("Missing jwt key config.")))
+
+    };
+
+    jwtOptions.MapInboundClaims = false;
+});
+//.AddBearerToken(IdentityConstants.BearerScheme, options =>
+//{
+//    options.BearerTokenExpiration = TimeSpan.FromHours(1);
+//});
+
+
 builder.Services.AddScoped<ArticleRepository>();
 builder.Services.AddScoped<TicketRepository>();
 builder.Services.AddMediatR(cfg => 
@@ -36,7 +92,7 @@ builder.Services.AddOpenApi();
 
 
 var app = builder.Build();
-
+app.UseRouting();
 // Use the CORS policy
 app.UseCors("AllowFrontend");
 
@@ -48,10 +104,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseRouting();
+
 
 app.MapControllers();
 

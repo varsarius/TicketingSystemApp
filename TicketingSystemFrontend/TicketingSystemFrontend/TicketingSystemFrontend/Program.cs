@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Pages;
 using TicketingSystemFrontend.Client.Services;
+using TicketingSystemFrontend.Client.Services.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces;
+using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 using TicketingSystemFrontend.Components;
 
 
@@ -23,6 +25,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)

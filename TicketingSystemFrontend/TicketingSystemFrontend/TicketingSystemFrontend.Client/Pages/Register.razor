@@ -1,0 +1,51 @@
+﻿@page "/register"
+@using TicketingSystemFrontend.Client.Requests.Auth
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+
+<h3>Sign Up</h3>
+
+<EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="registerModel.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password" />
+    </div>
+
+    <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="registerModel.ConfirmPassword" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@code {
+    private RegisterRequest registerModel = new();
+
+    [Inject]
+    public IAuthService AuthService { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager Navigation { get; set; } = null!;
+
+    private async Task HandleRegister()
+    {
+        var result = await AuthService.RegisterAsync(registerModel);
+
+        if (result.IsSuccess)
+        {
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            // Handle error (e.g., show message)
+        }
+    }
+}

@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Services;
+using TicketingSystemFrontend.Client.Services.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces;
+using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -14,6 +16,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredServ
 
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)

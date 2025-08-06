@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ using File = TicketingSystemBackend.Domain.Entities.File;
 
 namespace TicketingSystemBackend.Infrastructure.Data;
 
-public class AppDbContext : IdentityDbContext
+public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     public DbSet<Article> Articles { get; set; }
     public DbSet<ArticleCategory> ArticleCategories { get; set; }

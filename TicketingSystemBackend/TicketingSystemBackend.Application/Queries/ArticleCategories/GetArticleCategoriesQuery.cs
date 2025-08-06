@@ -1,6 +1,5 @@
 ﻿using MediatR;
+using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.Queries.ArticleCategories;
-internal class GetArticleCategoriesQuery : IRequest<object>
-{
-}
+public record GetArticleCategoriesQuery : IRequest<List<ArticleCategory>>;

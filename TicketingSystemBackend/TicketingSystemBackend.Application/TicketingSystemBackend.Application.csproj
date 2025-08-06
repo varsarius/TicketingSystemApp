@@ -11,10 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CommandHandlers\ArticleCategories\" />
     <Folder Include="DTOs\Articles\" />
     <Folder Include="DTOs\Tickets\" />
-    <Folder Include="QueryHandlers\ArticleCategories\" />
   </ItemGroup>
 
   <ItemGroup>

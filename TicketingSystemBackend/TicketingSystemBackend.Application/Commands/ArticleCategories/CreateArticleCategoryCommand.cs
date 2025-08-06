@@ -1,5 +1,8 @@
-﻿namespace TicketingSystemBackend.Application.Commands.ArticleCategories;
+﻿using MediatR;
+using System.ComponentModel.DataAnnotations;
 
-public class CreateArticleCategoryCommand
-{
-}
+namespace TicketingSystemBackend.Application.Commands.ArticleCategories;
+
+public record CreateArticleCategoryCommand(
+      [Required] string CategoryName
+) : IRequest;

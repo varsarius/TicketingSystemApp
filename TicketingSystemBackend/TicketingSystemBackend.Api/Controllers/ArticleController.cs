@@ -33,11 +33,21 @@ public class ArticleController : ControllerBase
         var articles = await _mediator.Send(new GetArticlesQuery());
         return Ok(articles);
     }
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateArticleCommand command)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateArticleCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        if (id != command.Id)
+            return BadRequest("Id of the update request does not match the id of the body");
+        try
+        {
+            await _mediator.Send(command);
+            return Ok();
+
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteById(int id)

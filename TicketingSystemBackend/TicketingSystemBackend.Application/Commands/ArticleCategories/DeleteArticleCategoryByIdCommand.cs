@@ -1,6 +1,4 @@
 ﻿using MediatR;
 
 namespace TicketingSystemBackend.Application.Commands.ArticleCategories;
-public class DeleteArticleCategoryByIdCommand : IRequest<object>
-{
-}
+public record DeleteArticleCategoryByIdCommand(int Id) : IRequest;

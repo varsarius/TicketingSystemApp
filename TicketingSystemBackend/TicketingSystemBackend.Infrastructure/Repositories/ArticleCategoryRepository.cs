@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
 using TicketingSystemBackend.Infrastructure.Data;
-
 namespace TicketingSystemBackend.Infrastructure.Repositories;
-public class ArticleCategoryRepository
+public class ArticleCategoryRepository : IArticleCategoryRepository
 {
     private readonly AppDbContext _context;
 

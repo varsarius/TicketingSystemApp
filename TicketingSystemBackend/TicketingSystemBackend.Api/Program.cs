@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Scalar.AspNetCore;
 using System.Reflection;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Infrastructure.Data;
 using TicketingSystemBackend.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
@@ -24,9 +25,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-builder.Services.AddScoped<ArticleRepository>();
-builder.Services.AddScoped<ArticleCategoryRepository>();
-builder.Services.AddScoped<TicketRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(
         typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)

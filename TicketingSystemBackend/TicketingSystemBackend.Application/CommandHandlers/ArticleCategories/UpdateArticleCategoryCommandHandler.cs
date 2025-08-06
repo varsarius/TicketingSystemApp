@@ -1,18 +1,12 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TicketingSystemBackend.Application.Commands.ArticleCategories;
-using TicketingSystemBackend.Application.Commands.Articles;
-using TicketingSystemBackend.Infrastructure.Repositories;
+using TicketingSystemBackend.Application.Interfaces;
 namespace TicketingSystemBackend.Application.CommandHandlers.ArticleCategories;
 public class UpdateArticleCategoryCommandHandler : IRequestHandler<UpdateArticleCategoryCommand>
 {
-    private readonly ArticleCategoryRepository _repository;
+    private readonly IArticleCategoryRepository _repository;
 
-    public UpdateArticleCategoryCommandHandler(ArticleCategoryRepository repository)
+    public UpdateArticleCategoryCommandHandler(IArticleCategoryRepository repository)
     {
         _repository = repository;
     }

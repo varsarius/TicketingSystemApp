@@ -1,19 +1,14 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Queries.ArticleCategories;
 using TicketingSystemBackend.Domain.Entities;
-using TicketingSystemBackend.Infrastructure.Repositories;
 
 namespace TicketingSystemBackend.Application.QueryHandlers.ArticleCategories;
 public class GetArticleCategoriesQueryHandler : IRequestHandler<GetArticleCategoriesQuery, List<ArticleCategory>>
 {
-    private readonly ArticleCategoryRepository _repository;
+    private readonly IArticleCategoryRepository _repository;
 
-    public GetArticleCategoriesQueryHandler(ArticleCategoryRepository repository)
+    public GetArticleCategoriesQueryHandler(IArticleCategoryRepository repository)
     {
         _repository = repository;
     }

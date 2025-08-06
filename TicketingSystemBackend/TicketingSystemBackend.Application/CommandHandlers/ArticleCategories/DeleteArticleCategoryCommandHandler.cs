@@ -1,18 +1,13 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TicketingSystemBackend.Application.Commands.ArticleCategories;
-using TicketingSystemBackend.Infrastructure.Repositories;
+using TicketingSystemBackend.Application.Interfaces;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.ArticleCategories;
 public class DeleteArticleCategoryCommandHandler : IRequestHandler<DeleteArticleCategoryByIdCommand>
 {
-    private readonly ArticleCategoryRepository _repository;
+    private readonly IArticleCategoryRepository _repository;
 
-    public DeleteArticleCategoryCommandHandler(ArticleCategoryRepository repository)
+    public DeleteArticleCategoryCommandHandler(IArticleCategoryRepository repository)
     {
         _repository = repository;
     }

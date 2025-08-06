@@ -25,6 +25,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddScoped<ArticleRepository>();
+builder.Services.AddScoped<ArticleCategoryRepository>();
 builder.Services.AddScoped<TicketRepository>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(

@@ -43,7 +43,7 @@ else
     public int id { get; set; }
 
     private ArticleDto? article;
-    private ArticleCreateRequest articleEditRequest = new();
+    private ArticleUpdateRequest articleEditRequest = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -55,13 +55,13 @@ else
             articleEditRequest.ArticleCategoryId = article.ArticleCategoryId;
             articleEditRequest.Title = article.Title;
             articleEditRequest.Description = article.Description;
-            articleEditRequest.UserId = 0; // If needed, populate appropriately
+            articleEditRequest.Id = id; // If needed, populate appropriately
         }
     }
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.UpdateArticleAsync(id, articleEditRequest);
+        await ArticleService.UpdateArticleAsync(articleEditRequest);
         Navigation.NavigateTo($"/articles/{id}");
     }
 

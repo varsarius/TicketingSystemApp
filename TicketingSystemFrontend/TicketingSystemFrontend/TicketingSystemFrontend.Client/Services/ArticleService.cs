@@ -43,9 +43,9 @@ public class ArticleService : IArticleService
 
         return true;
     }
-    public async Task UpdateArticleAsync(int id, ArticleCreateRequest request)
+    public async Task UpdateArticleAsync(ArticleUpdateRequest request)
     {
-        var response = await _http.PutAsJsonAsync($"api/articles/{id}", request);
+        var response = await _http.PutAsJsonAsync($"api/articles/", request);
         response.EnsureSuccessStatusCode();
     }
 

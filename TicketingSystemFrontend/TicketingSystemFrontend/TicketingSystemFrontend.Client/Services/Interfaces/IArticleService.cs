@@ -9,6 +9,6 @@ public interface IArticleService
     Task<List<ArticleDto>> GetAllArticlesAsync();
     Task<ArticleDto?> GetArticleByIdAsync(int id);
     Task<bool> DeleteArticleAsync(int id);
-    Task UpdateArticleAsync(int id, ArticleCreateRequest request);
+    Task UpdateArticleAsync(ArticleUpdateRequest request);
 
 }

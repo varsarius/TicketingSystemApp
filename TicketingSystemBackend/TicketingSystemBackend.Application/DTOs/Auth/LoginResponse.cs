@@ -6,14 +6,11 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TicketingSystemBackend.Application.DTOs.Auth;
-public class LoginResponse
+public record LoginResponse(
+    [property: JsonPropertyName("accessToken")] string AccessToken,
+    double ExpiresIn,
+    string RefreshToken
+)
 {
-    public string TokenType { get; set; } = "Bearer";
-
-    [JsonPropertyName("accessToken")]
-    public string AccessToken { get; set; }
-
-    public double ExpiresIn { get; set; }
-
-    public string RefreshToken { get; set; }
+    public string TokenType { get; init; } = "Bearer";
 }

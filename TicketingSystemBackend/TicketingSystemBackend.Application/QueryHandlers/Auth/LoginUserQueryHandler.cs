@@ -31,12 +31,10 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, LoginRespon
         if (token == null)
             throw new UnauthorizedAccessException("Invalid credentials");
 
-        return new LoginResponse
-        {
-            TokenType = "Bearer",
-            AccessToken = token,
-            ExpiresIn = _accessTokenLifetimeSeconds,
-            RefreshToken = refreshToken
-        };
+        return new LoginResponse(
+            AccessToken: token,
+            ExpiresIn: _accessTokenLifetimeSeconds,
+            RefreshToken: refreshToken
+        );
     }
 }

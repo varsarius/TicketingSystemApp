@@ -3,16 +3,16 @@ using TicketingSystemBackend.Application.Commands.Tickets;
 using TicketingSystemBackend.Application.Interfaces;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.Tickets;
-public class DeleteTicketCommandHandler : IRequestHandler<DeleteTicketCommand>
+public class DeleteTicketByIdCommandHandler : IRequestHandler<DeleteTicketByIdCommand>
 {
     private readonly ITicketRepository _repository;
 
-    public DeleteTicketCommandHandler(ITicketRepository repository)
+    public DeleteTicketByIdCommandHandler(ITicketRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task Handle(DeleteTicketCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteTicketByIdCommand request, CancellationToken cancellationToken)
     {
         await _repository.DeleteByIdAsync(request.Id);
     }

@@ -2,5 +2,5 @@
 
 namespace TicketingSystemBackend.Application.Commands.Tickets;
 
-public record DeleteTicketCommand(int Id) : IRequest;
+public record DeleteTicketByIdCommand(int Id) : IRequest;
 

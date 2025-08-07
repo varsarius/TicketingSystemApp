@@ -52,9 +52,10 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
         }
     }
     [HttpDelete("{id}")]
-    public Task<IActionResult> DeleteById(int id)
+    public async Task<IActionResult> DeleteById(int id)
     {
-        throw new NotImplementedException();
+        await _mediator.Send(new DeleteTicketByIdCommand(id));
+        return Ok();
     }
 
 }

@@ -17,8 +17,9 @@ public class Article
     public string Title { get; set; } = null!;
     [Required]
     public string Description { get; set; } = null!;
-
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
-    
+
+    public ArticleCategory ArticleCategory { get; set; } = null!;
+    public List<File> Files { get; set; } = [];
 }

@@ -14,4 +14,5 @@ public class ArticleCategory
 
     [Required]
     public string CategoryName { get; set; } = null!;
+    public List<Article> Articles { get; set; } = [];
 }

@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 
 namespace TicketingSystemBackend.Application.Commands.TicketCategories;
 public record UpdateTicketCategoryCommand(
-    [Required] string CategoryName
+    [Required] string CategoryName,
+    int Id
 ) : IRequest;

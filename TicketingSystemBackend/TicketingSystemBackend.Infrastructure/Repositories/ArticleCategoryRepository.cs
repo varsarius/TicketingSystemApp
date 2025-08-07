@@ -18,7 +18,7 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
     }
     public async Task CreateAsync(ArticleCategory articleCategory)
     {
-        await _context.AddAsync(articleCategory);
+        _context.Add(articleCategory);
         await _context.SaveChangesAsync();
     }
     public async Task<ArticleCategory> GetByIdAsync(int id)

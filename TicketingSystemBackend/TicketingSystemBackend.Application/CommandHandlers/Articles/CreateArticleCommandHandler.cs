@@ -21,7 +21,6 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
             Description = request.Description,
             CategoryId = request.CategoryId,
             UserId = request.UserId,
-            CreatedAt = DateTime.Now,//REMOVE: this is not needed!
             UpdatedAt = null
         };
         await _repository.CreateAsync(article);

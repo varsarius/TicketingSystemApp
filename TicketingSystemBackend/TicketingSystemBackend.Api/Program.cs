@@ -33,7 +33,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 // Add Identity + JWT
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomUserClaimsPrincipalFactory>();
 builder.Services.AddScoped<IJwtTokenService, CustomJwtTokenService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
@@ -58,28 +57,22 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(jwtOptions =>
 {
-    //jwtOptions.MetadataAddress = builder.Configuration["Api:MetadataAddress"] ?? throw new Exception("Missing metadata");
-    // Optional if the MetadataAddress is specified
-    //jwtOptions.Authority = builder.Configuration["Jwt:Authority"];
+    jwtOptions.Authority = builder.Configuration["Jwt:Authority"];
     jwtOptions.Audience = builder.Configuration["Jwt:Audience"];
     jwtOptions.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = false,
+        ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidAudiences = builder.Configuration.GetSection("Jwt:Audience").Get<string[]>(),
-        //ValidIssuers = builder.Configuration.GetSection("Jwt:Issuer").Get<string[]>(),                
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
-    ?? throw new Exception("Missing jwt key config.")))
+            ?? throw new Exception("Missing jwt key config.")))
 
     };
 
     jwtOptions.MapInboundClaims = false;
 });
-//.AddBearerToken(IdentityConstants.BearerScheme, options =>
-//{
-//    options.BearerTokenExpiration = TimeSpan.FromHours(1);
-//});
 
 
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();

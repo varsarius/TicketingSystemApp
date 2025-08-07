@@ -1,19 +1,14 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Queries.Articles;
 using TicketingSystemBackend.Domain.Entities;
-using TicketingSystemBackend.Infrastructure.Repositories;
 
 namespace TicketingSystemBackend.Application.QueryHandlers.Articles;
 public class GetArticleByIdQueryHandler : IRequestHandler<GetArticleByIdQuery, Article>
 {
-    private readonly ArticleRepository _repository;
+    private readonly IArticleRepository _repository;
 
-    public GetArticleByIdQueryHandler(ArticleRepository repository)
+    public GetArticleByIdQueryHandler(IArticleRepository repository)
     {
         _repository = repository;
     }

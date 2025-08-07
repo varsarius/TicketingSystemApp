@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
 using TicketingSystemBackend.Infrastructure.Data;
 
 namespace TicketingSystemBackend.Infrastructure.Repositories;
-public class ArticleRepository
+public class ArticleRepository : IArticleRepository
 {
     private readonly AppDbContext _context;
     public ArticleRepository(AppDbContext context)
@@ -22,13 +23,13 @@ public class ArticleRepository
     }
     public async Task<Article> GetByIdAsync(int id)
     {
-        var article = await _context.Articles.FirstOrDefaultAsync(t => t.Id == id)
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.Id == id)
                     ?? throw new Exception($"Ticket with id {id} not found.");
         return article;
     }
     public async Task<Article> GetByTitleAsync(string title)
     {
-        var article = await _context.Articles.FirstOrDefaultAsync(t => t.Title == title)
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.Title == title)
                     ?? throw new Exception($"Ticket with title {title} not found.");
         return article;
     }

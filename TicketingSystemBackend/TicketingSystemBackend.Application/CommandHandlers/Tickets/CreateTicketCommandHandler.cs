@@ -1,21 +1,16 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TicketingSystemBackend.Application.Commands.Tickets;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
-using TicketingSystemBackend.Infrastructure.Repositories;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.Tickets;
 public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand>
 {
-    private readonly TicketRepository _ticketRepository;
+    private readonly ITicketRepository _ticketRepository;
 
-    public CreateTicketCommandHandler(TicketRepository ticketRepository)
+    public CreateTicketCommandHandler(ITicketRepository ITicketRepository)
     {
-        _ticketRepository = ticketRepository;
+        _ticketRepository = ITicketRepository;
     }
 
     public async Task Handle(CreateTicketCommand request, CancellationToken cancellationToken)

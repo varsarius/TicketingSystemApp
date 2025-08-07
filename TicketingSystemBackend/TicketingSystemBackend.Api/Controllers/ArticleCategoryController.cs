@@ -1,22 +1,22 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TicketingSystemBackend.Application.Commands.Articles;
-using TicketingSystemBackend.Application.Queries.Articles;
+using TicketingSystemBackend.Application.Commands.ArticleCategories;
+using TicketingSystemBackend.Application.Queries.ArticleCategories;
 
 namespace TicketingSystemBackend.Api.Controllers;
 
 [ApiController]
-[Route("api/articles")]
-public class ArticleController : ControllerBase
+[Route("api/categories/articles")]
+public class ArticleCategoryController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public ArticleController(IMediator mediator)
+    public ArticleCategoryController(IMediator mediator)
     {
         _mediator = mediator;
     }
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateArticleCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateArticleCategoryCommand command)
     {
         await _mediator.Send(command);
         return Ok();
@@ -24,17 +24,17 @@ public class ArticleController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var article = await _mediator.Send(new GetArticleByIdQuery(id));
-        return Ok(article);
+        var articleCategory = await _mediator.Send(new GetArticleCategoryByIdQuery(id));
+        return Ok(articleCategory);
     }
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var articles = await _mediator.Send(new GetArticlesQuery());
-        return Ok(articles);
+        var articleCategories = await _mediator.Send(new GetArticleCategoriesQuery());
+        return Ok(articleCategories);
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateArticleCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateArticleCategoryCommand command)
     {
         if (id != command.Id)
             return BadRequest("Id of the update request does not match the id of the body");
@@ -49,10 +49,10 @@ public class ArticleController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> DeleteById(int id)
     {
-        await _mediator.Send(new DeleteArticleByIdCommand(id));
+        await _mediator.Send(new DeleteArticleCategoryByIdCommand(id));
         return Ok();
     }
 }

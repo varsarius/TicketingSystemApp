@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
+using TicketingSystemBackend.Application.Interfaces;
 using System.Text;
 using TicketingSystemBackend.Api.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
@@ -80,8 +81,9 @@ builder.Services.AddAuthentication(options =>
 //});
 
 
-builder.Services.AddScoped<ArticleRepository>();
-builder.Services.AddScoped<TicketRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(
         typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)

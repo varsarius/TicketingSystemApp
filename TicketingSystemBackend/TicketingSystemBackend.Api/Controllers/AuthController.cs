@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using TicketingSystemBackend.Api.Auth;
-using TicketingSystemBackend.Api.Models;
+using TicketingSystemBackend.Api.Models.Auth;
+using TicketingSystemBackend.Application.Commands.Auth;
+using TicketingSystemBackend.Application.Queries.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
 
 namespace TicketingSystemBackend.Api.Controllers;
@@ -15,47 +17,40 @@ namespace TicketingSystemBackend.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly CustomJwtTokenService _jwtTokenService;
+    private readonly IMediator _mediator;
 
-    public AuthController(UserManager<ApplicationUser> userManager, CustomJwtTokenService jwtTokenService)
+    public AuthController(UserManager<ApplicationUser> userManager, IMediator mediator)
     {
         _userManager = userManager;
-        _jwtTokenService = jwtTokenService;
+        _mediator = mediator;
     }
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] CustomRegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
-        var user = new ApplicationUser
+        try
         {
-            Email = request.Email,
-            UserName = request.UserName,
-        };
-
-        var result = await _userManager.CreateAsync(user, request.Password);
-
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
-        return Ok("User registered successfully.");
+            await _mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            // You can log the exception here if needed
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
     {
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        try
         {
-            var token = _jwtTokenService.GenerateJwtToken(user);
-            return Ok(new LoginResponse
-            {
-                TokenType = "Bearer",
-                AccessToken = token,
-                ExpiresIn = 3600, // 1 hour in seconds
-                RefreshToken = "" // Add refresh token logic if needed
-            });
+            var response = await _mediator.Send(query);
+            return Ok(response);
         }
-        return Unauthorized(new { error = "Invalid email or password" });
-        //return Ok();
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [Authorize]
@@ -70,22 +65,12 @@ public class AuthController : ControllerBase
     }
 }
 
-public class LoginModel
-{
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
+//public class LoginResponse
+//{
 
-    [Required]
-    public string Password { get; set; } = string.Empty;
-}
-
-public class LoginResponse
-{
-
-    public string TokenType { get; set; }
-    [JsonPropertyName("accessToken")]
-    public string AccessToken { get; set; }
-    public int ExpiresIn { get; set; }
-    public string RefreshToken { get; set; }
-}
+//    public string TokenType { get; set; }
+//    [JsonPropertyName("accessToken")]
+//    public string AccessToken { get; set; }
+//    public int ExpiresIn { get; set; }
+//    public string RefreshToken { get; set; }
+//}

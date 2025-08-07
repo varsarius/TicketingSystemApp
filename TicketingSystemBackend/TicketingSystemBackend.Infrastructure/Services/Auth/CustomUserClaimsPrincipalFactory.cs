@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Infrastructure.Data;
 
-namespace TicketingSystemBackend.Api.Auth
+namespace TicketingSystemBackend.Application.Services.Auth
 {
     public class CustomUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser>
     {

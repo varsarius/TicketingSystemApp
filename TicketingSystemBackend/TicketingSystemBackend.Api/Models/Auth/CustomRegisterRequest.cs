@@ -1,4 +1,4 @@
-﻿namespace TicketingSystemBackend.Api.Models;
+﻿namespace TicketingSystemBackend.Api.Models.Auth;
 
 public sealed class CustomRegisterRequest
 {

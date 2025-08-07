@@ -6,7 +6,7 @@ using TicketingSystemBackend.Application.Queries.ArticleCategories;
 namespace TicketingSystemBackend.Api.Controllers;
 
 [ApiController]
-[Route("api/categories/articles")]
+[Route("api/articles/categories")]
 public class ArticleCategoryController : ControllerBase
 {
     private readonly IMediator _mediator;

@@ -1,5 +1,6 @@
-﻿namespace TicketingSystemBackend.Application.Commands.Tickets;
+﻿using MediatR;
 
-public class DeleteTicketCommand
-{
-}
+namespace TicketingSystemBackend.Application.Commands.Tickets;
+
+public record DeleteTicketCommand(int Id) : IRequest;
+

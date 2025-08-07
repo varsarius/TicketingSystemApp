@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using TicketingSystemBackend.Api.Models.Auth;
 using TicketingSystemBackend.Application.Commands.Auth;
-using TicketingSystemBackend.Application.Queries.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
 
 namespace TicketingSystemBackend.Api.Controllers;
@@ -40,11 +38,11 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginUserQuery query)
+    public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
     {
         try
         {
-            var response = await _mediator.Send(query);
+            var response = await _mediator.Send(command);
             return Ok(response);
         }
         catch (Exception ex)

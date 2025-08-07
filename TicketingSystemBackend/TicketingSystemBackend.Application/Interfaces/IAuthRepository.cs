@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.DTOs.Auth;
 
 namespace TicketingSystemBackend.Application.Interfaces;
@@ -29,6 +30,31 @@ public interface IAuthRepository
     /// <param name="password">The user's password.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A <see cref="LoginResponse"/> containing tokens and metadata.</returns>
-    Task<(string Token, string RefreshToken)> LoginAsync(string email, string password, CancellationToken cancellationToken);
+    Task<(Guid, string)> LoginAsync(string email, string password, CancellationToken cancellationToken);
 
+    // ----- Refresh Token related methods -----
+
+    /// <summary>
+    /// Saves a new refresh token in the database.
+    /// </summary>
+    Task AddRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Retrieves a refresh token entity by the token string.
+    /// </summary>
+    Task<RefreshTokenData?> GetRefreshTokenAsync(string refreshTokenString, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Deletes or revokes a refresh token (e.g. on logout or refresh).
+    /// </summary>
+    Task DeleteRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Optionally, remove expired refresh tokens (cleanup).
+    /// </summary>
+
+    Task<Guid> FindUserIdByEmailAsync(string email, CancellationToken cancellationToken);
+
+
+    Task RemoveExpiredTokensAsync(CancellationToken cancellationToken);
 }

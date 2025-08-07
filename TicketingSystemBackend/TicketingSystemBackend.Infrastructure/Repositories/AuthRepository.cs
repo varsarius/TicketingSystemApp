@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.DTOs.Auth;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Infrastructure.Data;
@@ -16,15 +18,67 @@ public class AuthRepository : IAuthRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly AppDbContext _context;
 
 
-    public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService)
+    public AuthRepository(UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService, AppDbContext context)
     {
         _userManager = userManager;
         _jwtTokenService = jwtTokenService;
+        _context = context;
     }
 
-    public async Task<(string Token, string RefreshToken)> LoginAsync(string email, string password, CancellationToken cancellationToken)
+    public async Task AddRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken)
+    {
+        var tokenEntity = new RefreshToken
+        {
+            Token = refreshTokenData.Token,
+            Expires = refreshTokenData.Expires,
+            UserId = refreshTokenData.UserId
+        };
+
+        await _context.RefreshTokens.AddAsync(tokenEntity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken)
+    {
+        var tokenEntity = await _context.RefreshTokens
+        .FirstOrDefaultAsync(rt => rt.Token == refreshTokenData.Token, cancellationToken);
+
+        if (tokenEntity is not null)
+        {
+            _context.RefreshTokens.Remove(tokenEntity);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    public async Task<Guid> FindUserIdByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) throw new ArgumentNullException(nameof(user));
+
+        return user.Id;
+    }
+
+    public async Task<RefreshTokenData?> GetRefreshTokenAsync(string refreshTokenString, CancellationToken cancellationToken)
+    {
+        var tokenEntity = await _context.RefreshTokens
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.Token == refreshTokenString, cancellationToken);
+
+        if (tokenEntity == null)
+            return null;
+
+        return new RefreshTokenData
+        {
+            Token = tokenEntity.Token,
+            Expires = tokenEntity.Expires,
+            UserId = tokenEntity.UserId,
+        };
+    }
+
+    public async Task<(Guid, string)> LoginAsync(string email, string password, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null || !await _userManager.CheckPasswordAsync(user, password))
@@ -32,9 +86,8 @@ public class AuthRepository : IAuthRepository
 
         
         var token = _jwtTokenService.GenerateJwtToken(user.Id, user.Email, user.UserName);
-        var refreshToken = ""; // Generate or retrieve from DB
 
-        return (token, refreshToken);
+        return (user.Id, token);
     }
 
     public async Task RegisterUserAsync(string email, string username, string password, CancellationToken cancellationToken)
@@ -53,5 +106,10 @@ public class AuthRepository : IAuthRepository
             var errors = string.Join("; ", result.Errors.Select(e => e.Description));
             throw new Exception(errors); // or your custom exception
         }
+    }
+
+    public Task RemoveExpiredTokensAsync(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

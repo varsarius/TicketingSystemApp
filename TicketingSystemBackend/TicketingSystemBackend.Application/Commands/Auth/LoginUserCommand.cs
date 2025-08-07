@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs.Auth;
 
-namespace TicketingSystemBackend.Application.Queries.Auth;
-public record LoginUserQuery(
+namespace TicketingSystemBackend.Application.Commands.Auth;
+public record LoginUserCommand(
     [Required] string Email,
     [Required] string Password
 ) : IRequest<LoginResponse>;

@@ -20,7 +20,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<TicketCategory> TicketCategories { get; set; }
     public DbSet<TicketComment> TicketComments { get; set; }
-
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public AppDbContext(DbContextOptions options) : base(options)
     {
     }

@@ -28,16 +28,28 @@ public class AuthRepository : IAuthRepository
         _context = context;
     }
 
-    public async Task AddRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken)
+    public async Task AddOrUpdateRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken)
     {
-        var tokenEntity = new RefreshToken
+        var existingToken = await _context.RefreshTokens
+            .FirstOrDefaultAsync(rt => rt.UserId == refreshTokenData.UserId, cancellationToken);
+        if (existingToken != null)
         {
-            Token = refreshTokenData.Token,
-            Expires = refreshTokenData.Expires,
-            UserId = refreshTokenData.UserId
-        };
-
-        await _context.RefreshTokens.AddAsync(tokenEntity, cancellationToken);
+            existingToken.Token = refreshTokenData.Token;
+            existingToken.Expires = refreshTokenData.Expires;
+            existingToken.UpdatedAt = DateTime.UtcNow;
+            _context.RefreshTokens.Update(existingToken);
+        }
+        else
+        {
+            var newToken = new RefreshToken
+            {
+                Token = refreshTokenData.Token,
+                Expires = refreshTokenData.Expires,
+                UserId = refreshTokenData.UserId
+            };
+            await _context.RefreshTokens.AddAsync(newToken, cancellationToken);
+        }
+        
         await _context.SaveChangesAsync(cancellationToken);
     }
 
@@ -108,8 +120,20 @@ public class AuthRepository : IAuthRepository
         }
     }
 
-    public Task RemoveExpiredTokensAsync(CancellationToken cancellationToken)
+    public async Task RemoveExpiredTokensAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var now = DateTime.UtcNow;
+
+        // Get all expired tokens
+        var expiredTokens = await _context.RefreshTokens
+            .Where(rt => rt.Expires <= now)
+            .ToListAsync(cancellationToken);
+
+        // and delete them
+        if (expiredTokens.Any())
+        {
+            _context.RefreshTokens.RemoveRange(expiredTokens);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

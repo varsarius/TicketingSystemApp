@@ -37,7 +37,7 @@ public interface IAuthRepository
     /// <summary>
     /// Saves a new refresh token in the database.
     /// </summary>
-    Task AddRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken);
+    Task AddOrUpdateRefreshTokenAsync(RefreshTokenData refreshTokenData, CancellationToken cancellationToken);
 
     /// <summary>
     /// Retrieves a refresh token entity by the token string.

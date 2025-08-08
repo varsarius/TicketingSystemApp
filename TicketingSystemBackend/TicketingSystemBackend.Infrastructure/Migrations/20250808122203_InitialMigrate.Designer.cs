@@ -12,7 +12,7 @@ using TicketingSystemBackend.Infrastructure.Data;
 namespace TicketingSystemBackend.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250807141845_InitialMigrate")]
+    [Migration("20250808122203_InitialMigrate")]
     partial class InitialMigrate
     {
         /// <inheritdoc />
@@ -406,6 +406,9 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");

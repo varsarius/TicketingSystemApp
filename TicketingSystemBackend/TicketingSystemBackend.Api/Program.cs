@@ -5,11 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
-using TicketingSystemBackend.Application.Interfaces;
 using System.Text;
+using TicketingSystemBackend.Application.Interfaces;
+using TicketingSystemBackend.Application.Services.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
 using TicketingSystemBackend.Infrastructure.Repositories;
-using TicketingSystemBackend.Application.Services.Auth;
+using TicketingSystemBackend.Infrastructure.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +80,7 @@ builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(
         typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)

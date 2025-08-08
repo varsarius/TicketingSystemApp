@@ -49,7 +49,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginRe
         };
 
         // Store refresh token
-        await _authRepository.AddRefreshTokenAsync(refreshTokenData, cancellationToken);
+        await _authRepository.AddOrUpdateRefreshTokenAsync(refreshTokenData, cancellationToken);
 
         return new LoginResponse(
             AccessToken: token,

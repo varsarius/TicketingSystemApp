@@ -6,4 +6,5 @@ namespace TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 public interface IAuthService
 {
     Task<AuthResult> RegisterAsync(RegisterRequest request);
+    Task<LoginResult> LoginAsync(LoginRequest request);
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.DTOs.Auth;
+using TicketingSystemBackend.Application.Exceptions;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Infrastructure.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -104,6 +105,12 @@ public class AuthRepository : IAuthRepository
 
     public async Task RegisterUserAsync(string email, string username, string password, CancellationToken cancellationToken)
     {
+        // Check if user with the same username already exists
+        var existingUser = await _userManager.FindByNameAsync(username);
+        if (existingUser != null)
+        {
+            throw new UserExistException($"User with username '{username}' already exists.");
+        }
 
         var user = new ApplicationUser
         {

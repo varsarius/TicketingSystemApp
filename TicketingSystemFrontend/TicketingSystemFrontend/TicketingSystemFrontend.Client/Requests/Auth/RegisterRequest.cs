@@ -10,6 +10,10 @@ public class RegisterRequest
     [Required, MinLength(6)]
     public string Password { get; set; } = string.Empty;
 
+    [Required]
+    public string UserName { get; set; } = null!;
+
     [Required, Compare(nameof(Password))]
     public string ConfirmPassword { get; set; } = string.Empty;
+
 }

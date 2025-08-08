@@ -9,6 +9,15 @@
     <ValidationSummary />
 
     <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="registerModel.UserName" />
+        @if (!string.IsNullOrEmpty(usernameError))
+        {
+            <div class="text-danger">@usernameError</div>
+        }
+    </div>
+
+    <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <InputText id="email" class="form-control" @bind-Value="registerModel.Email" />
     </div>
@@ -29,6 +38,8 @@
 @code {
     private RegisterRequest registerModel = new();
 
+    private string? usernameError;
+
     [Inject]
     public IAuthService AuthService { get; set; } = null!;
 
@@ -45,6 +56,12 @@
         }
         else
         {
+            // to future if want to add an error-code:
+            // if (result.ErrorCode == "UserAlreadyExists")
+            // {
+            //     usernameError = "Hey, this username is already taken by someone.";
+            // }
+            usernameError = result.ErrorMessage ?? "Registration failed.";
             // Handle error (e.g., show message)
         }
     }

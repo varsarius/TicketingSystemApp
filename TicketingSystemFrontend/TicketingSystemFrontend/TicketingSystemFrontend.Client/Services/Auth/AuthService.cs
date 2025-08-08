@@ -14,12 +14,29 @@ public class AuthService : IAuthService
         _http = http;
     }
 
+    public async Task<LoginResult> LoginAsync(LoginRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("api/auth/login", request);
+        var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
+        return loginResult!;
+    }
+
     public async Task<AuthResult> RegisterAsync(RegisterRequest request)
     {
         var response = await _http.PostAsJsonAsync("api/auth/register", request);
         if (response.IsSuccessStatusCode)
         {
             return new AuthResult { IsSuccess = true };
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.Conflict) // 409
+        {
+            var err = await response.Content.ReadAsStringAsync();
+            return new AuthResult
+            {
+                IsSuccess = false,
+                ErrorMessage = err,
+            };
         }
 
         var error = await response.Content.ReadAsStringAsync();

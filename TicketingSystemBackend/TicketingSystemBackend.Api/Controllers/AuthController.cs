@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using TicketingSystemBackend.Application.Commands.Auth;
+using TicketingSystemBackend.Application.Exceptions;
 using TicketingSystemBackend.Infrastructure.Data;
 
 namespace TicketingSystemBackend.Api.Controllers;
@@ -29,6 +30,10 @@ public class AuthController : ControllerBase
         {
             await _mediator.Send(command);
             return Ok();
+        }
+        catch (UserExistException ex)
+        {
+            return Conflict(new { error = ex.Message });  // HTTP 409 Conflict
         }
         catch (Exception ex)
         {

@@ -22,7 +22,15 @@ public class TicketService : ITicketService
 
     public async Task<List<TicketDto>> GetAllTicketsAsync()
     {
-        var tickets = await _http.GetFromJsonAsync<List<TicketDto>>("api/ticket");
-        return tickets ?? new List<TicketDto>();
+        try
+        {
+            var tickets = await _http.GetFromJsonAsync<List<TicketDto>>("api/ticket");
+            return tickets ?? new List<TicketDto>();
+        } 
+        catch
+        {
+            return new List<TicketDto>();
+        }
+        
     }
 }

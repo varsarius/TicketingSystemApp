@@ -28,6 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(
         typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)

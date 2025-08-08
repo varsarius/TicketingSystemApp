@@ -3,11 +3,11 @@ using TicketingSystemBackend.Application.Commands.ArticleCategories;
 using TicketingSystemBackend.Application.Interfaces;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.ArticleCategories;
-public class DeleteArticleCategoryCommandHandler : IRequestHandler<DeleteArticleCategoryByIdCommand>
+public class DeleteArticleCategoryByIdCommandHandler : IRequestHandler<DeleteArticleCategoryByIdCommand>
 {
     private readonly IArticleCategoryRepository _repository;
 
-    public DeleteArticleCategoryCommandHandler(IArticleCategoryRepository repository)
+    public DeleteArticleCategoryByIdCommandHandler(IArticleCategoryRepository repository)
     {
         _repository = repository;
     }

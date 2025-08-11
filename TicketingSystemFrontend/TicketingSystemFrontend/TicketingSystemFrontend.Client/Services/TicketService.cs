@@ -16,7 +16,7 @@ public class TicketService : ITicketService
 
     public async Task CreateTicketAsync(TicketCreateRequest request)
     {
-        var response = await _http.PostAsJsonAsync("api/ticket", request);
+        var response = await _http.PostAsJsonAsync("api/tickets", request);
         response.EnsureSuccessStatusCode();
     }
 

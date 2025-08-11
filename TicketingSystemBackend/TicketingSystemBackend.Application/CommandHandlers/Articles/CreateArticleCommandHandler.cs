@@ -1,19 +1,14 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TicketingSystemBackend.Api.Commands.Articles;
+using TicketingSystemBackend.Application.Commands.Articles;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
-using TicketingSystemBackend.Infrastructure.Repositories;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.Articles;
 public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
 {
-    private readonly ArticleRepository _repository;
+    private readonly IArticleRepository _repository;
 
-    public CreateArticleCommandHandler(ArticleRepository repository)
+    public CreateArticleCommandHandler(IArticleRepository repository)
     {
         _repository = repository;
     }
@@ -24,10 +19,9 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
         {
             Title = request.Title,
             Description = request.Description,
-            ArticleCategoryId = request.ArticleCategoryId,
+            CategoryId = request.CategoryId,
             UserId = request.UserId,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
+            UpdatedAt = null
         };
         await _repository.CreateAsync(article);
     }

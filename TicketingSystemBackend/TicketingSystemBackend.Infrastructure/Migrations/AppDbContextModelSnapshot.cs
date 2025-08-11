@@ -22,6 +22,21 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ArticleFile", b =>
+                {
+                    b.Property<int>("ArticlesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticlesId", "FilesId");
+
+                    b.HasIndex("FilesId");
+
+                    b.ToTable("ArticleFile");
+                });
+
             modelBuilder.Entity("FileTicket", b =>
                 {
                     b.Property<int>("FilesId")
@@ -246,6 +261,9 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
                     b.Property<int>("ArticleCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -253,14 +271,11 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FileId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
@@ -268,7 +283,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileId");
+                    b.HasIndex("ArticleCategoryId");
 
                     b.ToTable("Articles");
                 });
@@ -356,7 +371,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Category")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -385,6 +400,21 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
                     b.HasIndex("TicketId");
 
                     b.ToTable("TicketComments");
+                });
+
+            modelBuilder.Entity("ArticleFile", b =>
+                {
+                    b.HasOne("TicketingSystemBackend.Domain.Entities.Article", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TicketingSystemBackend.Domain.Entities.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FileTicket", b =>
@@ -455,15 +485,19 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.Article", b =>
                 {
-                    b.HasOne("TicketingSystemBackend.Domain.Entities.File", null)
+                    b.HasOne("TicketingSystemBackend.Domain.Entities.ArticleCategory", "ArticleCategory")
                         .WithMany("Articles")
-                        .HasForeignKey("FileId");
+                        .HasForeignKey("ArticleCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArticleCategory");
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.Ticket", b =>
                 {
                     b.HasOne("TicketingSystemBackend.Domain.Entities.TicketCategory", "Category")
-                        .WithMany()
+                        .WithMany("Tickets")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -480,7 +514,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.File", b =>
+            modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.ArticleCategory", b =>
                 {
                     b.Navigation("Articles");
                 });
@@ -488,6 +522,11 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.Ticket", b =>
                 {
                     b.Navigation("TicketComments");
+                });
+
+            modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.TicketCategory", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CommandHandlers\NewFolder\**" />
-    <EmbeddedResource Remove="CommandHandlers\NewFolder\**" />
-    <None Remove="CommandHandlers\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="13.0.0" />
   </ItemGroup>
 
@@ -22,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TicketingSystemBackend.Infrastructure\TicketingSystemBackend.Infrastructure.csproj" />
+    <ProjectReference Include="..\TicketingSystemBackend.Domain\TicketingSystemBackend.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,5 +12,6 @@ public class TicketCategory
 {
     public int Id { get; set; }
     [Required]
-    public string Category { get; set; } = null!;
+    public string CategoryName { get; set; } = null!;
+    public List<Ticket> Tickets { get; set; } = [];
 }

@@ -1,37 +1,61 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TicketingSystemBackend.Api.Models;
+using TicketingSystemBackend.Application.Commands.Tickets;
 using TicketingSystemBackend.Application.DTOs;
-
+using TicketingSystemBackend.Application.Queries.Tickets;
 namespace TicketingSystemBackend.Api.Controllers;
 
 
 [ApiController]
-[Route("api/[controller]")]
-public class TicketController : ControllerBase
+[Route("api/tickets")]
+public class TicketController : ControllerBase, IController<CreateTicketCommand, UpdateTicketCommand>
 {
-    [HttpPost]
-    public IActionResult Create([FromBody] TicketCreateRequest request)
-    {
-        Console.WriteLine("New ticket received:");
-        Console.WriteLine($"Title: {request.Title}");
-        Console.WriteLine($"Description: {request.Description}");
-        Console.WriteLine($"Priority: {request.Priority}");
-        Console.WriteLine($"AssignedTo: {request.AssignedTo}");
+    private readonly IMediator _mediator;
 
+    public TicketController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTicketCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var ticket = await _mediator.Send(new GetTicketByIdQuery(id));
+        return Ok(ticket);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var tickets = await _mediator.Send(new GetTicketsQuery());
+        return Ok(tickets);
+    }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateTicketCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest("Id of the update request mismatches the id of the body");
+        try
+        {
+            await _mediator.Send(command);
+            return Ok();
+
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        await _mediator.Send(new DeleteTicketByIdCommand(id));
         return Ok();
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var fakeTickets = new List<TicketDto>
-        {
-            new(1, "Login Issue", "User cannot login with correct credentials.", "High", "Authentication", DateTime.Now.AddHours(-5)),
-            new(2, "Page crash on /tickets", "Page crashes when clicking on 'Create New Ticket'.", "Medium", "Frontend", DateTime.Now.AddDays(-1)),
-            new(3, "Pagessssssssssssssssssssssssssssssssssssssssssssssssss crash on /tickets", "Page crashes when clicking on 'Create New Ticket'.", "Mediuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuum", "Frrrrrrrrrrrrrrrrrrrrrrrrrrontend", DateTime.Now.AddDays(10))
-
-        };
-
-        return Ok(fakeTickets);
-    }
 }

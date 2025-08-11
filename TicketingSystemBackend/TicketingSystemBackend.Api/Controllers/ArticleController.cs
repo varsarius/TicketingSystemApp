@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TicketingSystemBackend.Api.Commands.Articles;
+using TicketingSystemBackend.Application.Commands.Articles;
+using TicketingSystemBackend.Application.Queries.Articles;
 
 namespace TicketingSystemBackend.Api.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-public class ArticleController : ControllerBase
+[Route("api/articles")]
+public class ArticleController : ControllerBase, IController<CreateArticleCommand, UpdateArticleCommand>
 {
     private readonly IMediator _mediator;
 
@@ -20,5 +21,38 @@ public class ArticleController : ControllerBase
         await _mediator.Send(command);
         return Ok();
     }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var article = await _mediator.Send(new GetArticleByIdQuery(id));
+        return Ok(article);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var articles = await _mediator.Send(new GetArticlesQuery());
+        return Ok(articles);
+    }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateArticleCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest("Id of the update request mismatches the id of the body");
+        try
+        {
+            await _mediator.Send(command);
+            return Ok();
 
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        await _mediator.Send(new DeleteArticleByIdCommand(id));
+        return Ok();
+    }
 }

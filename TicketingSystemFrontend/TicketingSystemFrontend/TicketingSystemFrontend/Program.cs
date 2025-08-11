@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using TicketingSystemFrontend.Client.Auth;
@@ -19,17 +20,20 @@ builder.Services.AddRazorComponents()
 
 //builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 
-//builder.Services.AddScoped<CustomAuthProvider>();
+builder.Services.AddScoped<CustomAuthProvider>();
 //builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthProvider>());
 //builder.Services.AddSingleton<IAuthorizationPolicyProvider, DefaultAuthorizationPolicyProvider>();
 
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
 });
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthorization();
 var app = builder.Build();

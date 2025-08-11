@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@using System.Security.Claims
 @using TicketingSystemFrontend.Client.Requests.Auth
 @using TicketingSystemFrontend.Client.Services.Interfaces.Auth
 
@@ -35,8 +36,34 @@
     <p>@resulte.TokenType</p>
 
 }
+<AuthorizeView>
+    <Authorized>
+        <h3>Authenticated User Claims</h3>
+        <ul>
+            @foreach (var claim in claims)
+            {
+                <li><b>@claim.Type</b>: @claim.Value</li>
+            }
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        claims = authState.User.Claims;
+    }
+
+    //**********/
     private LoginRequest loginModel = new();
     private string? errorMessage;
 
@@ -54,8 +81,7 @@
         resulte = result;
         if (result.IsSuccess)
         {
-            // You can store the token or redirect to the dashboard
-            //Navigation.NavigateTo("/"); // home page or dashboard
+            //Navigation.NavigateTo("/");
         }
         else
         {

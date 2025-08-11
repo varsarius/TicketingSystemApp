@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TicketingSystemFrontend.Client.Auth;
@@ -21,6 +22,9 @@ builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
 });
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
+
 
 //builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
 //{

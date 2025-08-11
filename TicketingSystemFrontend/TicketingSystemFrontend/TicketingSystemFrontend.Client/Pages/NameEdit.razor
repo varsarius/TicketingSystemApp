@@ -1,0 +1,70 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (userName != null)
+{
+    @if (!isEditing)
+    {
+        <div class="mb-3">
+            <label>Name</label>
+            <p>@userName</p>
+        </div>
+        <button class="btn btn-primary" @onclick="StartEditing">Edit Name</button>
+    }
+    else
+    {
+        <div class="mb-3">
+            <label>Name</label>
+            <input class="form-control" @bind="userName" />
+        </div>
+        <button class="btn btn-primary me-2" @onclick="SaveChanges">Save Changes</button>
+        <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+    }
+}
+
+@code {
+    private string userName;
+    private bool isEditing = false;
+    private string originalUserName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var currentUser = authState.User;
+        if (currentUser.Identity.IsAuthenticated)
+        {
+            userName = "User";
+            originalUserName = userName;
+        }
+    }
+
+    private void StartEditing()
+    {
+        isEditing = true;
+    }
+
+    private void CancelEditing()
+    {
+        // Restore original values
+        userName = originalUserName;
+        isEditing = false;
+    }
+
+    private async Task SaveChanges()
+    {
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            Console.WriteLine("Changes saved");
+            // Update original values
+            originalUserName = userName;
+
+            // Here you would typically call your backend to save changes
+            // if (!string.IsNullOrWhiteSpace(newPassword))
+            // {
+            //     var token = await UserManager.GeneratePasswordResetTokenAsync(user);
+            //     await UserManager.ResetPasswordAsync(user, token, newPassword);
+            // }
+        }
+
+        isEditing = false;
+    }
+}

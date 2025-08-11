@@ -1,0 +1,92 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (email != null)
+{
+    @if (!isEditing)
+    {
+        <div class="mb-3">
+            <label>Email</label>
+            <p>@email</p>
+            <span class="badge @(emailConfirmed ? "bg-success" : "bg-warning")">
+                @(emailConfirmed ? "Confirmed" : "Not Confirmed")
+            </span>
+        </div>
+        <button class="btn btn-primary" @onclick="StartEditing">Edit Email</button>
+    }
+    else
+    {
+        <div class="mb-3">
+            <label>Email</label>
+            <input class="form-control" @bind="email" />
+            <div class="mt-2">
+                <span class="badge @(emailConfirmed ? "bg-success" : "bg-warning")">
+                    @(emailConfirmed ? "Confirmed" : "Not Confirmed")
+                </span>
+                @if (!emailConfirmed)
+                {
+                    <button class="btn btn-sm btn-outline-primary ms-2" @onclick="SendConfirmationEmail">
+                        Resend Confirmation
+                    </button>
+                }
+            </div>
+        </div>
+        <button class="btn btn-primary me-2" @onclick="SaveChanges">Save Changes</button>
+        <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+    }
+}
+
+@code {
+    private string email;
+    private bool emailConfirmed;
+    private string originalEmail;
+    private bool isEditing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var currentUser = authState.User;
+        if (currentUser.Identity.IsAuthenticated)
+        {
+            email = "email@email.com";
+            emailConfirmed = false; // Set this based on your actual confirmation status
+            originalEmail = email;
+        }
+    }
+
+    private void StartEditing()
+    {
+        isEditing = true;
+    }
+
+    private void CancelEditing()
+    {
+        // Restore original values
+        email = originalEmail;
+        isEditing = false;
+    }
+
+    private async Task SaveChanges()
+    {
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            Console.WriteLine("Changes saved");
+            // Update original values
+            originalEmail = email;
+
+            // When email changes, you might want to mark it as unconfirmed
+            if (email != originalEmail)
+            {
+                emailConfirmed = false;
+            }
+        }
+        isEditing = false;
+    }
+
+    private async Task SendConfirmationEmail()
+    {
+        // Simulate sending confirmation email
+        Console.WriteLine($"Confirmation email sent to {email}");
+        // In a real app, you would call your backend here
+        // await AuthService.SendEmailConfirmationAsync(email);
+    }
+}

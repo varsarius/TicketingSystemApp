@@ -1,57 +1,23 @@
 ﻿@page "/profile"
+@page "/profile/change-password"
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 <h3>My Profile</h3>
 
-@if (userName != null)
-{
-    <div class="mb-3">
-        <label>Name</label>
-        <input class="form-control" @bind="userName" />
-    </div>
-    <div class="mb-3">
-        <label>Email</label>
-        <input class="form-control" value="@email"/>
-        <span class="badge @(emailConfirmed ? "bg-success" : "bg-danger")">
-            @(emailConfirmed ? "Confirmed" : "Not Confirmed")
-        </span>
-    </div>
-    <div class="mb-3">
-        <label>Change Password</label>
-        <input type="password" class="form-control" @bind="newPassword" />
-    </div>
-    <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
-}
+<NameEdit />
+<EmailEdit />
+<div>
+    <button class="btn btn-success mt-3" @onclick="NavigateToChangePassword">Change Password</button>
+</div>
 
 @code {
-    private string userName;
-    private string email;
-    private bool emailConfirmed;
-    private string newPassword;
-
-    protected override async Task OnInitializedAsync()
+    private void NavigateToChangePassword()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var currentUser = authState.User;
-        if (currentUser.Identity.IsAuthenticated)
-        {
-            userName = "User";
-            email = "email@email.com";
-            emailConfirmed = false;
-        }
+        NavigationManager.NavigateTo("profile/change-password");
     }
-
-    private async Task SaveChanges()
+    private void ReturnToProfile()
     {
-        if (!string.IsNullOrWhiteSpace(userName))
-        {
-            Console.WriteLine("Epic");
-        }
-
-        // if (!string.IsNullOrWhiteSpace(newPassword))
-        // {
-        //     var token = await UserManager.GeneratePasswordResetTokenAsync(user);
-        //     await UserManager.ResetPasswordAsync(user, token, newPassword);
-        // }
+        NavigationManager.NavigateTo("profile");
     }
 }

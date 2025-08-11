@@ -1,47 +1,42 @@
-﻿@* This using is already in _include. May be need to be deleted from here, but then the  <AuthorizeView> doesn't work, unless with markdown *@
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 <CascadingAuthenticationState>
     <div class="container">
-        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+        <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+            <!-- Logo -->
+            <a href="/" class="d-flex align-items-center mb-2 mb-md-0 text-dark text-decoration-none">
                 <img src="@Assets["images/logo.png"]" alt="My Logo" width="64" height="64" class="me-2" />
             </a>
-            <NavMenu />
-            
+
+            <!-- Navbar links -->
+            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li><NavLink href="/" class="nav-link px-2 link-dark">Tickets</NavLink></li>
+                <li><NavLink href="/dashboard" class="nav-link px-2 link-dark">Dashboard</NavLink></li>
+                <li><NavLink href="/articles" class="nav-link px-2 link-dark">Articles</NavLink></li>
+            </ul>
+
+            <!-- Auth buttons -->
             <AuthorizeView>
                 <Authorized>
-                    Welcome, authorized user.
+                    <NavLink href="/profile" class="btn btn-outline-primary">Profile</NavLink>
                 </Authorized>
                 <NotAuthorized>
-                    <div class="col-md-3 text-end">
-                        <button type="button" class="btn btn-outline-primary me-2">Login</button>
-                        <button type="button" class="btn btn-primary">Sign-up</button>
+                    <div class="text-end">
+                        <NavLink href="/login" class="btn btn-outline-primary me-2">Login</NavLink>
+                        <NavLink href="/register" class="btn btn-primary">Sign-up</NavLink>
                     </div>
                 </NotAuthorized>
             </AuthorizeView>
         </header>
 
         @Body
-
     </div>
+
     <footer class="pt-3 mt-4 bg-light text-center w-100">
         <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item">
-                <a href="#" class="nav-link px-2 text-body-secondary">
-                    Tickets
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link px-2 text-body-secondary">
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link px-2 text-body-secondary">
-                    Articles
-                </a>
-            </li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Tickets</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Dashboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Articles</a></li>
         </ul>
         <p class="text-center text-body-secondary">© 2025 Company, Inc</p>
     </footer>

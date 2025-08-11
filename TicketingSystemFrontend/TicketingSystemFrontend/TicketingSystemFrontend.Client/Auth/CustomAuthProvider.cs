@@ -7,7 +7,7 @@ public class CustomAuthProvider : AuthenticationStateProvider
 {
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        return Task.FromResult(GetUnauthorizedUser());
+        return Task.FromResult(GetAuthorizedUser());
     }
     private AuthenticationState GetAuthorizedUser()
     {

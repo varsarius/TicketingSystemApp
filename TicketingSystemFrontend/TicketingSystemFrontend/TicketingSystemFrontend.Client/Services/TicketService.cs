@@ -14,13 +14,13 @@ public class TicketService : ITicketService
 
     public async Task CreateTicketAsync(TicketCreateRequest request)
     {
-        var response = await _http.PostAsJsonAsync("api/ticket", request);
+        var response = await _http.PostAsJsonAsync("api/tickets", request);
         response.EnsureSuccessStatusCode();
     }
 
     public async Task<List<TicketDto>> GetAllTicketsAsync()
     {
-        var tickets = await _http.GetFromJsonAsync<List<TicketDto>>("api/ticket");
+        var tickets = await _http.GetFromJsonAsync<List<TicketDto>>("api/tickets");
         return tickets ?? new List<TicketDto>();
     }
 }

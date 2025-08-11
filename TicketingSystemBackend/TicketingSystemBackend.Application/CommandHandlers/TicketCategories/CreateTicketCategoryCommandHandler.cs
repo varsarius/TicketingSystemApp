@@ -22,7 +22,8 @@ public class CreateTicketCategoryCommandHandler : IRequestHandler<CreateTicketCa
     {
         var ticketCategory = new TicketCategory
         {
-            CategoryName = request.CategoryName
+            CategoryName = request.CategoryName,
+            UpdatedAt = null
         };
         await _repository.CreateAsync(ticketCategory);
     }

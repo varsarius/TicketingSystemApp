@@ -14,7 +14,7 @@ public class ArticleCategory
 
     [Required]
     public string CategoryName { get; set; } = null!;
-    public DateTime? CreatedAt { get; } = DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public List<Article> Articles { get; set; } = [];
 }

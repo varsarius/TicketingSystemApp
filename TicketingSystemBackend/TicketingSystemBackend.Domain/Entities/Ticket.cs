@@ -20,8 +20,8 @@ public class Ticket
     [Required]
     public string Description { get; set; } = null!;
     public Priority Priority { get; set; }
-    public DateTime CreatedAt { get; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set;}
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set;}
 
     public List<TicketComment> TicketComments { get; set; } = [];
     [Required]

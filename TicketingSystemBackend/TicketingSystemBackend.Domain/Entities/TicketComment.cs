@@ -9,6 +9,6 @@ public class TicketComment
 
     [Required]
     public string Description { get; set; } = null!;
-    public DateTime CreatedAt { get; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
 }

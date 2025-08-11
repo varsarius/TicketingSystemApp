@@ -17,7 +17,8 @@ public class CreateArticleCategoryCommandHandler : IRequestHandler<CreateArticle
     {
         var articleCategory = new ArticleCategory
         {
-            CategoryName = request.CategoryName
+            CategoryName = request.CategoryName,
+            UpdatedAt = null
         };
         await _repository.CreateAsync(articleCategory);
 

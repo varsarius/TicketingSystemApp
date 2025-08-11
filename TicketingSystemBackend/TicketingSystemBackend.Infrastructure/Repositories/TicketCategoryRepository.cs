@@ -36,22 +36,19 @@ public class TicketCategoryRepository : ITicketCategoryRepository
 
     public async Task<List<TicketCategory>> GetAllAsync()
     {
-        var tickets = await _context.TicketCategories.ToListAsync();
-        return tickets;
+        return await _context.TicketCategories.ToListAsync();
     }
 
     public async Task<TicketCategory> GetByCategoryNameAsync(string categoryName)
     {
-        var ticket = await _context.TicketCategories.FirstOrDefaultAsync(tc => tc.CategoryName == categoryName)
+        return await _context.TicketCategories.FirstOrDefaultAsync(tc => tc.CategoryName == categoryName)
                     ?? throw new Exception($"Ticket category with name {categoryName} not found.");
-        return ticket;
     }
 
     public async Task<TicketCategory> GetByIdAsync(int id)
-    {
-        var ticket = await _context.TicketCategories.FirstOrDefaultAsync(tc => tc.Id == id)
+    { 
+        return await _context.TicketCategories.FirstOrDefaultAsync(tc => tc.Id == id)
                     ?? throw new Exception($"Ticket category with id {id} not found.");
-        return ticket;
     }
 
     public async Task UpdateAsync(TicketCategory entity)

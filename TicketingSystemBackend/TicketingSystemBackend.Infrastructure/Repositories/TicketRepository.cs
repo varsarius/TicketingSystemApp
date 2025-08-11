@@ -23,20 +23,17 @@ public class TicketRepository : ITicketRepository
     }
     public async Task<Ticket> GetByIdAsync(int id)
     {
-        var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id)
+        return await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id)
                     ?? throw new Exception($"Ticket with id {id} not found.");
-        return ticket;
     }
     public async Task<Ticket> GetByTitleAsync(string title)
     {
-        var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Title == title)
+        return await _context.Tickets.FirstOrDefaultAsync(t => t.Title == title)
                     ?? throw new Exception($"Ticket with title {title} not found.");
-        return ticket;
     }
     public async Task<List<Ticket>> GetAllAsync()
     {
-        var tickets = await _context.Tickets.ToListAsync();
-        return tickets;
+        return await _context.Tickets.ToListAsync();
     }
     public async Task UpdateAsync(Ticket ticket)
     {

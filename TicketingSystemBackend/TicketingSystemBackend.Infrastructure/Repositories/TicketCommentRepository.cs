@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,18 +34,20 @@ public class TicketCommentRepository : ITicketCommentRepository
         }
     }
 
-    public Task<List<TicketComment>> GetAllAsync()
+    public async Task<List<TicketComment>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.TicketComments.ToListAsync();
     }
 
-    public Task<TicketComment> GetByIdAsync(int id)
+    public async Task<TicketComment> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.TicketComments.FirstOrDefaultAsync(tc => tc.Id == id)
+                    ?? throw new Exception($"Ticket category with id {id} not found.");
     }
 
-    public Task UpdateAsync(TicketComment entity)
+    public async Task UpdateAsync(TicketComment entity)
     {
-        throw new NotImplementedException();
+        _context.Entry(entity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
     }
 }

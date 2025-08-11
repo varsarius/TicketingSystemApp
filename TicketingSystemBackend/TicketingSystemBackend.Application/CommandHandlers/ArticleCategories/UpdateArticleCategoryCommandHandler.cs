@@ -15,5 +15,7 @@ public class UpdateArticleCategoryCommandHandler : IRequestHandler<UpdateArticle
     {
         var articleCategory = await _repository.GetByIdAsync(request.Id);
         articleCategory.CategoryName = request.CategoryName;
+        articleCategory.UpdatedAt = DateTime.UtcNow;
+        await _repository.UpdateAsync(articleCategory);
     }
 }

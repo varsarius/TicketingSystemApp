@@ -21,6 +21,7 @@ public class UpdateTicketCategoryCommandHandler : IRequestHandler<UpdateTicketCa
     {
         var ticketCategory = await _repository.GetByIdAsync(request.Id);
         ticketCategory.CategoryName = request.CategoryName;
+        ticketCategory.UpdatedAt = DateTime.UtcNow;
         await _repository.UpdateAsync(ticketCategory);
     }
 }

@@ -53,4 +53,9 @@ public class AuthService : IAuthService
         var error = await response.Content.ReadAsStringAsync();
         return new AuthResult { IsSuccess = false, ErrorMessage = error };
     }
+
+    public async Task LogoutAsync()
+    {
+        await _authProvider.LogoutAsync();
+    }
 }

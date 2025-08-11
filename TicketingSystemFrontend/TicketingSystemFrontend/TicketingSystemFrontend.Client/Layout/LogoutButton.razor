@@ -1,0 +1,32 @@
+﻿@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+<button class="btn btn-secondary" @onclick="HandleLogout" disabled="@isLoggingOut">
+    @if (isLoggingOut)
+    {
+        <span>Logging out...</span>
+    }
+    else
+    {
+        <span>Logout</span>
+    }
+</button>
+
+@code {
+    [Inject] private IAuthService AuthService { get; set; } = null!;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
+
+    private bool isLoggingOut = false;
+
+    private async Task HandleLogout()
+    {
+        isLoggingOut = true;
+        try
+        {
+            await AuthService.LogoutAsync();
+            Navigation.NavigateTo("/login");
+        }
+        finally
+        {
+            isLoggingOut = false;
+        }
+    }
+}

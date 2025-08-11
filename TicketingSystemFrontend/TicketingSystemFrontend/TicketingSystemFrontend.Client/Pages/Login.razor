@@ -45,6 +45,10 @@
                 <li><b>@claim.Type</b>: @claim.Value</li>
             }
         </ul>
+
+        <p>asd---asd</p>
+        <p>Name: @claims.FirstOrDefault(c => c.Type == "name")?.Value</p>
+        <p>Email: @claims.FirstOrDefault(c => c.Type == "email")?.Value</p>
     </Authorized>
     <NotAuthorized>
         <p>You are not logged in.</p>

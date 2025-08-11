@@ -19,11 +19,10 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
         {
             Title = request.Title,
             Description = request.Description,
-            ArticleCategoryId = request.ArticleCategoryId,
+            CategoryId = request.CategoryId,
             UserId = request.UserId,
-            CreatedAt = DateTime.Now,
             UpdatedAt = null
-        }; 
+        };
         await _repository.CreateAsync(article);
     }
 }

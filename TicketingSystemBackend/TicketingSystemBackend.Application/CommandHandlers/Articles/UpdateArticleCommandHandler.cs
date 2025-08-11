@@ -16,7 +16,7 @@ public class UpdateArticleCommandHandler : IRequestHandler<UpdateArticleCommand>
         var article = await _repository.GetByIdAsync(request.Id);
         article.Title = request.Title;
         article.Description = request.Description;
-        article.ArticleCategoryId = request.ArticleCategoryId;
+        article.CategoryId = request.ArticleCategoryId;
         article.UpdatedAt = DateTime.Now;
         await _repository.UpdateAsync(article);
     }

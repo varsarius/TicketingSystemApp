@@ -18,7 +18,7 @@ public class TicketRepository : ITicketRepository
     }
     public async Task CreateAsync(Ticket ticket)
     {
-        await _context.AddAsync(ticket);
+        _context.Add(ticket);
         await _context.SaveChangesAsync();
     }
     public async Task<Ticket> GetByIdAsync(int id)

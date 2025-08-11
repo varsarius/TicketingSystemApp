@@ -79,6 +79,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 

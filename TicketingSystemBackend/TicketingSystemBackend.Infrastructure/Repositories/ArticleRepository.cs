@@ -18,7 +18,7 @@ public class ArticleRepository : IArticleRepository
     }
     public async Task CreateAsync(Article article)
     {
-        await _context.AddAsync(article);
+        _context.Add(article);
         await _context.SaveChangesAsync();
     }
     public async Task<Article> GetByIdAsync(int id)

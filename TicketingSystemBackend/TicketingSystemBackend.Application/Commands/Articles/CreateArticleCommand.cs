@@ -7,6 +7,6 @@ public record CreateArticleCommand
 (
     [Required] string Title,
     [Required] string Description,
-    int ArticleCategoryId,
+    int CategoryId,
     int UserId
 ) : IRequest;

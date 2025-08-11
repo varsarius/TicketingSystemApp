@@ -7,7 +7,7 @@ namespace TicketingSystemBackend.Api.Controllers;
 
 [ApiController]
 [Route("api/articles")]
-public class ArticleController : ControllerBase
+public class ArticleController : ControllerBase, IController<CreateArticleCommand, UpdateArticleCommand>
 {
     private readonly IMediator _mediator;
 
@@ -37,7 +37,7 @@ public class ArticleController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] UpdateArticleCommand command)
     {
         if (id != command.Id)
-            return BadRequest("Id of the update request does not match the id of the body");
+            return BadRequest("Id of the update request mismatches the id of the body");
         try
         {
             await _mediator.Send(command);

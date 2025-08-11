@@ -32,7 +32,8 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
 });
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
+//builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
+builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthorization();

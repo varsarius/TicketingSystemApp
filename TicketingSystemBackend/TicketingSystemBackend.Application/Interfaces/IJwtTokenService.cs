@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace TicketingSystemBackend.Application.Interfaces;
 public interface IJwtTokenService
 {
-    string GenerateJwtToken(Guid userId, string email, string username);
+    string GenerateJwtToken(Guid userId, string email, string username, string role);
 }

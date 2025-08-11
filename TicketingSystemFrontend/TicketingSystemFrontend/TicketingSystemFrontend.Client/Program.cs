@@ -6,6 +6,7 @@ using TicketingSystemFrontend.Client.Services;
 using TicketingSystemFrontend.Client.Services.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces;
 using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
+using Microsoft.Extensions.DependencyInjection;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -22,9 +23,27 @@ builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
 });
+
+builder.Services.AddScoped<AuthTokenHandler>();
+
+
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+})
+.AddHttpMessageHandler<AuthTokenHandler>();
+
+builder.Services.AddScoped(sp =>
+{
+    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    return factory.CreateClient("ApiClient");
+});
+
+
 builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 //builder.Services.AddHttpClient<ITicketService, TicketService>(client =>

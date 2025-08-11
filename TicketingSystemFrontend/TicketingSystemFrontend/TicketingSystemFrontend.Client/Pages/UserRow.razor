@@ -1,0 +1,35 @@
+﻿@using static TicketingSystemFrontend.Client.Pages.AdminPanel
+<tr>
+    <td>@User.Email</td>
+    <td>@User.UserName</td>
+    <td>
+        <select @bind="selectedRole" class="form-select form-select-sm">
+            <option value="EndUser">EndUser</option>
+            <option value="Agent">Agent</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </td>
+    <td>
+        <button class="btn btn-primary btn-sm" @onclick="OnChangeRoleClicked">Change Role</button>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public UserDto User { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<(UserDto user, string newRole)> OnChangeRole { get; set; }
+
+    private string selectedRole = "";
+
+    protected override void OnParametersSet()
+    {
+        selectedRole = User.Role;
+    }
+
+    private async Task OnChangeRoleClicked()
+    {
+        await OnChangeRole.InvokeAsync((User, selectedRole));
+    }
+}

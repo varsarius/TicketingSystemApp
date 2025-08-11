@@ -11,7 +11,11 @@ namespace TicketingSystemBackend.Domain.Entities;
 public class TicketCategory
 {
     public int Id { get; set; }
+
     [Required]
     public string CategoryName { get; set; } = null!;
+    public DateTime CreatedAt { get; } = DateTime.Now;
+    public DateTime UpdatedAt {  get; set; }
+
     public List<Ticket> Tickets { get; set; } = [];
 }

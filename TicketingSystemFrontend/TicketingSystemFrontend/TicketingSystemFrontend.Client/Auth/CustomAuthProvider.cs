@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
@@ -7,6 +8,8 @@ namespace TicketingSystemFrontend.Client.Auth;
 
 public class CustomAuthProvider : AuthenticationStateProvider
 {
+
+
     private readonly ITokenStorage _tokenStorage;
     private readonly JwtSecurityTokenHandler _tokenHandler = new();
     public CustomAuthProvider(ITokenStorage tokenStorage)
@@ -66,5 +69,6 @@ public class CustomAuthProvider : AuthenticationStateProvider
     {
         return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
     }
+
 
 }

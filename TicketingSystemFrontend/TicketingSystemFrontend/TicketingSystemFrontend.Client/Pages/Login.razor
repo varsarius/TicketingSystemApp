@@ -1,0 +1,91 @@
+﻿@page "/login"
+@using System.Security.Claims
+@using TicketingSystemFrontend.Client.Requests.Auth
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="text-danger">@errorMessage</div>
+    }
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@if (resulte is not null)
+{
+    <p>@resulte.AccessToken</p>
+    <p>@resulte.RefreshToken</p>
+    <p>@resulte.ExpiresIn</p>
+    <p>@resulte.IsSuccess</p>
+    <p>@resulte.TokenType</p>
+
+}
+<AuthorizeView>
+    <Authorized>
+        <h3>Authenticated User Claims</h3>
+        <ul>
+            @foreach (var claim in claims)
+            {
+                <li><b>@claim.Type</b>: @claim.Value</li>
+            }
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        claims = authState.User.Claims;
+    }
+
+    //**********/
+    private LoginRequest loginModel = new();
+    private string? errorMessage;
+
+    [Inject]
+    public IAuthService AuthService { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager Navigation { get; set; } = null!;
+
+    public TicketingSystemFrontend.Client.DTOs.LoginResult resulte;
+
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.LoginAsync(loginModel);
+        resulte = result;
+        if (result.IsSuccess)
+        {
+            //Navigation.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = "Invalid email or password.";
+        }
+    }
+}

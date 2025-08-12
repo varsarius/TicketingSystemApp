@@ -5,7 +5,9 @@
     @if (!isEditing)
     {
         <div class="mb-3">
-            <label>Email</label>
+            <h3>
+                <label>Email</label>
+            </h3>
             <p>@email</p>
             <span class="badge @(emailConfirmed ? "bg-success" : "bg-warning")">
                 @(emailConfirmed ? "Confirmed" : "Not Confirmed")
@@ -16,7 +18,7 @@
     else
     {
         <div class="mb-3">
-            <label>Email</label>
+            <label>Email:</label>
             <input class="form-control" @bind="email" />
             <div class="mt-2">
                 <span class="badge @(emailConfirmed ? "bg-success" : "bg-warning")">
@@ -24,7 +26,7 @@
                 </span>
                 @if (!emailConfirmed)
                 {
-                    <button class="btn btn-sm btn-outline-primary ms-2" @onclick="SendConfirmationEmail">
+                    <button class="btn btn-sm btn-outline-primary ms-2" @onclick="ShowConfirmationModal">
                         Resend Confirmation
                     </button>
                 }
@@ -35,11 +37,34 @@
     }
 }
 
+<!-- Modal -->
+@if (showModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Action</h5>
+                    <button type="button" class="btn-close" @onclick="HideConfirmationModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to resend the confirmation email to <b>@email</b>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="HideConfirmationModal">Cancel</button>
+                    <button class="btn btn-primary" @onclick="ConfirmResend">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private string email;
     private bool emailConfirmed;
     private string originalEmail;
     private bool isEditing = false;
+    private bool showModal = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,19 +73,15 @@
         if (currentUser.Identity.IsAuthenticated)
         {
             email = "email@email.com";
-            emailConfirmed = false; // Set this based on your actual confirmation status
+            emailConfirmed = false;
             originalEmail = email;
         }
     }
 
-    private void StartEditing()
-    {
-        isEditing = true;
-    }
+    private void StartEditing() => isEditing = true;
 
     private void CancelEditing()
     {
-        // Restore original values
         email = originalEmail;
         isEditing = false;
     }
@@ -70,23 +91,21 @@
         if (!string.IsNullOrWhiteSpace(email))
         {
             Console.WriteLine("Changes saved");
-            // Update original values
             originalEmail = email;
-
-            // When email changes, you might want to mark it as unconfirmed
             if (email != originalEmail)
-            {
                 emailConfirmed = false;
-            }
         }
         isEditing = false;
     }
 
-    private async Task SendConfirmationEmail()
+    private void ShowConfirmationModal() => showModal = true;
+    private void HideConfirmationModal() => showModal = false;
+
+    private async Task ConfirmResend()
     {
-        // Simulate sending confirmation email
+        showModal = false;
         Console.WriteLine($"Confirmation email sent to {email}");
-        // In a real app, you would call your backend here
+        // Call backend later:
         // await AuthService.SendEmailConfirmationAsync(email);
     }
 }

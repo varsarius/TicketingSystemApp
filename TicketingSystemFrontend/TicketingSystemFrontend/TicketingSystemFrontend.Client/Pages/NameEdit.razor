@@ -5,19 +5,23 @@
     @if (!isEditing)
     {
         <div class="mb-3">
-            <label>Name</label>
+            <h3>
+                <label>Name</label>
+            </h3>
             <p>@userName</p>
         </div>
-        <button class="btn btn-primary" @onclick="StartEditing">Edit Name</button>
+        <button class="btn btn-primary mb-3" @onclick="StartEditing">Edit Name</button>
     }
     else
     {
         <div class="mb-3">
-            <label>Name</label>
+            <label>Name:</label>
             <input class="form-control" @bind="userName" />
         </div>
-        <button class="btn btn-primary me-2" @onclick="SaveChanges">Save Changes</button>
-        <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+        <div class="mb-3">
+            <button class="btn btn-primary me-2" @onclick="SaveChanges">Save Changes</button>
+            <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+        </div>
     }
 }
 

@@ -64,4 +64,8 @@ public interface IAuthRepository
 
     Task UpdateUserNameAsync(string currentUserName, string newUserName, CancellationToken cancellationToken);
 
+
+
+    Task<UserDto> GetUserByIdAsync(Guid userId);
+
 }

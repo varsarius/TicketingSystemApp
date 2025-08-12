@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -193,5 +194,26 @@ public class AuthRepository : IAuthRepository
             throw new Exception($"Failed to update username: {errors}");
         }
     }
+
+
+
+    public async Task<UserDto> GetUserByIdAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null) throw new KeyNotFoundException("User not found.");
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? string.Empty;
+
+
+        return new UserDto { 
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            Role = role
+        };
+    }
+
+
 
 }

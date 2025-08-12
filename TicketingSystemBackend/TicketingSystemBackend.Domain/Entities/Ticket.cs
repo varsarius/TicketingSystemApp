@@ -13,7 +13,7 @@ public class Ticket
     public int Id { get; set; }
     public int UserId { get; set; }
     public int AgentId { get; set; }
-    public int CategoryId { get; set; }
+    public int TicketCategoryId { get; set; }
 
     [Required]
     public string Title { get; set; } = null!;
@@ -25,6 +25,6 @@ public class Ticket
 
     public List<TicketComment> TicketComments { get; set; } = [];
     [Required]
-    public TicketCategory Category { get; set; } = null!;
+    public TicketCategory TicketCategory { get; set; } = null!;
     public List<File> Files { get; set; } = [];
 }

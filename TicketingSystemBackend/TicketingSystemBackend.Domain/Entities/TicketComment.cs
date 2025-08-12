@@ -11,4 +11,6 @@ public class TicketComment
     public string Description { get; set; } = null!;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
+
+    public Ticket Ticket { get; set; } = null!;
 }

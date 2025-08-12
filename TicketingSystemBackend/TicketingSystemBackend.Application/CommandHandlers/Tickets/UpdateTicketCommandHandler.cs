@@ -17,7 +17,7 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand>
         ticket.Title = request.Title;
         ticket.Description = request.Description;
         ticket.Priority = request.Priority;
-        ticket.CategoryId = request.CategoryId;
+        ticket.TicketCategoryId = request.CategoryId;
         ticket.UpdatedAt = DateTime.UtcNow;
         await _repository.UpdateAsync(ticket);
     }

@@ -24,12 +24,12 @@ public class ArticleRepository : IArticleRepository
     public async Task<Article> GetByIdAsync(int id)
     {
         return await _context.Articles.FirstOrDefaultAsync(a => a.Id == id)
-                    ?? throw new Exception($"Ticket with id {id} not found.");
+                    ?? throw new Exception($"Article with id {id} not found.");
     }
     public async Task<Article> GetByTitleAsync(string title)
     {
         return await _context.Articles.FirstOrDefaultAsync(a => a.Title == title)
-                    ?? throw new Exception($"Ticket with title {title} not found.");
+                    ?? throw new Exception($"Article with title {title} not found.");
     }
     public async Task<List<Article>> GetAllAsync()
     {

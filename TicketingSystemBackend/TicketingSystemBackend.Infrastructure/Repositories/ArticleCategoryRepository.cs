@@ -42,7 +42,7 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
     }
     public async Task DeleteByIdAsync(int id)
     {
-        var articleCategory = GetByIdAsync(id);
+        var articleCategory = await GetByIdAsync(id);
         if (articleCategory is not null)
         {
             _context.Remove(articleCategory);

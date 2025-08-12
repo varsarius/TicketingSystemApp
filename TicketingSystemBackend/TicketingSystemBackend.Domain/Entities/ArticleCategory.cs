@@ -16,5 +16,6 @@ public class ArticleCategory
     public string CategoryName { get; set; } = null!;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
+
     public List<Article> Articles { get; set; } = [];
 }

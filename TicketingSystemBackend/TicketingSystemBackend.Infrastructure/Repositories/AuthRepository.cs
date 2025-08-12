@@ -97,8 +97,9 @@ public class AuthRepository : IAuthRepository
         if (user == null || !await _userManager.CheckPasswordAsync(user, password))
             throw new Exception("Invalid email or password.");
 
-        
-        var token = _jwtTokenService.GenerateJwtToken(user.Id, user.Email, user.UserName);
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? string.Empty; // pick the first role or empty
+        var token = _jwtTokenService.GenerateJwtToken(user.Id, user.Email, user.UserName, role);
 
         return (user.Id, token);
     }
@@ -142,5 +143,28 @@ public class AuthRepository : IAuthRepository
             _context.RefreshTokens.RemoveRange(expiredTokens);
             await _context.SaveChangesAsync(cancellationToken);
         }
+    }
+
+    public async Task<List<UserDto>> GetAllUsersWithRolesAsync()
+    {
+        var users = _userManager.Users.ToList();
+
+        var userDtos = new List<UserDto>();
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            userDtos.Add(new UserDto
+            {
+                Email = user.Email,
+                UserName = user.UserName,
+                Role = roles.FirstOrDefault() ?? "EndUser"  // assuming single role per user
+            });
+        }
+
+        var json = System.Text.Json.JsonSerializer.Serialize(userDtos);
+        Console.WriteLine(json);
+
+        return userDtos;
     }
 }

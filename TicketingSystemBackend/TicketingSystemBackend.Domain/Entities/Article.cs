@@ -10,8 +10,8 @@ namespace TicketingSystemBackend.Domain.Entities;
 public class Article
 {
     public int Id { get; set; }
-    public int CategoryId { get; set; }
-    public int UserId { get; set; }
+    public int ArticleCategoryId { get; set; }
+    public Guid UserId { get; set; }
 
     [Required]
     public string Title { get; set; } = null!;

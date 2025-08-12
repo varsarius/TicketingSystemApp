@@ -14,8 +14,6 @@
   <ItemGroup>
     <Folder Include="DTOs\Articles\" />
     <Folder Include="DTOs\Tickets\" />
-    <Folder Include="Queries\Auth\" />
-    <Folder Include="QueryHandlers\Auth\" />
   </ItemGroup>
 
   <ItemGroup>

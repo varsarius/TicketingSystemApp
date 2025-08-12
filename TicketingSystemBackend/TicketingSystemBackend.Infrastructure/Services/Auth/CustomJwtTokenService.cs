@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,15 +14,17 @@ public class CustomJwtTokenService (
     ) : IJwtTokenService
 {
 
-    public string GenerateJwtToken(Guid userId, string email, string username)
+    public string GenerateJwtToken(Guid userId, string email, string username, string role)
     {
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, email!),
             new Claim(JwtRegisteredClaimNames.Name, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, role)
         };
+
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]
             ?? throw new Exception("Missing jwt key config.")));

@@ -8,12 +8,14 @@
     <div class="mb-3">
         <label>Name</label>
         <input class="form-control" @bind="userName" />
+        <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
     </div>
     <div class="mb-3">
         <label>Email</label>
         <input class="form-control" value="@email"/>
         <span class="badge @(emailConfirmed ? "bg-success" : "bg-danger")">
             @(emailConfirmed ? "Confirmed" : "Not Confirmed")
+            <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
         </span>
     </div>
     <div class="mb-3">

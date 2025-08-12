@@ -1,5 +1,6 @@
 ﻿@page "/articles/create"
 
+@using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IArticleService ArticleService
@@ -22,9 +23,17 @@
     </div>
 
     <div class="mb-3">
-        <label for="category" class="form-label">Category ID</label>
-        <InputNumber id="category" class="form-control" @bind-Value="newArticle.ArticleCategoryId" />
+        <label for="category" class="form-label">Category</label>
+        <InputSelect id="category" class="form-control" @bind-Value="newArticle.ArticleCategoryId">
+            <option value="">-- Select a category --</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        </InputSelect>
     </div>
+
+
 
     <div class="mb-3">
         <label for="userId" class="form-label">User ID</label>
@@ -37,6 +46,12 @@
 
 @code {
     private ArticleCreateRequest newArticle = new();
+    private List<ArticleCategoryDto> categories = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await ArticleService.GetAllArticleCategoriesAsync();
+    }
 
     private async Task HandleValidSubmit()
     {

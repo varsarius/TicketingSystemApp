@@ -72,7 +72,7 @@
         var currentUser = authState.User;
         if (currentUser.Identity.IsAuthenticated)
         {
-            email = "email@email.com";
+            email = currentUser.FindFirst(c => c.Type == "email")?.Value;
             emailConfirmed = false;
             originalEmail = email;
         }

@@ -66,14 +66,47 @@ public class AuthController : ControllerBase
             Claims = User.Claims.Select(c => new { c.Type, c.Value })
         });
     }
+
+    [Authorize]
+    [HttpPatch("users/{username}/name")]
+    public async Task<IActionResult> UpdateUserName(string username, [FromBody] UpdateUserNameRequest request)
+    {
+        //Console.WriteLine("---");
+        //Console.WriteLine(username);
+        //Console.WriteLine(User.Identity.Name);
+        //Console.WriteLine("---------");
+        var userIdentity = User.FindFirst("name")?.Value;
+
+        if (username != userIdentity)
+        {
+            return Forbid(); // user can only change their own username (or expand for admins)
+        }
+
+        try
+        {
+            var command = new UpdateUserNameCommand(username, request.NewUserName);
+            await _mediator.Send(command);
+            return NoContent(); // 204 - success, no body
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
 }
 
-//public class LoginResponse
-//{
 
-//    public string TokenType { get; set; }
-//    [JsonPropertyName("accessToken")]
-//    public string AccessToken { get; set; }
-//    public int ExpiresIn { get; set; }
-//    public string RefreshToken { get; set; }
-//}
+public class UpdateUserNameRequest
+{
+    [Required]
+    [JsonPropertyName("newUserName")]
+    public string NewUserName { get; set; } = null!;
+}

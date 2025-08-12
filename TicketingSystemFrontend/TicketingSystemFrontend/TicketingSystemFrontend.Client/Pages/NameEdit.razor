@@ -1,5 +1,7 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
-
+﻿@using TicketingSystemFrontend.Client.Auth
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+@inject CustomAuthProvider AuthenticationStateProvider
+@inject IUserService UserService
 @if (userName != null)
 {
     @if (!isEditing)
@@ -29,6 +31,7 @@
     private string userName;
     private bool isEditing = false;
     private string originalUserName;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,7 +39,7 @@
         var currentUser = authState.User;
         if (currentUser.Identity.IsAuthenticated)
         {
-            userName = "User";
+            userName = currentUser.FindFirst(c => c.Type == "name")?.Value;
             originalUserName = userName;
         }
     }
@@ -59,7 +62,10 @@
         {
             Console.WriteLine("Changes saved");
             // Update original values
-            originalUserName = userName;
+            await UserService.UpdateUserName(originalUserName, userName);
+            await AuthenticationStateProvider.LogoutAsync();
+            Navigation.NavigateTo("/login");
+            // originalUserName = userName;
 
             // Here you would typically call your backend to save changes
             // if (!string.IsNullOrWhiteSpace(newPassword))

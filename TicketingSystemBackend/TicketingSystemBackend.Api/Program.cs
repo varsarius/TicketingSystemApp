@@ -109,13 +109,16 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-// Seed roles
+// Seed roles & categories
 using (var scope = app.Services.CreateScope())
 {
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
     await RoleSeeder.SeedRolesAsync(roleManager, userManager);
+    await ArticleCategorySeeder.SeedAsync(context);
 }
 
 app.MapControllers();

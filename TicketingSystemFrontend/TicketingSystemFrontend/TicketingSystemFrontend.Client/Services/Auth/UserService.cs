@@ -23,18 +23,30 @@ public class UserService : IUserService
         return users ?? new List<UserDto>();
     }
 
-    public async Task UpdateUserRoleAsync(Guid userId, string newRole)
+    public async Task UpdateUserRoleAsync(string username, string newRole)
     {
-        var url = $"api/users/{userId}/role";
+        if (string.IsNullOrWhiteSpace(username))
+            throw new ArgumentException("Username cannot be empty.", nameof(username));
+
+        if (string.IsNullOrWhiteSpace(newRole))
+            throw new ArgumentException("Role cannot be empty.", nameof(newRole));
+
+
+
+        var url = $"api/users/{username}/role";
 
         var content = new { role = newRole };
 
-        var response = await _http.PutAsJsonAsync(url, content);
+        var response = await _http.PatchAsJsonAsync(url, content);
 
+        
+        
         if (!response.IsSuccessStatusCode)
         {
-            // Optional: you can throw or handle errors as you want
-            throw new Exception($"Failed to update role: {response.StatusCode}");
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(
+                $"Failed to update role ({response.StatusCode}): {errorMessage}"
+            );
         }
     }
 }

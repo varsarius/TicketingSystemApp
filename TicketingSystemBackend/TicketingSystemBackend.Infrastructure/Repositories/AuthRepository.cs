@@ -156,7 +156,6 @@ public class AuthRepository : IAuthRepository
             var roles = await _userManager.GetRolesAsync(user);
             userDtos.Add(new UserDto
             {
-                Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
                 Role = roles.FirstOrDefault() ?? "EndUser"  // assuming single role per user

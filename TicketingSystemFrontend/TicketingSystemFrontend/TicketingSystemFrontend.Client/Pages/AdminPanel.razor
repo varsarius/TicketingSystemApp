@@ -28,7 +28,7 @@ else
         <tbody>
             @foreach (var user in users)
             {
-                <UserRow User="user" OnChangeRole="HandleRoleChange" />
+                <UserRow User="user" />
             }
         </tbody>
     </table>
@@ -62,22 +62,8 @@ else
         isLoading = false;
     }
 
-    private async Task HandleRoleChange((UserDto user, string newRole) args)
-    {
-        var (user, newRole) = args;
-
-        // Update local role immediately for UI responsiveness
-        user.Role = newRole;
-
-        // Call API to update role on server
-        await UserService.UpdateUserRoleAsync(user.Id, newRole);
-
-        Console.WriteLine($"Change role for {user.Email} to {newRole}");
-    }
-
     public class UserDto
     {
-        public Guid Id;
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;

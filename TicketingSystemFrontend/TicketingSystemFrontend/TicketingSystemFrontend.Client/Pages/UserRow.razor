@@ -1,4 +1,7 @@
-﻿@using static TicketingSystemFrontend.Client.Pages.AdminPanel
+﻿@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+@inject IUserService UserService
+
+@using static TicketingSystemFrontend.Client.Pages.AdminPanel
 <tr>
     <td>@User.Email</td>
     <td>@User.UserName</td>
@@ -18,8 +21,6 @@
     [Parameter]
     public UserDto User { get; set; } = default!;
 
-    [Parameter]
-    public EventCallback<(UserDto user, string newRole)> OnChangeRole { get; set; }
 
     private string selectedRole = "";
 
@@ -30,6 +31,8 @@
 
     private async Task OnChangeRoleClicked()
     {
-        await OnChangeRole.InvokeAsync((User, selectedRole));
+        await UserService.UpdateUserRoleAsync(User.UserName, selectedRole);
+
+        Console.WriteLine($"Change role for {User.Email} to {selectedRole}");
     }
 }

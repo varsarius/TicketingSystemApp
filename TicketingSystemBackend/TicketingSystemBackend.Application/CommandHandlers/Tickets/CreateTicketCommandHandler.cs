@@ -22,7 +22,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand>
             Priority = request.Priority,
             UserId = request.UserId,
             AgentId = request.AgentId,
-            TicketCategoryId = request.CategoryId
+            TicketCategoryId = request.TicketCategoryId
         };
         await _ticketRepository.CreateAsync(ticket);
     }

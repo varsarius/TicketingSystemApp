@@ -19,7 +19,7 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
         {
             Title = request.Title,
             Description = request.Description,
-            ArticleCategoryId = request.CategoryId,
+            ArticleCategoryId = request.ArticleCategoryId,
             UserId = request.UserId,
             UpdatedAt = null
         };

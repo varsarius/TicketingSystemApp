@@ -11,5 +11,5 @@ public record CreateTicketCommand
     Priority Priority,
     int UserId,
     int AgentId,
-    int CategoryId
+    int TicketCategoryId
 ) : IRequest;

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Scalar.AspNetCore;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Infrastructure.Data;
 using TicketingSystemBackend.Infrastructure.Repositories;
@@ -20,8 +21,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+//WARNING: IgnoreCycles adds additional complexity(is it?) and unintensionally exposes other properties
+builder.Services.AddControllers()//side effect: properties which cause cycles now contain "null" inside to break the cycle
+    .AddJsonOptions(options => 
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -30,7 +34,7 @@ builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
 builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
-builder.Services.AddMediatR(cfg => 
+builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(
         typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)
 );

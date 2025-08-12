@@ -60,4 +60,12 @@ public interface IAuthRepository
 
 
     Task<List<UserDto>> GetAllUsersWithRolesAsync();
+
+
+    Task UpdateUserNameAsync(string currentUserName, string newUserName, CancellationToken cancellationToken);
+
+
+
+    Task<UserDto> GetUserByIdAsync(Guid userId);
+
 }

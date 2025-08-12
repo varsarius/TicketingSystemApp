@@ -26,12 +26,13 @@ public static class RoleSeeder
 
         // 2. Seed default Admin user
         var adminEmail = "admin@yourapp.com";
+        var adminName = "Adminus";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
             adminUser = new ApplicationUser
             {
-                UserName = adminEmail,
+                UserName = adminName,
                 Email = adminEmail,
                 EmailConfirmed = true // optional
             };

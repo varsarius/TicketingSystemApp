@@ -6,4 +6,6 @@ public interface IUserService
 {
     Task<List<UserDto>> GetUsersAsync();
     Task UpdateUserRoleAsync(string username, string newRole);
+
+    Task UpdateUserName(string username, string newUserName);
 }

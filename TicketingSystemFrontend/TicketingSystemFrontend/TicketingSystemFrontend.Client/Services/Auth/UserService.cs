@@ -16,12 +16,34 @@ public class UserService : IUserService
     }
 
     public async Task<List<AdminPanel.UserDto>> GetUsersAsync()
-    {
-        // Replace "api/admin/users" with your actual API endpoint
-        
+    {      
         var users = await _http.GetFromJsonAsync<List<UserDto>>("api/admin/users");
         return users ?? new List<UserDto>();
     }
+
+    public async Task UpdateUserName(string username, string newUserName)
+    {
+        if (string.IsNullOrWhiteSpace(username))
+            throw new ArgumentException("Username cannot be empty.", nameof(username));
+
+        if (string.IsNullOrWhiteSpace(newUserName))
+            throw new ArgumentException("New username cannot be empty.", nameof(newUserName));
+
+        var url = $"api/auth/users/{username}/name";
+
+        var content = new { newUserName };
+
+        var response = await _http.PatchAsJsonAsync(url, content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException(
+                $"Failed to update username ({response.StatusCode}): {errorMessage}"
+            );
+        }
+    }
+
 
     public async Task UpdateUserRoleAsync(string username, string newRole)
     {

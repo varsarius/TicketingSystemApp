@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -167,4 +168,52 @@ public class AuthRepository : IAuthRepository
 
         return userDtos;
     }
+
+    public async Task UpdateUserNameAsync(string currentUserName, string newUserName, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByNameAsync(currentUserName);
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found.");
+        }
+
+        // Optional: ensure new username not already taken
+        var existingUser = await _userManager.FindByNameAsync(newUserName);
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException("New username is already taken.");
+        }
+
+        user.UserName = newUserName;
+        user.NormalizedUserName = _userManager.NormalizeName(newUserName);
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"Failed to update username: {errors}");
+        }
+    }
+
+
+
+    public async Task<UserDto> GetUserByIdAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null) throw new KeyNotFoundException("User not found.");
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? string.Empty;
+
+
+        return new UserDto { 
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            Role = role
+        };
+    }
+
+
+
 }

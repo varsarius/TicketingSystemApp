@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using TicketingSystemBackend.Application.Commands.Auth;
@@ -66,14 +67,74 @@ public class AuthController : ControllerBase
             Claims = User.Claims.Select(c => new { c.Type, c.Value })
         });
     }
+
+    [Authorize]
+    [HttpPatch("users/{username}/name")]
+    public async Task<IActionResult> UpdateUserName(string username, [FromBody] UpdateUserNameRequest request)
+    {
+        //Console.WriteLine("---");
+        //Console.WriteLine(username);
+        //Console.WriteLine(User.Identity.Name);
+        //Console.WriteLine("---------");
+        var userIdentity = User.FindFirst("name")?.Value;
+
+        if (username != userIdentity)
+        {
+            return Forbid(); // user can only change their own username (or expand for admins)
+        }
+
+        try
+        {
+            var command = new UpdateUserNameCommand(username, request.NewUserName);
+            await _mediator.Send(command);
+            return NoContent(); // 204 - success, no body
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+    {
+        try
+        {
+            var command = new RefreshTokenCommand(request.RefreshToken);
+            var result = await _mediator.Send(command);
+            return Ok(result); // returns new access & refresh tokens
+        }
+        catch (SecurityTokenException ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
 }
 
-//public class LoginResponse
-//{
 
-//    public string TokenType { get; set; }
-//    [JsonPropertyName("accessToken")]
-//    public string AccessToken { get; set; }
-//    public int ExpiresIn { get; set; }
-//    public string RefreshToken { get; set; }
-//}
+public class UpdateUserNameRequest
+{
+    [Required]
+    [JsonPropertyName("newUserName")]
+    public string NewUserName { get; set; } = null!;
+}
+
+public class RefreshTokenRequest
+{
+    [Required]
+    [JsonPropertyName("refreshToken")]
+    public string RefreshToken { get; set; } = null!;
+}

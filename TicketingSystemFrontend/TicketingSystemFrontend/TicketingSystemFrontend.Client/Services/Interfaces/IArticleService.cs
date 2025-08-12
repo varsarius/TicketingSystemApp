@@ -10,5 +10,6 @@ public interface IArticleService
     Task<ArticleDto?> GetArticleByIdAsync(int id);
     Task<bool> DeleteArticleAsync(int id);
     Task UpdateArticleAsync(ArticleUpdateRequest request);
+    Task<List<ArticleCategoryDto>> GetAllArticleCategoriesAsync();
 
 }

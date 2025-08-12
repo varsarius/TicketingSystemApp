@@ -1,0 +1,60 @@
+﻿@page "/articles/create"
+
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject IArticleService ArticleService
+@inject NavigationManager Navigation
+
+<h3>Create New Article</h3>
+
+<EditForm Model="newArticle" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="newArticle.Title" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="newArticle.Description" rows="5" />
+    </div>
+
+    <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <InputSelect id="category" class="form-control" @bind-Value="newArticle.ArticleCategoryId">
+            <option value="">-- Select a category --</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        </InputSelect>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary me-2">Create</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+@code {
+    private ArticleCreateRequest newArticle = new();
+    private List<ArticleCategoryDto> categories = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await ArticleService.GetAllArticleCategoriesAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await ArticleService.CreateArticleAsync(newArticle);
+        Navigation.NavigateTo("/articles");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/articles");
+    }
+}

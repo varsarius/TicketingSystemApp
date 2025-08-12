@@ -1,0 +1,24 @@
+﻿@page "/profile"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<h1>
+    <b>My Profile</b>
+</h1>
+
+<NameEdit />
+<EmailEdit />
+<div class="mt-3">
+    <button class="btn btn-success" @onclick="NavigateToChangePassword">Change Password</button>
+</div>
+
+@code {
+    private void NavigateToChangePassword()
+    {
+        NavigationManager.NavigateTo("profile/change-password");
+    }
+    private void ReturnToProfile()
+    {
+        NavigationManager.NavigateTo("profile");
+    }
+}

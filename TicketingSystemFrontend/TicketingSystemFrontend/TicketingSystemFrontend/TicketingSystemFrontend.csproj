@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\TicketingSystemFrontend.Client\Pages\Component.razor" Link="Component.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TicketingSystemFrontend.Client\TicketingSystemFrontend.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.7" />

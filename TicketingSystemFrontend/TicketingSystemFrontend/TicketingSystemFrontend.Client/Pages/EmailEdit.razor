@@ -1,0 +1,111 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (email != null)
+{
+    @if (!isEditing)
+    {
+        <div class="mb-3">
+            <h3>
+                <label>Email</label>
+            </h3>
+            <p>@email</p>
+            <span class="badge @(emailConfirmed ? "bg-success" : "bg-warning")">
+                @(emailConfirmed ? "Confirmed" : "Not Confirmed")
+            </span>
+        </div>
+        <button class="btn btn-primary" @onclick="StartEditing">Edit Email</button>
+    }
+    else
+    {
+        <div class="mb-3">
+            <label>Email:</label>
+            <input class="form-control" @bind="email" />
+            <div class="mt-2">
+                <span class="badge @(emailConfirmed ? "bg-success" : "bg-warning")">
+                    @(emailConfirmed ? "Confirmed" : "Not Confirmed")
+                </span>
+                @if (!emailConfirmed)
+                {
+                    <button class="btn btn-sm btn-outline-primary ms-2" @onclick="ShowConfirmationModal">
+                        Resend Confirmation
+                    </button>
+                }
+            </div>
+        </div>
+        <button class="btn btn-primary me-2" @onclick="SaveChanges">Save Changes</button>
+        <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+    }
+}
+
+<!-- Modal -->
+@if (showModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Action</h5>
+                    <button type="button" class="btn-close" @onclick="HideConfirmationModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to resend the confirmation email to <b>@email</b>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="HideConfirmationModal">Cancel</button>
+                    <button class="btn btn-primary" @onclick="ConfirmResend">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string email;
+    private bool emailConfirmed;
+    private string originalEmail;
+    private bool isEditing = false;
+    private bool showModal = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var currentUser = authState.User;
+        if (currentUser.Identity.IsAuthenticated)
+        {
+            email = currentUser.FindFirst(c => c.Type == "email")?.Value;
+            emailConfirmed = false;
+            originalEmail = email;
+        }
+    }
+
+    private void StartEditing() => isEditing = true;
+
+    private void CancelEditing()
+    {
+        email = originalEmail;
+        isEditing = false;
+    }
+
+    private async Task SaveChanges()
+    {
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            Console.WriteLine("Changes saved");
+            originalEmail = email;
+            if (email != originalEmail)
+                emailConfirmed = false;
+        }
+        isEditing = false;
+    }
+
+    private void ShowConfirmationModal() => showModal = true;
+    private void HideConfirmationModal() => showModal = false;
+
+    private async Task ConfirmResend()
+    {
+        showModal = false;
+        Console.WriteLine($"Confirmation email sent to {email}");
+        // Call backend later:
+        // await AuthService.SendEmailConfirmationAsync(email);
+    }
+}

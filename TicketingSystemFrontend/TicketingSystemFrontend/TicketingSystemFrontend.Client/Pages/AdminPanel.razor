@@ -1,0 +1,71 @@
+﻿@page "/adminpanel"
+@using Microsoft.AspNetCore.Components.Authorization
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IUserService UserService
+
+<h3>Admin Panel</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (!isAdmin)
+{
+    <p>Sorry, you have no access.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <UserRow User="user" />
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private bool isLoading = true;
+    private bool isAdmin = false;
+    private List<UserDto> users = new();
+    private string selectedRole = "User";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var currentUser = authState.User;
+
+        isAdmin = currentUser.Identity?.IsAuthenticated == true && currentUser.IsInRole("Admin");
+
+        if (isAdmin)
+        {
+            // Hardcoded users
+            // users = new List<UserDto>
+            // {
+            //     new UserDto { Email = "admin@example.com", UserName = "AdminUser", Role = "Admin" },
+            //     new UserDto { Email = "agent@example.com", UserName = "AgentUser", Role = "Agent" },
+            //     new UserDto { Email = "user@example.com", UserName = "EndUser", Role = "EndUser" }
+            // };
+            users = await UserService.GetUsersAsync();
+        }
+
+        isLoading = false;
+    }
+
+    public class UserDto
+    {
+        public string Email { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+    }
+}

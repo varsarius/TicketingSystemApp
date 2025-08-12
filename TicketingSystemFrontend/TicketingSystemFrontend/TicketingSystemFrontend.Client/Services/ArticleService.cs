@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http;
 using System.Net.Http.Json;
 using TicketingSystemFrontend.Client.DTOs;
 using TicketingSystemFrontend.Client.Requests;
@@ -9,13 +10,34 @@ namespace TicketingSystemFrontend.Client.Services;
 public class ArticleService : IArticleService
 {
     private readonly HttpClient _http;
+    private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    public ArticleService(HttpClient http)
+    public ArticleService(HttpClient http, AuthenticationStateProvider authenticationStateProvider)
     {
         _http = http;
+        _authenticationStateProvider = authenticationStateProvider;
     }
     public async Task CreateArticleAsync(ArticleCreateRequest request)
     {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            throw new Exception("User is not authenticated");
+        }
+
+        var userIdClaim = user.FindFirst("sub");
+
+        if (userIdClaim == null)
+        {
+            throw new Exception("UserId claim not found");
+        }
+
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        request.UserId = userId;// find from JWT token claim the Id of current authorized user
+
         var response = await _http.PostAsJsonAsync("api/articles", request);
         response.EnsureSuccessStatusCode();
     }
@@ -45,7 +67,7 @@ public class ArticleService : IArticleService
     }
     public async Task UpdateArticleAsync(ArticleUpdateRequest request)
     {
-        var response = await _http.PutAsJsonAsync($"api/articles/", request);
+        var response = await _http.PutAsJsonAsync($"api/articles/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
 

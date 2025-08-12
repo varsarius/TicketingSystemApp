@@ -10,6 +10,7 @@ using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Services.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
 using TicketingSystemBackend.Infrastructure.Repositories;
+using TicketingSystemBackend.Infrastructure.Seeds;
 using TicketingSystemBackend.Infrastructure.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -108,7 +109,17 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+// Seed roles & categories
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    await RoleSeeder.SeedRolesAsync(roleManager, userManager);
+    await ArticleCategorySeeder.SeedAsync(context);
+}
 
 app.MapControllers();
 

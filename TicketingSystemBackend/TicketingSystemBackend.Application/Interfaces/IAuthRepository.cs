@@ -57,4 +57,7 @@ public interface IAuthRepository
 
 
     Task RemoveExpiredTokensAsync(CancellationToken cancellationToken);
+
+
+    Task<List<UserDto>> GetAllUsersWithRolesAsync();
 }

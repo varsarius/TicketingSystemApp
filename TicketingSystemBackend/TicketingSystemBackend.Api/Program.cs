@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Services.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
@@ -83,6 +85,7 @@ builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(

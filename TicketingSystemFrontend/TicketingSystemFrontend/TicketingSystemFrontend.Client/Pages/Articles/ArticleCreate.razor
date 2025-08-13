@@ -4,6 +4,8 @@
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IArticleService ArticleService
+@inject IArticleCategoryService ArticleCategoryService
+
 @inject NavigationManager Navigation
 
 <h3>Create New Article</h3>
@@ -47,7 +49,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
     }
 
     private async Task HandleValidSubmit()

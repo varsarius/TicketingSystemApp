@@ -16,6 +16,14 @@
         <button class="btn btn-primary btn-sm" @onclick="OnChangeRoleClicked">Change Role</button>
     </td>
 </tr>
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <tr>
+        <td colspan="4">
+            <div class="alert alert-danger">@errorMessage</div>
+        </td>
+    </tr>
+}
 
 @code {
     [Parameter]
@@ -23,6 +31,7 @@
 
 
     private string selectedRole = "";
+    private string? errorMessage;
 
     protected override void OnParametersSet()
     {
@@ -31,8 +40,20 @@
 
     private async Task OnChangeRoleClicked()
     {
-        await UserService.UpdateUserRoleAsync(User.UserName, selectedRole);
+        errorMessage = null; // reset previous error
+        try
+        {
+            await UserService.UpdateUserRoleAsync(User.UserName, selectedRole);
 
-        Console.WriteLine($"Change role for {User.Email} to {selectedRole}");
+            Console.WriteLine($"Change role for {User.Email} to {selectedRole}");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            errorMessage = $"Server error: {httpEx.Message}";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Unexpected error: {ex.Message}";
+        }
     }
 }

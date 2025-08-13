@@ -29,8 +29,16 @@ else
         </div>
 
         <div class="mb-3">
-            <label for="category" class="form-label">Category ID</label>
-            <InputNumber id="category" class="form-control" @bind-Value="articleEditRequest.ArticleCategoryId" />
+            <label for="category" class="form-label">Category</label>
+            <div class="d-flex align-items-center">
+                <InputSelect id="category" class="form-control me-5" @bind-Value="articleEditRequest.ArticleCategoryId">
+                    <option value="">-- Select a category --</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </InputSelect>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-success me-2">Save</button>
@@ -41,9 +49,14 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
+    private List<ArticleCategoryDto> categories = [];
 
     private ArticleDto? article;
     private ArticleUpdateRequest articleEditRequest = new();
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await ArticleService.GetAllArticleCategoriesAsync();
+    }
 
     protected override async Task OnParametersSetAsync()
     {

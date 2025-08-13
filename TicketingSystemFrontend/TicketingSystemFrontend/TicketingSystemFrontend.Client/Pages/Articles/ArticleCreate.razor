@@ -24,13 +24,16 @@
 
     <div class="mb-3">
         <label for="category" class="form-label">Category</label>
-        <InputSelect id="category" class="form-control" @bind-Value="newArticle.ArticleCategoryId">
-            <option value="">-- Select a category --</option>
-            @foreach (var category in categories)
-            {
-                <option value="@category.Id">@category.CategoryName</option>
-            }
-        </InputSelect>
+        <div class="d-flex align-items-center">
+            <InputSelect id="category" class="form-control me-5" @bind-Value="newArticle.ArticleCategoryId">
+                <option value="">-- Select a category --</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.CategoryName</option>
+                }
+            </InputSelect>
+            <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
+        </div>
     </div>
 
 
@@ -51,6 +54,11 @@
     {
         await ArticleService.CreateArticleAsync(newArticle);
         Navigation.NavigateTo("/articles");
+    }
+
+    private void EditCategories()
+    {
+        Navigation.NavigateTo("/articles/create/categories");
     }
 
     private void Cancel()

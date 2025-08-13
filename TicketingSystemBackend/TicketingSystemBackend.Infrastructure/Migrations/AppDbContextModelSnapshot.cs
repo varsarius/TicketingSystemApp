@@ -215,6 +215,8 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("ArticleCategoryId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Articles");
                 });
 
@@ -516,6 +518,12 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
                         .WithMany("Articles")
                         .HasForeignKey("ArticleCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TicketingSystemBackend.Infrastructure.Data.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ArticleCategory");

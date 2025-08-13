@@ -24,6 +24,23 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
     public AppDbContext(DbContextOptions options) : base(options)
     {
     }
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        // Shadow navigation between Article and ApplicationUser
+        builder.Entity<Article>()
+            .HasOne<ApplicationUser>() // related entity type
+            .WithMany() // no collection navigation
+            .HasForeignKey(a => a.UserId) // FK in Article
+            .OnDelete(DeleteBehavior.Restrict); // optional
+
+        // If ArticleCategory is in the Domain, you can configure it normally too
+        builder.Entity<Article>()
+            .HasOne(a => a.ArticleCategory)
+            .WithMany(c => c.Articles)
+            .HasForeignKey(a => a.ArticleCategoryId);
+    }
 
     protected AppDbContext()
     {

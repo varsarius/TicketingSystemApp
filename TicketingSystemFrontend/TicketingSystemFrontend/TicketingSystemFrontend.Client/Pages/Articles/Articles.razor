@@ -37,9 +37,9 @@ else
                         </p>
 
                         <p class="text-muted small mt-3 mb-2">
-                            👤 @article.UserName <br />
-                            📅 Created: @article.CreatedAt.ToShortDateString() <br />
-                            🛠️ @(article.UpdatedAt?.ToShortDateString() ?? "not edited yet")
+                            By: @article.UserName <br />
+                            Created: @article.CreatedAt.ToShortDateString() <br />
+                            @(article.UpdatedAt?.ToShortDateString() != null ? "Edited: " + article.UpdatedAt?.ToShortDateString() : "")
                         </p>
 
                         <!-- View More button -->

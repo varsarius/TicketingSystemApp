@@ -18,8 +18,10 @@
             <!-- Auth buttons -->
             <AuthorizeView>
                 <Authorized>
-                    <NavLink href="/profile" class="btn btn-outline-primary">Profile</NavLink>
-                    <LogoutButton />
+                    <div class="text-end">
+                        <NavLink href="/profile" class="btn btn-outline-primary">Profile</NavLink>
+                        <LogoutButton />
+                    </div>
                 </Authorized>
                 <NotAuthorized>
                     <div class="text-end">

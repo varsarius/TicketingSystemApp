@@ -55,9 +55,9 @@ public class UserService : IUserService
 
 
 
-        var url = $"api/users/{username}/role";
+        var url = $"api/auth/users/{username}/role";
 
-        var content = new { role = newRole };
+        var content = new { newRole = newRole };
 
         var response = await _http.PatchAsJsonAsync(url, content);
 

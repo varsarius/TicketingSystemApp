@@ -30,7 +30,7 @@
 @code {
     private string userName;
     private bool isEditing = false;
-    private string originalUserName;
+    private string originalUserName = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()

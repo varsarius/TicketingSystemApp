@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Services.Auth;
 using TicketingSystemBackend.Infrastructure.Data;
@@ -28,8 +29,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-builder.Services.AddControllers();
+//WARNING: IgnoreCycles adds additional complexity(is it?) and unintensionally exposes other properties
+builder.Services.AddControllers()//side effect: properties which cause cycles now contain "null" inside to break the cycle
+    .AddJsonOptions(options => 
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -83,7 +86,7 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IArticleReadRepository, ArticleReadRepository>();
-
+builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(
@@ -121,6 +124,9 @@ using (var scope = app.Services.CreateScope())
 
     await RoleSeeder.SeedRolesAsync(roleManager, userManager);
     await ArticleCategorySeeder.SeedAsync(context);
+    await TicketCategorySeeder.SeedAsync(context);
+    await ArticleSeeder.SeedAsync(context);
+    await TicketSeeder.SeedAsync(context);
 }
 
 app.MapControllers();

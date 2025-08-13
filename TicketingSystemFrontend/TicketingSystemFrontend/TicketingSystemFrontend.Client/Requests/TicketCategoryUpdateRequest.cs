@@ -2,6 +2,6 @@
 
 public class TicketCategoryUpdateRequest
 {
-    int Id;
-    string CategoryName;
+    public int Id;
+    public string CategoryName;
 }

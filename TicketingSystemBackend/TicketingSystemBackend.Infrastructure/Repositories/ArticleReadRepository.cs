@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
+using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Infrastructure.Data;
 
 namespace TicketingSystemBackend.Infrastructure.Repositories;
@@ -23,7 +24,6 @@ public class ArticleReadRepository : IArticleReadRepository
     {
         var articles = await _context.Articles
             .Include(a => a.ArticleCategory)
-            .Include("ApplicationUser") // for shadow navigation
             .Select(a => new ArticleDto
             {
                 Id = a.Id,
@@ -40,6 +40,7 @@ public class ArticleReadRepository : IArticleReadRepository
                 UpdatedAt = a.UpdatedAt
             })
             .ToListAsync();
+
 
 
         return articles;

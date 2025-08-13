@@ -1,8 +1,7 @@
-﻿using MediatR;
-using System.ComponentModel.DataAnnotations;
-using TicketingSystemBackend.Domain.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using TicketingSystemFrontend.Client.Requests.Enums;
 
-namespace TicketingSystemBackend.Application.Commands.Tickets;
+namespace TicketingSystemFrontend.Client.Requests.Commands.Tickets;
 
 public record CreateTicketCommand
 (
@@ -13,4 +12,4 @@ public record CreateTicketCommand
     Guid UserId,
     Guid? AgentId,
     int TicketCategoryId
-) : IRequest;
+);

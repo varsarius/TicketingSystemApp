@@ -1,5 +1,5 @@
 ﻿@page "/tickets/create"
-@inject ITicketService TicketService
+@inject ITicketCrudService TicketService
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services
@@ -82,7 +82,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var request = new TicketCreateRequest
+        var request = new CreateTicketCommand
         {
             Title = ticketModel.Title,
             Description = ticketModel.Description,

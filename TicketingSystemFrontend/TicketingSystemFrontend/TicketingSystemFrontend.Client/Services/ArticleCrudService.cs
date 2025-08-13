@@ -2,22 +2,22 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using TicketingSystemFrontend.Client.DTOs;
-using TicketingSystemFrontend.Client.Requests;
+using TicketingSystemFrontend.Client.Requests.Commands.Articles;
 using TicketingSystemFrontend.Client.Services.Interfaces;
 
 namespace TicketingSystemFrontend.Client.Services;
 
-public class ArticleService : IArticleService
+public class ArticleCrudService : IArticleCrudService
 {
     private readonly HttpClient _http;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    public ArticleService(HttpClient http, AuthenticationStateProvider authenticationStateProvider)
+    public ArticleCrudService(HttpClient http, AuthenticationStateProvider authenticationStateProvider)
     {
         _http = http;
         _authenticationStateProvider = authenticationStateProvider;
     }
-    public async Task CreateArticleAsync(ArticleCreateRequest request)
+    public async Task CreateAsync(CreateArticleCommand request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -36,23 +36,23 @@ public class ArticleService : IArticleService
 
         var userId = Guid.Parse(userIdClaim.Value);
 
-        request.UserId = userId;// find from JWT token claim the Id of current authorized user
+        request = request with { UserId = userId };// find from JWT token claim the Id of current authorized user
 
         var response = await _http.PostAsJsonAsync("api/articles", request);
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<List<ArticleDto>> GetAllArticlesAsync()
+    public async Task<List<ArticleDto>> GetAllAsync()
     {
         var articles = await _http.GetFromJsonAsync<List<ArticleDto>>("api/articles");
         return articles ?? new List<ArticleDto>();
     }
-    public async Task<ArticleDto?> GetArticleByIdAsync(int id)
+    public async Task<ArticleDto?> GetByIdAsync(int id)
     {
         return await _http.GetFromJsonAsync<ArticleDto>($"api/articles/{id}");
     }
 
-    public async Task<bool> DeleteArticleAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var response = await _http.DeleteAsync($"api/articles/{id}");
 
@@ -65,15 +65,10 @@ public class ArticleService : IArticleService
 
         return true;
     }
-    public async Task UpdateArticleAsync(ArticleUpdateRequest request)
+    public async Task UpdateAsync(UpdateArticleCommand request)
     {
         var response = await _http.PutAsJsonAsync($"api/articles/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<List<ArticleCategoryDto>> GetAllArticleCategoriesAsync()
-    {
-        var articles = await _http.GetFromJsonAsync<List<ArticleCategoryDto>>("api/articles/categories");
-        return articles ?? new List<ArticleCategoryDto>();
-    }
 }

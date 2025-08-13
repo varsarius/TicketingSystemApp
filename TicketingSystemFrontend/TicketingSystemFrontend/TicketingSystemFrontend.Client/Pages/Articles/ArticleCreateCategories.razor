@@ -1,7 +1,7 @@
 ﻿@page "/articles/create/categories"
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Services.Interfaces
-@inject IArticleService ArticleService
+@inject IArticleCrudService ArticleService
 @inject NavigationManager Navigation
 
 <h3>Edit Categories</h3>
@@ -41,7 +41,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleService.GetAllArticleCategoriesAsync();
+        //categories = await ArticleService.GetAllArticleCategoriesAsync();
     }
 
     private void StartEditing()

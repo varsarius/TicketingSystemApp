@@ -123,6 +123,9 @@ using (var scope = app.Services.CreateScope())
 
     await RoleSeeder.SeedRolesAsync(roleManager, userManager);
     await ArticleCategorySeeder.SeedAsync(context);
+    await TicketCategorySeeder.SeedAsync(context);
+    await ArticleSeeder.SeedAsync(context);
+    await TicketSeeder.SeedAsync(context);
 }
 
 app.MapControllers();

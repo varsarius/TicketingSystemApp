@@ -139,7 +139,7 @@ public class AuthRepository : IAuthRepository
             .ToListAsync(cancellationToken);
 
         // and delete them
-        if (expiredTokens.Any())
+        if (expiredTokens.Count != 0)
         {
             _context.RefreshTokens.RemoveRange(expiredTokens);
             await _context.SaveChangesAsync(cancellationToken);

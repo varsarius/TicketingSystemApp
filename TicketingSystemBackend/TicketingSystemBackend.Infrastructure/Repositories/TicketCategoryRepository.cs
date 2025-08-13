@@ -36,7 +36,8 @@ public class TicketCategoryRepository : ITicketCategoryRepository
 
     public async Task<List<TicketCategory>> GetAllAsync()
     {
-        return await _context.TicketCategories.ToListAsync();
+        return await _context.TicketCategories
+            .ToListAsync();
     }
 
     public async Task<TicketCategory> GetByCategoryNameAsync(string categoryName)

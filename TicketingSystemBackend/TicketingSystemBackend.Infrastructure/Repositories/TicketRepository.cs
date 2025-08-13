@@ -33,7 +33,8 @@ public class TicketRepository : ITicketRepository
     }
     public async Task<List<Ticket>> GetAllAsync()
     {
-        return await _context.Tickets.ToListAsync();
+        return await _context.Tickets
+            .ToListAsync();
     }
     public async Task UpdateAsync(Ticket ticket)
     {

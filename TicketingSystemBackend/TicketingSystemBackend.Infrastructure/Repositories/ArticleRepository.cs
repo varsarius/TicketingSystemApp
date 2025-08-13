@@ -33,7 +33,8 @@ public class ArticleRepository : IArticleRepository
     }
     public async Task<List<Article>> GetAllAsync()
     {
-        return await _context.Articles.ToListAsync();
+        return await _context.Articles
+            .ToListAsync();
     }
     public async Task UpdateAsync(Article article)
     {

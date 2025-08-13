@@ -33,7 +33,8 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
     }
     public async Task<List<ArticleCategory>> GetAllAsync()
     {
-        return await _context.ArticleCategories.ToListAsync();
+        return await _context.ArticleCategories
+            .ToListAsync();
     }
     public async Task UpdateAsync(ArticleCategory articleCategory)
     {

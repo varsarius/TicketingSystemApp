@@ -8,6 +8,7 @@ public record UpdateTicketCommand(
     [Required] string Title,
     [Required] string Description,
     Priority Priority,
+    Status Status,
     int CategoryId,
     int Id
 ) : IRequest;

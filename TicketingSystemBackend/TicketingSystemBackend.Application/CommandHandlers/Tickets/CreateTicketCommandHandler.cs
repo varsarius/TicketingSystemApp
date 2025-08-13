@@ -20,6 +20,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand>
             Title = request.Title,
             Description = request.Description,
             Priority = request.Priority,
+            Status = request.Status,
             UserId = request.UserId,
             AgentId = request.AgentId,
             TicketCategoryId = request.TicketCategoryId

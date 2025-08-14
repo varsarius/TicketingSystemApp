@@ -49,7 +49,7 @@ public class ArticleCategoryController : ControllerBase, IController<CreateArtic
             return NotFound(ex.Message);
         }
     }
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteById(int id)
     {
         await _mediator.Send(new DeleteArticleCategoryByIdCommand(id));

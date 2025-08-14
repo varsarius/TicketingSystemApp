@@ -22,21 +22,19 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
         await _context.SaveChangesAsync();
     }
     public async Task<ArticleCategory> GetByIdAsync(int id)
-    {
-        var articleCategory = await _context.ArticleCategories.FirstOrDefaultAsync(c => c.Id == id)
+    { 
+        return await _context.ArticleCategories.FirstOrDefaultAsync(c => c.Id == id)
                             ?? throw new Exception($"Article category with id {id} not found.");
-        return articleCategory;
     }
     public async Task<ArticleCategory> GetByCategoryNameAsync(string categoryName)
     {
-        var articleCategory = await _context.ArticleCategories.FirstOrDefaultAsync(c => c.CategoryName == categoryName)
+        return await _context.ArticleCategories.FirstOrDefaultAsync(c => c.CategoryName == categoryName)
                             ?? throw new Exception($"Article category with name {categoryName} not found");
-        return articleCategory;
     }
     public async Task<List<ArticleCategory>> GetAllAsync()
     {
-        var articleCategories = await _context.ArticleCategories.ToListAsync();
-        return articleCategories;
+        return await _context.ArticleCategories
+            .ToListAsync();
     }
     public async Task UpdateAsync(ArticleCategory articleCategory)
     {
@@ -45,7 +43,7 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
     }
     public async Task DeleteByIdAsync(int id)
     {
-        var articleCategory = GetByIdAsync(id);
+        var articleCategory = await GetByIdAsync(id);
         if (articleCategory is not null)
         {
             _context.Remove(articleCategory);

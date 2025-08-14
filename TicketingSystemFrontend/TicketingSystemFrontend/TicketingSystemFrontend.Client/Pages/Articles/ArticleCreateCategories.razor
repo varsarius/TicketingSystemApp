@@ -1,7 +1,10 @@
 ﻿@page "/articles/create/categories"
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IArticleService ArticleService
+@inject IArticleCategoryService ArticleCategoryService
+
 @inject NavigationManager Navigation
 
 <h3>Edit Categories</h3>
@@ -70,7 +73,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
     }
 
     private void StartEditing(ArticleCategoryDto category)
@@ -93,7 +96,14 @@ else
     private async Task SaveCategory(ArticleCategoryDto category)
     {
         // TODO: Call backend to update category
-        // await ArticleService.UpdateCategoryAsync(category);
+
+        var updateCreate = new ArticleCategoryUpdateRequest
+            {
+                Id = category.Id,
+                CategoryName = category.CategoryName
+            };
+
+        await ArticleCategoryService.UpdateArticleCategoryAsync(updateCreate);
         Console.WriteLine($"Saving category {category.Id} with new name {category.CategoryName}");
         editingCategoryId = null;
     }
@@ -101,7 +111,7 @@ else
     private async Task DeleteCategory(int categoryId)
     {
         // TODO: Call backend to delete category
-        // await ArticleService.DeleteCategoryAsync(categoryId);
+        await ArticleCategoryService.DeleteArticleCategoryAsync(categoryId);
         Console.WriteLine($"Deleting category {categoryId}");
         categories.RemoveAll(c => c.Id == categoryId);
     }
@@ -122,12 +132,22 @@ else
         if (!string.IsNullOrWhiteSpace(newCategoryName))
         {
             // Simulate ID assignment for testing
-            var newCategory = new ArticleCategoryDto
+            var newCategory = new ArticleCategoryCreateRequest
             {
                 Id = categories.Any() ? categories.Max(c => c.Id) + 1 : 1,
                 CategoryName = newCategoryName
+
             };
-            categories.Add(newCategory);
+
+            var componentCategory = new ArticleCategoryDto
+                {
+                    Id = newCategory.Id,
+                    CategoryName = newCategory.CategoryName
+                };
+
+            await ArticleCategoryService.CreateArticleCategoryAsync(newCategory);
+            categories.Add(componentCategory);
+
             Console.WriteLine($"Created new category: {newCategoryName}");
         }
         isCreating = false;

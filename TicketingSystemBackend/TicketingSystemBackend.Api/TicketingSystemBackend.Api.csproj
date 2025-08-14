@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicketingSystemBackend.Application\TicketingSystemBackend.Application.csproj" />
-    <ProjectReference Include="..\TicketingSystemBackend.Domain\TicketingSystemBackend.Domain.csproj" />
     <ProjectReference Include="..\TicketingSystemBackend.Infrastructure\TicketingSystemBackend.Infrastructure.csproj" />
   </ItemGroup>
 

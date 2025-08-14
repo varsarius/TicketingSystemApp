@@ -11,20 +11,21 @@ namespace TicketingSystemBackend.Domain.Entities;
 public class Ticket
 {
     public int Id { get; set; }
-    public int UserId { get; set; }
-    public int AgentId { get; set; }
-    public int CategoryId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid AgentId { get; set; }
+    public int TicketCategoryId { get; set; }
 
     [Required]
     public string Title { get; set; } = null!;
     [Required]
     public string Description { get; set; } = null!;
     public Priority Priority { get; set; }
-    public DateTime CreatedAt { get; set;} = DateTime.Now;
-    public DateTime UpdatedAt { get; set;}
+    public Status Status { get; set; }
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set;}
 
     public List<TicketComment> TicketComments { get; set; } = [];
     [Required]
-    public TicketCategory Category { get; set; } = null!;
+    public TicketCategory TicketCategory { get; set; } = null!;
     public List<File> Files { get; set; } = [];
 }

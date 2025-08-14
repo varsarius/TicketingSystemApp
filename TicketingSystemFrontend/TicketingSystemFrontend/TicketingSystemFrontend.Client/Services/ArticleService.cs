@@ -71,9 +71,4 @@ public class ArticleService : IArticleService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<List<ArticleCategoryDto>> GetAllArticleCategoriesAsync()
-    {
-        var articles = await _http.GetFromJsonAsync<List<ArticleCategoryDto>>("api/articles/categories");
-        return articles ?? new List<ArticleCategoryDto>();
-    }
 }

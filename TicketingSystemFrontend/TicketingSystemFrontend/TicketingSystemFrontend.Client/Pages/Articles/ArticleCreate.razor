@@ -96,7 +96,10 @@
             // 2️⃣ Upload files (if any)
             if (files.Any())
             {
-                await ArticleService.UploadFilesAsync(articleId, files);
+                if (articleId is not null)
+                {
+                    await ArticleService.UploadFilesAsync((int) articleId, files);
+                }
             }
 
             // Navigate after successful save

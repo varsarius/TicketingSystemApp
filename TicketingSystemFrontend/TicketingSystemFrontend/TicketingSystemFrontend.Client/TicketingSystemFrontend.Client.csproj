@@ -16,14 +16,4 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Requests\Commands\ArticleCategories\" />
-    <Folder Include="Requests\Commands\TicketComments\" />
-    <Folder Include="Requests\Commands\TicketCategories\" />
-    <Folder Include="Requests\Queries\ArticleCategories\" />
-    <Folder Include="Requests\Queries\TicketComments\" />
-    <Folder Include="Requests\Queries\TicketCategories\" />
-    <Folder Include="Requests\Queries\Tickets\" />
-  </ItemGroup>
-
 </Project>

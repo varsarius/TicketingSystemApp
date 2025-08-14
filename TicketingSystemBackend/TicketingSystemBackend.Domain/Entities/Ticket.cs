@@ -12,7 +12,7 @@ public class Ticket
 {
     public int Id { get; set; }
     public Guid UserId { get; set; }
-    public Guid? AgentId { get; set; }
+    public Guid AgentId { get; set; }
     public int TicketCategoryId { get; set; }
 
     [Required]

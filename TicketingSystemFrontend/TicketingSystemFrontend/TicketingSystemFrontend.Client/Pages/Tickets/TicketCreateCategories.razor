@@ -73,7 +73,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await TicketCategoryService.GetAllTicketCategoriesAsync();
+        categories = await TicketCategoryService.GetAllAsync();
     }
 
     private void StartEditing(TicketCategoryDto category)
@@ -103,7 +103,7 @@ else
             CategoryName = category.CategoryName
         };
 
-        await TicketCategoryService.UpdateTicketCategoryAsync(updateCreate);
+        await TicketCategoryService.UpdateAsync(updateCreate);
         Console.WriteLine($"Saving category {category.Id} with new name {category.CategoryName}");
         editingCategoryId = null;
     }
@@ -111,7 +111,7 @@ else
     private async Task DeleteCategory(int categoryId)
     {
         // TODO: Call backend to delete category
-        await TicketCategoryService.DeleteTicketCategoryAsync(categoryId);
+        await TicketCategoryService.DeleteByIdAsync(categoryId);
         Console.WriteLine($"Deleting category {categoryId}");
         categories.RemoveAll(c => c.Id == categoryId);
     }
@@ -134,17 +134,15 @@ else
             // Simulate ID assignment for testing
             var newCategory = new TicketCategoryCreateRequest
             {
-                Id = categories.Any() ? categories.Max(c => c.Id) + 1 : 1,
                 CategoryName = newCategoryName
             };
 
             var componentCategory = new TicketCategoryDto
             {
-                Id = newCategory.Id,
                 CategoryName = newCategory.CategoryName
             };
 
-            await TicketCategoryService.CreateTicketCategoryAsync(newCategory);
+            await TicketCategoryService.CreateAsync(newCategory);
             categories.Add(componentCategory);
 
             Console.WriteLine($"Created new category: {newCategoryName}");

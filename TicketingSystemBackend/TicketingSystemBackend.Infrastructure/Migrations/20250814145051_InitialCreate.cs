@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TicketingSystemBackend.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:TicketingSystemBackend/TicketingSystemBackend.Infrastructure/Migrations/20250814081930_InitialCreate.cs
     public partial class InitialCreate : Migration
-========
-    public partial class InitialMigrate : Migration
->>>>>>>> main:TicketingSystemBackend/TicketingSystemBackend.Infrastructure/Migrations/20250814132909_InitialMigrate.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

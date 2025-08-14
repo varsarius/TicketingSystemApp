@@ -12,13 +12,8 @@ using TicketingSystemBackend.Infrastructure.Data;
 namespace TicketingSystemBackend.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:TicketingSystemBackend/TicketingSystemBackend.Infrastructure/Migrations/20250814081930_InitialCreate.Designer.cs
-    [Migration("20250814081930_InitialCreate")]
+    [Migration("20250814145051_InitialCreate")]
     partial class InitialCreate
-========
-    [Migration("20250814132909_InitialMigrate")]
-    partial class InitialMigrate
->>>>>>>> main:TicketingSystemBackend/TicketingSystemBackend.Infrastructure/Migrations/20250814132909_InitialMigrate.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

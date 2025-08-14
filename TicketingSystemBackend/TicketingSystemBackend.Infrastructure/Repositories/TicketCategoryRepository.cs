@@ -26,10 +26,10 @@ public class TicketCategoryRepository : ITicketCategoryRepository
 
     public async Task DeleteByIdAsync(int id)
     {
-        var ticketCategory = GetByIdAsync(id);
+        var ticketCategory = await GetByIdAsync(id);
         if (ticketCategory is not null)
         {
-            _context.Remove(ticketCategory);
+             _context.Remove(ticketCategory);
             await _context.SaveChangesAsync();
         }
     }

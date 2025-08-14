@@ -18,25 +18,25 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTicketCommand command)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateTicketCommand command)
     {
         await _mediator.Send(command);
         return Ok();
     }
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         var ticket = await _mediator.Send(new GetTicketByIdQuery(id));
         return Ok(ticket);
     }
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         var tickets = await _mediator.Send(new GetTicketsQuery());
         return Ok(tickets);
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateTicketCommand command)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateTicketCommand command)
     {
         if (id != command.Id)
             return BadRequest("Id of the update request mismatches the id of the body");
@@ -52,7 +52,7 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
         }
     }
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteById(int id)
+    public async Task<IActionResult> DeleteByIdAsync(int id)
     {
         await _mediator.Send(new DeleteTicketByIdCommand(id));
         return Ok();

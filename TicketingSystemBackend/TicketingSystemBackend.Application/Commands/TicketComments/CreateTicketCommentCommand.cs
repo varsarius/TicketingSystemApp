@@ -9,4 +9,4 @@ using System.Threading.Tasks;
 namespace TicketingSystemBackend.Application.Commands.TicketComments;
 public record CreateTicketCommentCommand(
     [Required] string Description    
-) : IRequest;
+) : IRequest<int>;

@@ -13,4 +13,4 @@ public record CreateTicketCommand
     Guid UserId,
     Guid? AgentId,
     int TicketCategoryId
-) : IRequest;
+) : IRequest<int>;

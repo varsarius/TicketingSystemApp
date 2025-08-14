@@ -15,31 +15,31 @@ public class TicketCategoryController : ControllerBase, IController<CreateTicket
         _mediator = mediator;
     }
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTicketCategoryCommand command)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateTicketCategoryCommand command)
     {
         await _mediator.Send(command);
         return Ok();
     }
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteById(int id)
+    public async Task<IActionResult> DeleteByIdAsync(int id)
     {
         await _mediator.Send(new DeleteTicketCategoryByIdCommand(id));
         return Ok();
     }
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         var ticketCategories = await _mediator.Send(new GetTicketCategoriesQuery());
         return Ok(ticketCategories);
     }
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         var ticketCategory = await _mediator.Send(new GetTicketCategoryByIdQuery(id));
         return Ok(ticketCategory);
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateTicketCategoryCommand command)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateTicketCategoryCommand command)
     {
         await _mediator.Send(command);
         return Ok();

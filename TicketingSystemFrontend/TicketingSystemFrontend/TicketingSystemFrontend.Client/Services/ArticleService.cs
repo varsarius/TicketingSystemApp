@@ -17,7 +17,7 @@ public class ArticleService : IArticleService
         _http = http;
         _authenticationStateProvider = authenticationStateProvider;
     }
-    public async Task CreateArticleAsync(ArticleCreateRequest request)
+    public async Task CreateAsync(ArticleCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -42,7 +42,7 @@ public class ArticleService : IArticleService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<List<ArticleDto>> GetAllArticlesAsync()
+    public async Task<List<ArticleDto>> GetAllAsync()
     {
         var articles = await _http.GetFromJsonAsync<List<ArticleDto>>("api/articles");
         return articles ?? new List<ArticleDto>();
@@ -52,7 +52,7 @@ public class ArticleService : IArticleService
         return await _http.GetFromJsonAsync<ArticleDto>($"api/articles/{id}");
     }
 
-    public async Task<bool> DeleteArticleAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var response = await _http.DeleteAsync($"api/articles/{id}");
 
@@ -65,10 +65,15 @@ public class ArticleService : IArticleService
 
         return true;
     }
-    public async Task UpdateArticleAsync(ArticleUpdateRequest request)
+    public async Task UpdateAsync(ArticleUpdateRequest request)
     {
         var response = await _http.PutAsJsonAsync($"api/articles/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
 
+    // NOT IMPLEMENTED!!!! (do I need this? really?)
+    public Task<ArticleDto?> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

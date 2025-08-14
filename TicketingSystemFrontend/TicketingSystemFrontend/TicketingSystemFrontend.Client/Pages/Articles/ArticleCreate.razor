@@ -54,7 +54,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.CreateArticleAsync(newArticle);
+        await ArticleService.CreateAsync(newArticle);
         Navigation.NavigateTo("/articles");
     }
 

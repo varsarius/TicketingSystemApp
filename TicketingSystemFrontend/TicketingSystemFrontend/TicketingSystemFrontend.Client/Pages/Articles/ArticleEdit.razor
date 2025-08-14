@@ -62,7 +62,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        article = await ArticleService.GetArticleByIdAsync(id);
+        article = await ArticleService.GetByIdAsync(id);
 
         if (article != null)
         {
@@ -76,7 +76,7 @@ else
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.UpdateArticleAsync(articleEditRequest);
+        await ArticleService.UpdateAsync(articleEditRequest);
         Navigation.NavigateTo($"/articles/{id}");
     }
 

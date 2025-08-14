@@ -4,7 +4,7 @@ using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.Tickets;
-public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand>
+public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, int>
 {
     private readonly ITicketRepository _ticketRepository;
 
@@ -13,7 +13,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand>
         _ticketRepository = ITicketRepository;
     }
 
-    public async Task Handle(CreateTicketCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
     {
         var ticket = new Ticket
         {
@@ -26,5 +26,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand>
             TicketCategoryId = request.TicketCategoryId
         };
         await _ticketRepository.CreateAsync(ticket);
+
+        return ticket.Id;
     }
 }

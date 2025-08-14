@@ -47,12 +47,12 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        article = await ArticleService.GetArticleByIdAsync(id);
+        article = await ArticleService.GetByIdAsync(id);
     }
 
     private async Task DeleteArticle()
     {
-        var success = await ArticleService.DeleteArticleAsync(id);
+        var success = await ArticleService.DeleteByIdAsync(id);
         if (success)
         {
             Navigation.NavigateTo("/articles");

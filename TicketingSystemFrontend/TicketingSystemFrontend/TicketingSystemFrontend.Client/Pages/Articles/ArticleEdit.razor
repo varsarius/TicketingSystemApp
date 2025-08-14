@@ -57,12 +57,12 @@ else
     private ArticleUpdateRequest articleEditRequest = new();
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllAsync();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        article = await ArticleService.GetArticleByIdAsync(id);
+        article = await ArticleService.GetByIdAsync(id);
 
         if (article != null)
         {
@@ -76,7 +76,7 @@ else
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.UpdateArticleAsync(articleEditRequest);
+        await ArticleService.UpdateAsync(articleEditRequest);
         Navigation.NavigateTo($"/articles/{id}");
     }
 

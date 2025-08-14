@@ -91,7 +91,8 @@
                                 <h5 class="card-title mb-1">Ticket #@ticket.Id</h5>
                                 <p class="text-muted mb-0 small">
                                     Priority:
-                                    <span class="badge @(GetPriorityClass(ticket.Priority))">@ticket.Priority</span>
+                                    @* TO CHANGE LATER *@
+                                    @* <span class="badge @(GetPriorityClass(ticket.Priority))">@ticket.Priority</span> *@
                                 </p>
                                 <p class="text-muted mb-0 small">
                                     Category:
@@ -127,7 +128,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        tickets = await TicketService.GetAllTicketsAsync();
+        tickets = await TicketService.GetAllAsync();
     }
 
     private string GetPriorityClass(string priority) => priority switch

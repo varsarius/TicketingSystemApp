@@ -26,7 +26,7 @@ public class TicketCommentRepository : ITicketCommentRepository
 
     public async Task DeleteByIdAsync(int id)
     {
-        var ticketComment = GetByIdAsync(id);
+        var ticketComment = await GetByIdAsync(id);
         if (ticketComment is not null)
         {
             _context.Remove(ticketComment);

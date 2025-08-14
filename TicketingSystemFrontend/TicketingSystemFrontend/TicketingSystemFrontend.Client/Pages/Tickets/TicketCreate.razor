@@ -14,49 +14,51 @@
 
 <h3>Create a New Ticket</h3>
 
-<EditForm Model="@ticketModel" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="@ticketRequest" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="title" class="form-label">Title</label>
-            <InputText id="title" class="form-control" @bind-Value="ticketModel.Title" />
-            <ValidationMessage For="@(() => ticketModel.Title)" />
+            <InputText id="title" class="form-control" @bind-Value="ticketRequest.Title" />
+            <ValidationMessage For="@(() => ticketRequest.Title)" />
         </div>
 
         <div class="col-md-6">
             <label for="category" class="form-label">Category</label>
-            <InputSelect id="category" class="form-select mb-3" @bind-Value="ticketModel.Category">
+            @* TO CHANGE LATER *@
+            @* <InputSelect id="category" class="form-select" @bind-Value="ticketRequest.Category">
                 <option value="">-- Select --</option>
                 @foreach (var category in categories)
                 {
                     <option value="@category.Id">@category.CategoryName</option>
                 }
             </InputSelect>
-            <ValidationMessage For="@(() => ticketModel.Category)" />
-            <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
+            <ValidationMessage For="@(() => ticketRequest.Category)" /> *@
+            <a class="btn btn-primary" href="/tickets/create/categories" @onclick="EditCategories">Edit Categories</a>
+
         </div>
 
     </div>
 
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <InputTextArea id="description" class="form-control" rows="4" @bind-Value="ticketModel.Description" />
-        <ValidationMessage For="@(() => ticketModel.Description)" />
+        <InputTextArea id="description" class="form-control" rows="4" @bind-Value="ticketRequest.Description" />
+        <ValidationMessage For="@(() => ticketRequest.Description)" />
     </div>
 
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="priority" class="form-label">Priority</label>
-            <InputSelect id="priority" class="form-select" @bind-Value="ticketModel.Priority">
+            <InputSelect id="priority" class="form-select" @bind-Value="ticketRequest.Priority">
                 <option value="">-- Select --</option>
                 <option>Low</option>
                 <option>Medium</option>
                 <option>High</option>
                 <option>Critical</option>
             </InputSelect>
-            <ValidationMessage For="@(() => ticketModel.Priority)" />
+            <ValidationMessage For="@(() => ticketRequest.Priority)" />
         </div>
 
         <div class="col-md-6">
@@ -70,7 +72,7 @@
 
     <div class="mb-3">
         <label class="form-label">Assigned To</label>
-        <InputSelect class="form-select" @bind-Value="ticketModel.AssignedTo">
+        <InputSelect class="form-select" @bind-Value="ticketRequest.AgentId">
             <option value="">-- Select Agent --</option>
             @foreach (var agent in agents)
             {
@@ -84,7 +86,7 @@
 </EditForm>
 
 @code {
-    private TicketInputModel ticketModel = new();
+    private TicketCreateRequest ticketRequest = new();
     private List<string> agents = new() { "Alice", "Bob", "Charlie" };
     private List<TicketCategoryDto> categories = [];
 
@@ -93,15 +95,15 @@
     {
         var request = new TicketCreateRequest
         {
-            Title = ticketModel.Title,
-            Description = ticketModel.Description,
-            Priority = ticketModel.Priority,
-            AssignedTo = ticketModel.AssignedTo
+            Title = ticketRequest.Title,
+            Description = ticketRequest.Description,
+            Priority = ticketRequest.Priority,
+            AgentId = ticketRequest.AgentId
         };
 
         try
         {
-            await TicketService.CreateTicketAsync(request);
+            await TicketService.CreateAsync(request);
             // Optional: Navigate or show success message
         }
         catch (Exception ex)
@@ -115,16 +117,6 @@
         var file = e.File;
         Console.WriteLine($"File selected: {file.Name} ({file.Size} bytes)");
         // TODO: Save to backend or buffer
-    }
-
-    private void EditCategories()
-    {
-        Navigation.NavigateTo("/tickets/create/categories");
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        categories = await TicketCategoryService.GetAllTicketCategoriesAsync();
     }
 
     public class TicketInputModel

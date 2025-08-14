@@ -87,6 +87,8 @@ builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>(
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IArticleReadRepository, ArticleReadRepository>();
 builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
+builder.Services.AddScoped<IArticleFileRepository, ArticleFileRepository>();
+
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(

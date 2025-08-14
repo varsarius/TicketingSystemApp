@@ -1,11 +1,11 @@
 ﻿@page "/articles/create"
 
+@using MudBlazor
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IArticleService ArticleService
 @inject IArticleCategoryService ArticleCategoryService
-
 @inject NavigationManager Navigation
 
 <h3>Create New Article</h3>
@@ -38,24 +38,78 @@
         </div>
     </div>
 
-
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>
 
+<hr />
+
+<MudPaper Class="pa-6 d-flex justify-center align-center"
+          Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
+          @ondrop="OnDrop"
+          @ondragover:preventDefault>
+    <div>
+        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+        <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
+        <InputFile OnChange="OnFilesChanged" multiple class="border" />
+    </div>
+</MudPaper>
+
+@if (files.Any())
+{
+    <MudTable Items="files" Dense="true">
+        <HeaderContent>
+            <MudTh>File Name</MudTh>
+            <MudTh>Size (MB)</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@(Math.Round(context.Size / 1024.0 / 1024.0, 2))</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="@(() => RemoveFile(context))" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
+}
+
 @code {
     private ArticleCreateRequest newArticle = new();
-    private List<ArticleCategoryDto> categories = [];
+    private List<ArticleCategoryDto> categories = new();
+    private List<IBrowserFile> files = new();
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllAsync();
     }
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.CreateArticleAsync(newArticle);
-        Navigation.NavigateTo("/articles");
+        try
+        {
+            // 1️⃣ Create article and get its ID
+            var articleId = await ArticleService.CreateAsync(newArticle);
+
+            // 2️⃣ Upload files (if any)
+            if (files.Any())
+            {
+                if (articleId is not null)
+                {
+                    await ArticleService.UploadFilesAsync((int) articleId, files);
+                }
+            }
+
+            // Navigate after successful save
+            Navigation.NavigateTo("/articles");
+        }
+        catch (Exception ex)
+        {
+            // handle error (show message, log, etc.)
+            Console.Error.WriteLine($"Error creating article: {ex.Message}");
+        }
     }
 
     private void EditCategories()
@@ -66,5 +120,20 @@
     private void Cancel()
     {
         Navigation.NavigateTo("/articles");
+    }
+
+    private void OnFilesChanged(InputFileChangeEventArgs e)
+    {
+        files.AddRange(e.GetMultipleFiles());
+    }
+
+    private void OnDrop(DragEventArgs e)
+    {
+        // Prevent default browser behavior
+    }
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        files.Remove(file);
     }
 }

@@ -9,7 +9,7 @@ using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.TicketComments;
-public class CreateTicketCommentCommandHandler : IRequestHandler<CreateTicketCommentCommand>
+public class CreateTicketCommentCommandHandler : IRequestHandler<CreateTicketCommentCommand, int>
 {
     private readonly ITicketCommentRepository _repository;
 
@@ -18,7 +18,7 @@ public class CreateTicketCommentCommandHandler : IRequestHandler<CreateTicketCom
         _repository = repository;
     }
 
-    public async Task Handle(CreateTicketCommentCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateTicketCommentCommand request, CancellationToken cancellationToken)
     {
         var ticketComment = new TicketComment
         {
@@ -26,5 +26,7 @@ public class CreateTicketCommentCommandHandler : IRequestHandler<CreateTicketCom
             UpdatedAt = null
         };
         await _repository.CreateAsync(ticketComment);
+
+        return ticketComment.Id;
     }
 }

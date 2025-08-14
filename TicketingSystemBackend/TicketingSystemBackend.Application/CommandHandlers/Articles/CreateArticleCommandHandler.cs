@@ -4,7 +4,7 @@ using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.CommandHandlers.Articles;
-public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
+public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand, int>
 {
     private readonly IArticleRepository _repository;
 
@@ -13,7 +13,7 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
         _repository = repository;
     }
 
-    public async Task Handle(CreateArticleCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateArticleCommand request, CancellationToken cancellationToken)
     {
         var article = new Article
         {
@@ -24,5 +24,7 @@ public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand>
             UpdatedAt = null
         };
         await _repository.CreateAsync(article);
+
+        return article.Id;
     }
 }

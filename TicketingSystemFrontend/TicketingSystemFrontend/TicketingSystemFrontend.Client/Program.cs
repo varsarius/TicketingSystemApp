@@ -47,6 +47,8 @@ builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
 builder.Services.AddMudServices();
 
 //builder.Services.AddHttpClient<ITicketService, TicketService>(client =>

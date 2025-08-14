@@ -38,6 +38,8 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
 builder.Services.AddMudServices();
 
 builder.Services.AddAuthorization();

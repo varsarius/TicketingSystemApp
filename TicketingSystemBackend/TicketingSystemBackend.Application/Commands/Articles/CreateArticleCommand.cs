@@ -9,4 +9,4 @@ public record CreateArticleCommand
     [Required] string Description,
     int ArticleCategoryId,
     Guid UserId
-) : IRequest;
+) : IRequest<int>;

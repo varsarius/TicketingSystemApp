@@ -18,8 +18,8 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateArticleCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        var articleId = await _mediator.Send(command);
+        return Ok(articleId);
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)

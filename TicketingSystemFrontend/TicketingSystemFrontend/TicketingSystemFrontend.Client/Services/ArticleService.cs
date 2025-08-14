@@ -52,7 +52,7 @@ public class ArticleService : IArticleService
         return await _http.GetFromJsonAsync<ArticleDto>($"api/articles/{id}");
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteByIdAsync(int id)
     {
         var response = await _http.DeleteAsync($"api/articles/{id}");
 

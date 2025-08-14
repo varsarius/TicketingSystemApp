@@ -14,7 +14,7 @@ public class TicketCategoryService : ITicketCategoryService
         _http = http;
     }
 
-    public async Task CreateTicketCategoryAsync(TicketCategoryCreateRequest request)
+    public async Task CreateAsync(TicketCategoryCreateRequest request)
     {
         var response = await _http.PostAsJsonAsync("api/tickets/categories", request);
 
@@ -25,7 +25,7 @@ public class TicketCategoryService : ITicketCategoryService
         }
     }
 
-    public async Task<bool> DeleteTicketCategoryAsync(int id)
+    public async Task<bool> DeleteByIdAsync(int id)
     {
         var response = await _http.DeleteAsync($"api/tickets/categories/{id}");
 
@@ -37,18 +37,18 @@ public class TicketCategoryService : ITicketCategoryService
         return true;
     }
 
-    public async Task<List<TicketCategoryDto>> GetAllTicketCategoriesAsync()
+    public async Task<List<TicketCategoryDto>> GetAllAsync()
     {
         var categories = await _http.GetFromJsonAsync<List<TicketCategoryDto>>("api/tickets/categories");
         return categories ?? new List<TicketCategoryDto>();
     }
 
-    public async Task<TicketCategoryDto?> GetTicketCategoryByIdAsync(int id)
+    public async Task<TicketCategoryDto?> GetByIdAsync(int id)
     {
         return await _http.GetFromJsonAsync<TicketCategoryDto>($"api/tickets/categories/{id}");
     }
 
-    public async Task UpdateTicketCategoryAsync(TicketCategoryUpdateRequest request)
+    public async Task UpdateAsync(TicketCategoryUpdateRequest request)
     {
         var response = await _http.PutAsJsonAsync($"api/tickets/categories/{request.Id}", request);
 

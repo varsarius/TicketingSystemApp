@@ -52,7 +52,7 @@ else
 
     private async Task DeleteArticle()
     {
-        var success = await ArticleService.DeleteAsync(id);
+        var success = await ArticleService.DeleteByIdAsync(id);
         if (success)
         {
             Navigation.NavigateTo("/articles");

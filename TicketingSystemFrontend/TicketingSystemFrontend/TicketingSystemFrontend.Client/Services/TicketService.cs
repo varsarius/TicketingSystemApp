@@ -14,13 +14,18 @@ public class TicketService : ITicketService
         _http = http;
     }
 
-    public async Task CreateTicketAsync(TicketCreateRequest request)
+    public async Task CreateAsync(TicketCreateRequest request)
     {
         var response = await _http.PostAsJsonAsync("api/tickets", request);
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<List<TicketDto>> GetAllTicketsAsync()
+    public Task<bool> DeleteByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<List<TicketDto>> GetAllAsync()
     {
         try
         {
@@ -32,5 +37,15 @@ public class TicketService : ITicketService
             return new List<TicketDto>();
         }
         
+    }
+
+    public Task<TicketDto?> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(TicketUpdateRequest request)
+    {
+        throw new NotImplementedException();
     }
 }

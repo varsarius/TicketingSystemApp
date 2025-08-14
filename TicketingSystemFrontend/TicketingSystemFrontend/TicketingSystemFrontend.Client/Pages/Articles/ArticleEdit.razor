@@ -57,7 +57,7 @@ else
     private ArticleUpdateRequest articleEditRequest = new();
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllAsync();
     }
 
     protected override async Task OnParametersSetAsync()

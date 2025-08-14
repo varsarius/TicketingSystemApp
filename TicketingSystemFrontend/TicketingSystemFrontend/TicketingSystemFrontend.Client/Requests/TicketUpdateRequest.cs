@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TicketingSystemBackend.Domain.Enums;
+using TicketingSystemFrontend.Client.Requests.Enums;
 
 namespace TicketingSystemFrontend.Client.Requests;
 

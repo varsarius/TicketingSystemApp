@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TicketingSystemBackend.Domain.Enums;
+namespace TicketingSystemFrontend.Client.Requests.Enums;
 
 public enum Status
 {

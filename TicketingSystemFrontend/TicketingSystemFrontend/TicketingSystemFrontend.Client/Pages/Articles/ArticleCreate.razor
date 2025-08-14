@@ -1,5 +1,6 @@
 ﻿@page "/articles/create"
 
+@using MudBlazor
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
@@ -43,6 +44,39 @@
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>
 
+<hr />
+<MudPaper Class="pa-6 d-flex justify-center align-center"
+          Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
+          @ondrop="OnDrop"
+          @ondragover:preventDefault>
+    <div>
+        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+        <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
+        <InputFile OnChange="OnFilesChanged" multiple class="border" />
+    </div>
+</MudPaper>
+
+@if (files.Any())
+{
+    <MudTable Items="files" Dense="true">
+        <HeaderContent>
+            <MudTh>File Name</MudTh>
+            <MudTh>Size (MB)</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@(Math.Round(context.Size / 1024.0 / 1024.0, 2))</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="@(() => RemoveFile(context))" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
+}
+
 @code {
     private ArticleCreateRequest newArticle = new();
     private List<ArticleCategoryDto> categories = [];
@@ -66,5 +100,24 @@
     private void Cancel()
     {
         Navigation.NavigateTo("/articles");
+    }
+
+    private List<IBrowserFile> files = new();
+
+    private void OnFilesChanged(InputFileChangeEventArgs e)
+    {
+        files.AddRange(e.GetMultipleFiles());
+    }
+
+    private void OnDrop(DragEventArgs e)
+    {
+        // Normally, files are handled via <InputFile>
+        // Direct drag-drop without <InputFile> requires JS interop
+        // So here we just prevent default behavior
+    }
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        files.Remove(file);
     }
 }

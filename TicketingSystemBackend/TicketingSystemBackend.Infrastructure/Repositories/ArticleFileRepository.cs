@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.Interfaces;
-using TicketingSystemBackend.Infrastructure.Data;
 using TicketingSystemBackend.Domain.Entities;
+using TicketingSystemBackend.Infrastructure.Data;
 
 namespace TicketingSystemBackend.Infrastructure.Repositories;
 public class ArticleFileRepository : IArticleFileRepository
@@ -20,6 +21,20 @@ public class ArticleFileRepository : IArticleFileRepository
     public async Task AddAsync(Domain.Entities.File file)
     {
         await _context.Files.AddAsync(file);
+    }
+
+    public async Task<Domain.Entities.File?> GetFileByIdAndArticleIdAsync(int fileId, int articleId, CancellationToken cancellationToken)
+    {
+        return await _context.Files
+            .Include(f => f.Articles)
+            .FirstOrDefaultAsync(f => f.Id == fileId && f.Articles.Any(a => a.Id == articleId), cancellationToken);
+    }
+
+    public async Task<List<Domain.Entities.File>> GetFilesByArticleIdAsync(int articleId)
+    {
+        return await _context.Files
+            .Where(f => f.Articles.Any(a => a.Id == articleId))
+            .ToListAsync();
     }
 
     // Save all pending changes

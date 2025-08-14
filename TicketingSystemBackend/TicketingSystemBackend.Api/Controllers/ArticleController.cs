@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TicketingSystemBackend.Application.Commands.Articles;
+using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Queries.Articles;
 
 namespace TicketingSystemBackend.Api.Controllers;
@@ -10,10 +11,12 @@ namespace TicketingSystemBackend.Api.Controllers;
 public class ArticleController : ControllerBase, IController<CreateArticleCommand, UpdateArticleCommand>
 {
     private readonly IMediator _mediator;
+    private readonly IWebHostEnvironment _env;
 
-    public ArticleController(IMediator mediator)
+    public ArticleController(IMediator mediator, IWebHostEnvironment env)
     {
         _mediator = mediator;
+        _env = env;
     }
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateArticleCommand command)
@@ -71,4 +74,42 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
         await _mediator.Send(command);
         return Ok();
     }
+
+    [HttpGet("{articleId}/files")]
+    public async Task<ActionResult<List<ArticleFileDto>>> GetArticleFiles(int articleId)
+    {
+        var files = await _mediator.Send(new GetArticleFilesQuery(articleId));
+        return Ok(files);
+    }
+
+    [HttpGet("{articleId}/files/{fileId}")]
+    public async Task<IActionResult> DownloadFile(int articleId, int fileId)
+    {
+        var file = await _mediator.Send(new GetArticleFileByIdQuery(articleId, fileId));
+
+        if (file == null)
+            return NotFound();
+
+        //// Example authorization logic
+        //var userId = User.FindFirst("sub")?.Value;
+        //if (!User.IsInRole("Admin") && file.Article.UserId.ToString() != userId)
+        //{
+        //    return Forbid();
+        //}
+
+
+        //HERE SHOULD BE DONE IN HANDLER
+        var fullPath = Path.Combine(_env.ContentRootPath, file.Path); // file.Path stores relative path
+        var contentType = "application/octet-stream";
+
+        var memory = new MemoryStream();
+        using (var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read))
+        {
+            await stream.CopyToAsync(memory);
+        }
+        memory.Position = 0;
+
+        return File(memory, contentType);
+    }
+
 }

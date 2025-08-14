@@ -35,11 +35,6 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
             .HasForeignKey(a => a.UserId) // FK in Article
             .OnDelete(DeleteBehavior.Restrict); // optional
 
-        // If ArticleCategory is in the Domain, you can configure it normally too
-        builder.Entity<Article>()
-            .HasOne(a => a.ArticleCategory)
-            .WithMany(c => c.Articles)
-            .HasForeignKey(a => a.ArticleCategoryId);
     }
 
     protected AppDbContext()

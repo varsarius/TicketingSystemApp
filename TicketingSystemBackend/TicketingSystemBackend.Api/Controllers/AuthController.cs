@@ -102,6 +102,33 @@ public class AuthController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+    //TO CHANGE: apply CQRS and clean architecture and so on and so on apply it all
+    [Authorize(Roles = "Admin")] // Only admins should change roles
+    [HttpPatch("users/{username}/role")]
+    public async Task<IActionResult> UpdateUserRole(string username, [FromBody] UpdateUserRoleRequest request)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null)
+            return NotFound(new { error = "User not found" });
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+
+        // Remove current roles (only one role in your setup, but removing all is safer)
+        if (currentRoles.Any())
+        {
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded)
+                return BadRequest(new { error = "Failed to remove existing role" });
+        }
+
+        // Add the new role
+        var addResult = await _userManager.AddToRoleAsync(user, request.NewRole);
+        if (!addResult.Succeeded)
+            return BadRequest(new { error = "Failed to assign new role" });
+
+        return NoContent();
+    }
+
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
@@ -137,4 +164,10 @@ public class RefreshTokenRequest
     [Required]
     [JsonPropertyName("refreshToken")]
     public string RefreshToken { get; set; } = null!;
+}
+
+// DTO for request body
+public class UpdateUserRoleRequest
+{
+    public string NewRole { get; set; } = null!;
 }

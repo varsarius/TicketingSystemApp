@@ -24,7 +24,7 @@ public class TicketService : ITicketService
     {
         try
         {
-            var tickets = await _http.GetFromJsonAsync<List<TicketDto>>("api/ticket");
+            var tickets = await _http.GetFromJsonAsync<List<TicketDto>>("api/tickets");
             return tickets ?? new List<TicketDto>();
         } 
         catch

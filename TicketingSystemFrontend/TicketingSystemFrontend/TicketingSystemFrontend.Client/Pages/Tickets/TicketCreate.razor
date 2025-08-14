@@ -1,9 +1,14 @@
 ﻿@page "/tickets/create"
-@inject ITicketService TicketService
 @using System.ComponentModel.DataAnnotations
+@using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+@inject ITicketCategoryService TicketCategoryService
+
+
+@inject NavigationManager Navigation
 
 <PageTitle>Create Ticket</PageTitle>
 
@@ -22,16 +27,17 @@
 
         <div class="col-md-6">
             <label for="category" class="form-label">Category</label>
-            <InputSelect id="category" class="form-select" @bind-Value="ticketModel.Category">
+            <InputSelect id="category" class="form-select mb-3" @bind-Value="ticketModel.Category">
                 <option value="">-- Select --</option>
-                <option>Hardware</option>
-                <option>Software</option>
-                <option>Network</option>
-                <option>Account</option>
-                <option>Other</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.CategoryName</option>
+                }
             </InputSelect>
             <ValidationMessage For="@(() => ticketModel.Category)" />
+            <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
         </div>
+
     </div>
 
     <div class="mb-3">
@@ -58,7 +64,6 @@
             <InputFile OnChange="HandleFileChange" multiple/>
         </div>
 
-
     </div>
 
 
@@ -81,6 +86,8 @@
 @code {
     private TicketInputModel ticketModel = new();
     private List<string> agents = new() { "Alice", "Bob", "Charlie" };
+    private List<TicketCategoryDto> categories = [];
+
 
     private async Task HandleValidSubmit()
     {
@@ -108,6 +115,16 @@
         var file = e.File;
         Console.WriteLine($"File selected: {file.Name} ({file.Size} bytes)");
         // TODO: Save to backend or buffer
+    }
+
+    private void EditCategories()
+    {
+        Navigation.NavigateTo("/tickets/create/categories");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await TicketCategoryService.GetAllTicketCategoriesAsync();
     }
 
     public class TicketInputModel

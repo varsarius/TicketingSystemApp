@@ -27,6 +27,8 @@ builder.Services.AddScoped<CustomAuthProvider>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IArticleCategoryService, ArticleCategoryService>();
+builder.Services.AddScoped<ITicketCategoryService, TicketCategoryService>();
+
 
 builder.Services.AddScoped(sp => new HttpClient
 {

@@ -19,7 +19,7 @@ public class ArticleCategoryService : IArticleCategoryService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public async Task CreateAsync(ArticleCategoryCreateRequest request)
+    public async Task<int?> CreateAsync(ArticleCategoryCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -32,6 +32,8 @@ public class ArticleCategoryService : IArticleCategoryService
 
         var response = await _http.PostAsJsonAsync("api/articles/categories", request);
         response.EnsureSuccessStatusCode();
+
+        return null; // TODO: return from API normal id
     }
 
     public async Task<bool> DeleteByIdAsync(int id)

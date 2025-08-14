@@ -19,7 +19,7 @@ public class TicketService : ITicketService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public async Task CreateAsync(TicketCreateRequest request)
+    public async Task<int?> CreateAsync(TicketCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -40,6 +40,9 @@ public class TicketService : ITicketService
 
         var response = await _http.PostAsJsonAsync("api/tickets", request);
         response.EnsureSuccessStatusCode();
+
+        return null; //TODO: return normall id
+
     }
 
     public async Task<List<TicketDto>> GetAllAsync()

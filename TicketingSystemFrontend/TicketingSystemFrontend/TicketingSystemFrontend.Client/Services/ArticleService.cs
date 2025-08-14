@@ -22,7 +22,7 @@ public class ArticleService : IArticleService
         _authenticationStateProvider = authenticationStateProvider;
         _fileUploadService = fileUploadService;
     }
-    public async Task<int> CreateAsync(ArticleCreateRequest request)
+    public async Task<int?> CreateAsync(ArticleCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;

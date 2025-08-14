@@ -55,4 +55,20 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
         await _mediator.Send(new DeleteArticleByIdCommand(id));
         return Ok();
     }
+
+    [HttpPost("{articleId}/files")]
+    public async Task<IActionResult> UploadFiles(int articleId, [FromForm] List<IFormFile> files)
+    {
+        if (files == null || !files.Any())
+            return BadRequest("No files provided.");
+
+        var command = new UploadArticleFilesCommand
+        {
+            ArticleId = articleId,
+            Files = files.ToList()
+        };
+
+        await _mediator.Send(command);
+        return Ok();
+    }
 }

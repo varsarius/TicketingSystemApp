@@ -49,12 +49,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllAsync();
     }
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.CreateArticleAsync(newArticle);
+        await ArticleService.CreateAsync(newArticle);
         Navigation.NavigateTo("/articles");
     }
 

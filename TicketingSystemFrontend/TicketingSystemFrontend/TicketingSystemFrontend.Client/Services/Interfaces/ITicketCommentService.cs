@@ -3,9 +3,7 @@ using TicketingSystemFrontend.Client.Requests;
 
 namespace TicketingSystemFrontend.Client.Services.Interfaces;
 
-public interface IArticleCategoryService : ICrudService<ArticleCategoryDto, ArticleCategoryCreateRequest, ArticleCategoryUpdateRequest>
+public interface ITicketCommentService : ICrudService<TicketCommentDto, TicketCommentCreateRequest, TicketCommentUpdateRequest>
 {
 
 }
-
-

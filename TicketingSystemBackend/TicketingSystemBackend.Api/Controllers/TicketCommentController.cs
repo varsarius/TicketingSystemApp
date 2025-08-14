@@ -8,7 +8,7 @@ namespace TicketingSystemBackend.Api.Controllers;
 [Route("/api/tickets/comments")]
 public class TicketCommentController : ControllerBase, IController<CreateTicketCommentCommand, UpdateTicketCommentCommand>
 {
-    private IMediator _mediator;
+    private readonly IMediator _mediator;
 
     public TicketCommentController(IMediator mediator)
     {

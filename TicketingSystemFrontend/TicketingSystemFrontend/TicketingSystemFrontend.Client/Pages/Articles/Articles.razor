@@ -68,7 +68,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        articles = await ArticleService.GetAllArticlesAsync();
+        articles = await ArticleService.GetAllAsync();
     }
 
     private void CreateArticle()

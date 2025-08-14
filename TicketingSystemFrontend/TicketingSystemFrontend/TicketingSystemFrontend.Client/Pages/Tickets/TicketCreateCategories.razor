@@ -1,0 +1,163 @@
+﻿@page "/tickets/create/categories"
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+@inject ITicketCategoryService TicketCategoryService
+
+@inject NavigationManager Navigation
+
+<h3>Edit Tickets</h3>
+
+@if (!categories.Any())
+{
+    <p><em>Loading categories...</em></p>
+}
+else
+{
+    <ul class="list-group mb-3">
+        @foreach (var category in categories)
+        {
+            @if (editingCategoryId != category.Id)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @category.CategoryName
+                    <div>
+                        <button type="button" class="btn btn-warning me-2" @onclick="@(() => StartEditing(category))">Edit</button>
+                        <button type="button" class="btn btn-danger" @onclick="@(() => DeleteCategory(category.Id))">Delete</button>
+                        <span class="badge bg-secondary">ID: @category.Id</span>
+                    </div>
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <input class="form-control me-3" @bind="category.CategoryName" style="max-width: 300px;" />
+                    <div>
+                        <button class="btn btn-primary me-2" @onclick="@(() => SaveCategory(category))">Save</button>
+                        <button class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+    @if (!isCreating)
+    {
+        <div>
+            <button type="button" class="btn btn-primary me-3" @onclick="CreateCategory">
+                Create
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="ExitCategory">
+                Exit
+            </button>
+        </div>
+    }
+    else
+    {
+        <input class="form-control me-3 mb-3" @bind="newCategoryName" placeholder="New category name" style="max-width: 300px;" />
+        <div>
+            <button class="btn btn-success me-2" @onclick="ConfirmCreate">Create</button>
+            <button class="btn btn-secondary" @onclick="CancelCreate">Cancel</button>
+        </div>
+    }
+
+
+}
+
+@code {
+    private bool isCreating = false;
+    private List<TicketCategoryDto> categories = [];
+    private int? editingCategoryId = null;
+    private string originalCategoryName = string.Empty;
+    private string newCategoryName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await TicketCategoryService.GetAllTicketCategoriesAsync();
+    }
+
+    private void StartEditing(TicketCategoryDto category)
+    {
+        editingCategoryId = category.Id;
+        originalCategoryName = category.CategoryName;
+    }
+
+    private void CancelEditing()
+    {
+        if (editingCategoryId.HasValue)
+        {
+            var cat = categories.FirstOrDefault(c => c.Id == editingCategoryId.Value);
+            if (cat != null)
+                cat.CategoryName = originalCategoryName;
+        }
+        editingCategoryId = null;
+    }
+
+    private async Task SaveCategory(TicketCategoryDto category)
+    {
+        // TODO: Call backend to update category
+
+        var updateCreate = new TicketCategoryUpdateRequest
+        {
+            Id = category.Id,
+            CategoryName = category.CategoryName
+        };
+
+        await TicketCategoryService.UpdateTicketCategoryAsync(updateCreate);
+        Console.WriteLine($"Saving category {category.Id} with new name {category.CategoryName}");
+        editingCategoryId = null;
+    }
+
+    private async Task DeleteCategory(int categoryId)
+    {
+        // TODO: Call backend to delete category
+        await TicketCategoryService.DeleteTicketCategoryAsync(categoryId);
+        Console.WriteLine($"Deleting category {categoryId}");
+        categories.RemoveAll(c => c.Id == categoryId);
+    }
+
+    private void CreateCategory()
+    {
+        isCreating = true; // Show the new category input field
+    }
+
+    private void ExitCategory()
+    {
+        Navigation.NavigateTo("/tickets/create"); // Just leave the page
+    }
+
+
+    private async Task ConfirmCreate()
+    {
+        if (!string.IsNullOrWhiteSpace(newCategoryName))
+        {
+            // Simulate ID assignment for testing
+            var newCategory = new TicketCategoryCreateRequest
+            {
+                Id = categories.Any() ? categories.Max(c => c.Id) + 1 : 1,
+                CategoryName = newCategoryName
+            };
+
+            var componentCategory = new TicketCategoryDto
+            {
+                Id = newCategory.Id,
+                CategoryName = newCategory.CategoryName
+            };
+
+            await TicketCategoryService.CreateTicketCategoryAsync(newCategory);
+            categories.Add(componentCategory);
+
+            Console.WriteLine($"Created new category: {newCategoryName}");
+        }
+        isCreating = false;
+        newCategoryName = string.Empty;
+    }
+
+
+    private void CancelCreate()
+    {
+        isCreating = false;
+        newCategoryName = string.Empty;
+    }
+
+}

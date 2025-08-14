@@ -83,7 +83,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllAsync();
     }
 
     private async Task HandleValidSubmit()

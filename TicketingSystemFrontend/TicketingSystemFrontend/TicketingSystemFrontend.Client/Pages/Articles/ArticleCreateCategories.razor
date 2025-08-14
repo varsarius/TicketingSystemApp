@@ -73,7 +73,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await ArticleCategoryService.GetAllArticleCategoriesAsync();
+        categories = await ArticleCategoryService.GetAllAsync();
     }
 
     private void StartEditing(ArticleCategoryDto category)
@@ -103,7 +103,7 @@ else
                 CategoryName = category.CategoryName
             };
 
-        await ArticleCategoryService.UpdateArticleCategoryAsync(updateCreate);
+        await ArticleCategoryService.UpdateAsync(updateCreate);
         Console.WriteLine($"Saving category {category.Id} with new name {category.CategoryName}");
         editingCategoryId = null;
     }
@@ -111,7 +111,7 @@ else
     private async Task DeleteCategory(int categoryId)
     {
         // TODO: Call backend to delete category
-        await ArticleCategoryService.DeleteArticleCategoryAsync(categoryId);
+        await ArticleCategoryService.DeleteByIdAsync(categoryId);
         Console.WriteLine($"Deleting category {categoryId}");
         categories.RemoveAll(c => c.Id == categoryId);
     }
@@ -145,7 +145,7 @@ else
                     CategoryName = newCategory.CategoryName
                 };
 
-            await ArticleCategoryService.CreateArticleCategoryAsync(newCategory);
+            await ArticleCategoryService.CreateAsync(newCategory);
             categories.Add(componentCategory);
 
             Console.WriteLine($"Created new category: {newCategoryName}");

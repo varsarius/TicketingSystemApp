@@ -6,7 +6,7 @@ public interface ICrudService<T, TCreateRequest, TUpdateRequest>
     Task<int?> CreateAsync(TCreateRequest request);
     Task<List<T>> GetAllAsync();
     Task<T?> GetByIdAsync(int id);
-    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteByIdAsync(int id);
     Task UpdateAsync(TUpdateRequest request);
 
 }

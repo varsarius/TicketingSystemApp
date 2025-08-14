@@ -2,8 +2,7 @@
 using TicketingSystemFrontend.Client.Requests;
 namespace TicketingSystemFrontend.Client.Services.Interfaces;
 
-public interface ITicketService
+public interface ITicketService : ICrudService<TicketDto, TicketCreateRequest, TicketUpdateRequest>
 {
-    Task CreateTicketAsync(TicketCreateRequest request);
-    Task<List<TicketDto>> GetAllTicketsAsync();
+
 }

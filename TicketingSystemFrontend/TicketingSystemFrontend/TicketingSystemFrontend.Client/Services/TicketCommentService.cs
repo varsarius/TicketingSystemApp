@@ -19,7 +19,7 @@ public class TicketCommentService : ICrudService<TicketCommentDto, TicketComment
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public async Task CreateAsync(TicketCommentCreateRequest request)
+    public async Task<int?> CreateAsync(TicketCommentCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -40,6 +40,9 @@ public class TicketCommentService : ICrudService<TicketCommentDto, TicketComment
 
         var response = await _http.PostAsJsonAsync("api/tickets/comments", request);
         response.EnsureSuccessStatusCode();
+
+        return null; //TODO: return normall id
+
     }
 
     public async Task<List<TicketCommentDto>> GetAllAsync()

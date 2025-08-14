@@ -19,7 +19,7 @@ public class TicketCategoryService : ITicketCategoryService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public async Task CreateAsync(TicketCategoryCreateRequest request)
+    public async Task<int?> CreateAsync(TicketCategoryCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -31,6 +31,8 @@ public class TicketCategoryService : ITicketCategoryService
 
         var response = await _http.PostAsJsonAsync("api/tickets/categories", request);
         response.EnsureSuccessStatusCode();
+
+        return null; //TODO: return normall id
     }
 
     public async Task<bool> DeleteByIdAsync(int id)

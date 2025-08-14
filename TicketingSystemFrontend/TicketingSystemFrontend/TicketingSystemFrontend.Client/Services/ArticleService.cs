@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.DTOs;
@@ -12,14 +14,15 @@ public class ArticleService : IArticleService
 {
     private readonly HttpClient _http;
     private readonly CustomAuthProvider _authenticationStateProvider;
+    private readonly IFileUploadService _fileUploadService;
 
-    public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider)
+    public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider, IFileUploadService fileUploadService)
     {
         _http = http;
         _authenticationStateProvider = authenticationStateProvider;
+        _fileUploadService = fileUploadService;
     }
-
-    public async Task CreateAsync(ArticleCreateRequest request)
+    public async Task<int?> CreateAsync(ArticleCreateRequest request)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -36,10 +39,15 @@ public class ArticleService : IArticleService
         }
 
         var userId = Guid.Parse(userIdClaim.Value);
-        request.UserId = userId;
+
+        request.UserId = userId;// find from JWT token claim the Id of current authorized user
 
         var response = await _http.PostAsJsonAsync("api/articles", request);
         response.EnsureSuccessStatusCode();
+
+        // Read the created article ID from response (assuming API returns int)
+        var articleId = await response.Content.ReadFromJsonAsync<int>();
+        return articleId;
     }
 
     public async Task<List<ArticleDto>> GetAllAsync()
@@ -68,4 +76,11 @@ public class ArticleService : IArticleService
         var response = await _http.PutAsJsonAsync($"api/articles/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
+
+
+    public async Task UploadFilesAsync(int articleId, List<IBrowserFile> files)
+    {
+        await _fileUploadService.UploadFilesAsync(articleId, files, "articles");
+    }
+
 }

@@ -18,8 +18,8 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateArticleCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        var articleId = await _mediator.Send(command);
+        return Ok(articleId);
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -53,6 +53,22 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
     public async Task<IActionResult> DeleteById(int id)
     {
         await _mediator.Send(new DeleteArticleByIdCommand(id));
+        return Ok();
+    }
+
+    [HttpPost("{articleId}/files")]
+    public async Task<IActionResult> UploadFiles(int articleId, [FromForm] List<IFormFile> files)
+    {
+        if (files == null || !files.Any())
+            return BadRequest("No files provided.");
+
+        var command = new UploadArticleFilesCommand
+        {
+            ArticleId = articleId,
+            Files = files.ToList()
+        };
+
+        await _mediator.Send(command);
         return Ok();
     }
 }

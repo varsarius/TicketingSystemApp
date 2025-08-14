@@ -1,12 +1,13 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Services;
 using TicketingSystemFrontend.Client.Services.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces;
 using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
-using Microsoft.Extensions.DependencyInjection;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -46,7 +47,9 @@ builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
+builder.Services.AddMudServices();
 
 //builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
 //{

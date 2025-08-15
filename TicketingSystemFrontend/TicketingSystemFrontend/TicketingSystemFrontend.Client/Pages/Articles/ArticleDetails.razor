@@ -2,6 +2,8 @@
 
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@inject IJSRuntime JS
+
 @inject IArticleService ArticleService
 @inject NavigationManager Navigation
 
@@ -40,10 +42,16 @@ else
             else
             {
                 <ul>
-                    @foreach (var f in articleFiles)
+                    @* @foreach (var f in articleFiles)
                     {
                         <li>
                             <a href="@($"/api/articles/{id}/files/{f.Id}")" target="_blank">File @f.Id</a>
+                        </li>
+                    } *@
+                    @foreach (var f in articleFiles)
+                    {
+                        <li>
+                            <button class="btn btn-link" @onclick="() => DownloadFile(f.Id, f.FileName)">Download @f.FileName</button>
                         </li>
                     }
                 </ul>
@@ -84,5 +92,12 @@ else
             // Optionally handle failure
             Console.WriteLine("Failed to delete article");
         }
+    }
+
+    private async Task DownloadFile(int fileId, string fileName)
+    {
+        var bytes = await ArticleService.DownloadFileAsync(id, fileId); // new service method
+        var base64 = Convert.ToBase64String(bytes);
+        await JS.InvokeVoidAsync("downloadFileFromBytes", fileName, base64);
     }
 }

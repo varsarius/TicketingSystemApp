@@ -91,4 +91,12 @@ public class ArticleService : IArticleService
         return result ?? new List<ArticleFileDto>();
     }
 
+
+    public async Task<byte[]> DownloadFileAsync(int articleId, int fileId)
+    {
+        var response = await _http.GetAsync($"api/articles/{articleId}/files/{fileId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsByteArrayAsync();
+    }
+
 }

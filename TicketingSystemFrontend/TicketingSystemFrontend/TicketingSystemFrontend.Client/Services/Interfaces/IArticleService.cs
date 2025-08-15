@@ -8,4 +8,6 @@ public interface IArticleService : ICrudService<ArticleDto, ArticleCreateRequest
 {
     Task UploadFilesAsync(int articleId, List<IBrowserFile> files);
     Task<List<ArticleFileDto>> GetFilesAsync(int articleId);
+
+    Task<byte[]> DownloadFileAsync(int articleId, int fileId);
 }

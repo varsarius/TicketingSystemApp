@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Queries.Articles;
 
 namespace TicketingSystemBackend.Application.QueryHandlers.Articles;
-public class GetArticleFilesQueryHandler : IRequestHandler<GetArticleFilesQuery, List<string>>
+public class GetArticleFilesQueryHandler : IRequestHandler<GetArticleFilesQuery, List<ArticleFileDto>>
 {
     private readonly IArticleFileRepository _fileRepository;
     public GetArticleFilesQueryHandler(IArticleFileRepository fileRepository)
@@ -16,9 +17,13 @@ public class GetArticleFilesQueryHandler : IRequestHandler<GetArticleFilesQuery,
         _fileRepository = fileRepository;
     }
 
-    public async Task<List<string>> Handle(GetArticleFilesQuery request, CancellationToken cancellationToken)
+    public async Task<List<ArticleFileDto>> Handle(GetArticleFilesQuery request, CancellationToken cancellationToken)
     {
         var files = await _fileRepository.GetFilesByArticleIdAsync(request.ArticleId);
-        return files.Select(f => f.Path).ToList();
+        return files.Select(f => new ArticleFileDto
+        {
+            Id = f.Id,
+            FileName = Path.GetFileName(f.Path), // just the name for display
+        }).ToList();
     }
 }

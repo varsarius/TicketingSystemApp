@@ -90,26 +90,28 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
         if (file == null)
             return NotFound();
 
-        //// Example authorization logic
-        //var userId = User.FindFirst("sub")?.Value;
-        //if (!User.IsInRole("Admin") && file.Article.UserId.ToString() != userId)
-        //{
-        //    return Forbid();
-        //}
+        var relativePath = file.Path.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var fullPath = Path.Combine(_env.WebRootPath, relativePath);
 
+        if (!System.IO.File.Exists(fullPath))
+            return NotFound();
 
-        //HERE SHOULD BE DONE IN HANDLER
-        var fullPath = Path.Combine(_env.ContentRootPath, file.Path); // file.Path stores relative path
-        var contentType = "application/octet-stream";
+        // Detect content type
+        var contentType = GetContentType(fullPath);
 
-        var memory = new MemoryStream();
-        using (var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read))
+        // Return physical file with name
+        return PhysicalFile(fullPath, contentType, Path.GetFileName(fullPath));
+    }
+
+    // Detects MIME type from file extension
+    private static string GetContentType(string path)
+    {
+        var provider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+        if (!provider.TryGetContentType(path, out var contentType))
         {
-            await stream.CopyToAsync(memory);
+            contentType = "application/octet-stream"; // fallback
         }
-        memory.Position = 0;
-
-        return File(memory, contentType);
+        return contentType;
     }
 
 }

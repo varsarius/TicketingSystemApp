@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
 
 namespace TicketingSystemBackend.Application.Interfaces;
-public interface IArticleReadRepository : IReadRepository<ArticleDto>
+public interface ITicketReadRepository : IReadRepository<TicketDto>
 {
 
 }

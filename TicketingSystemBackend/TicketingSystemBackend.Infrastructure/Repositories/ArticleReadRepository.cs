@@ -25,20 +25,20 @@ public class ArticleReadRepository : IArticleReadRepository
         var articles = await _context.Articles
             .Include(a => a.ArticleCategory)
             .Select(a => new ArticleDto
-            {
-                Id = a.Id,
-                ArticleCategoryId = a.ArticleCategoryId,
-                ArticleCategoryName = a.ArticleCategory.CategoryName,
-                UserId = a.UserId,
-                UserName = _context.Users
+            (
+                a.Id,
+                a.ArticleCategoryId,
+                a.ArticleCategory.CategoryName,
+                a.UserId,
+                _context.Users
                     .Where(u => u.Id == a.UserId)
                     .Select(u => u.UserName)
                     .FirstOrDefault() ?? string.Empty,
-                Title = a.Title,
-                Description = a.Description,
-                CreatedAt = a.CreatedAt,
-                UpdatedAt = a.UpdatedAt
-            })
+                a.Title,
+                a.Description,
+                a.CreatedAt,
+                a.UpdatedAt
+            ))
             .ToListAsync();
 
 
@@ -52,20 +52,20 @@ public class ArticleReadRepository : IArticleReadRepository
             .Include(a => a.ArticleCategory)
             .Where(a => a.Id == id)
             .Select(a => new ArticleDto
-            {
-                Id = a.Id,
-                ArticleCategoryId = a.ArticleCategoryId,
-                ArticleCategoryName = a.ArticleCategory.CategoryName,
-                UserId = a.UserId,
-                UserName = _context.Users
+            (
+                a.Id,
+                a.ArticleCategoryId,
+                a.ArticleCategory.CategoryName,
+                a.UserId,
+                _context.Users
                     .Where(u => u.Id == a.UserId)
                     .Select(u => u.UserName)
                     .FirstOrDefault() ?? string.Empty,
-                Title = a.Title,
-                Description = a.Description,
-                CreatedAt = a.CreatedAt,
-                UpdatedAt = a.UpdatedAt
-            })
+                a.Title,
+                a.Description,
+                a.CreatedAt,
+                a.UpdatedAt
+            ))
             .FirstOrDefaultAsync();
     }
 }

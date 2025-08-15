@@ -16,25 +16,25 @@ public class ArticleCategoryController : ControllerBase, IController<CreateArtic
         _mediator = mediator;
     }
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateArticleCategoryCommand command)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateArticleCategoryCommand command)
     {
         await _mediator.Send(command);
         return Ok();
     }
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         var articleCategory = await _mediator.Send(new GetArticleCategoryByIdQuery(id));
         return Ok(articleCategory);
     }
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         var articleCategories = await _mediator.Send(new GetArticleCategoriesQuery());
         return Ok(articleCategories);
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateArticleCategoryCommand command)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateArticleCategoryCommand command)
     {
         if (id != command.Id)
             return BadRequest("Id of the update request mismatches the id of the body");
@@ -50,7 +50,7 @@ public class ArticleCategoryController : ControllerBase, IController<CreateArtic
         }
     }
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteById(int id)
+    public async Task<IActionResult> DeleteByIdAsync(int id)
     {
         await _mediator.Send(new DeleteArticleCategoryByIdCommand(id));
         return Ok();

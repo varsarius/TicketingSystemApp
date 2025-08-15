@@ -43,7 +43,7 @@ public class TicketRepository : ITicketRepository
     }
     public async Task DeleteByIdAsync(int id)
     {
-        var ticket = GetByIdAsync(id);
+        var ticket = await GetByIdAsync(id);
         if (ticket is not null)
         {
             _context.Remove(ticket);

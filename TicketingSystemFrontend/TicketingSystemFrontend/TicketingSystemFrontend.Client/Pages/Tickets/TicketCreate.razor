@@ -1,9 +1,14 @@
 ﻿@page "/tickets/create"
-@inject ITicketService TicketService
 @using System.ComponentModel.DataAnnotations
+@using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+@inject ITicketCategoryService TicketCategoryService
+
+
+@inject NavigationManager Navigation
 
 <PageTitle>Create Ticket</PageTitle>
 
@@ -25,14 +30,16 @@
             @* TO CHANGE LATER *@
             @* <InputSelect id="category" class="form-select" @bind-Value="ticketRequest.Category">
                 <option value="">-- Select --</option>
-                <option>Hardware</option>
-                <option>Software</option>
-                <option>Network</option>
-                <option>Account</option>
-                <option>Other</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.CategoryName</option>
+                }
             </InputSelect>
             <ValidationMessage For="@(() => ticketRequest.Category)" /> *@
+            <a class="btn btn-primary" href="/tickets/create/categories" >Edit Categories</a>
+
         </div>
+
     </div>
 
     <div class="mb-3">
@@ -56,8 +63,9 @@
 
         <div class="col-md-6">
             <label for="file" class="form-label">Attachment (optional)</label>
-            <InputFile OnChange="HandleFileChange" />
+            <InputFile OnChange="HandleFileChange" multiple/>
         </div>
+
     </div>
 
 
@@ -80,6 +88,8 @@
 @code {
     private TicketCreateRequest ticketRequest = new();
     private List<string> agents = new() { "Alice", "Bob", "Charlie" };
+    private List<TicketCategoryDto> categories = [];
+
 
     private async Task HandleValidSubmit()
     {
@@ -109,4 +119,20 @@
         // TODO: Save to backend or buffer
     }
 
+    public class TicketInputModel
+    {
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public string Priority { get; set; }
+
+        public string AssignedTo { get; set; }
+    }
 }

@@ -2,5 +2,5 @@
 
 public class TicketCategoryCreateRequest
 {
-    public string CategoryName;
+    public string CategoryName { get; set; }
 }

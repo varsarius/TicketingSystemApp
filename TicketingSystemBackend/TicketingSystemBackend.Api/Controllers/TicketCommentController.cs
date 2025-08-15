@@ -17,8 +17,8 @@ public class TicketCommentController : ControllerBase, IController<CreateTicketC
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateTicketCommentCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        var ticketCommentId = await _mediator.Send(command);
+        return Ok(ticketCommentId);
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteByIdAsync(int id)

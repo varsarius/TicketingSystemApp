@@ -1,7 +1,10 @@
 ﻿@page "/tickets/create"
+
+@using MudBlazor
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
+@using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
@@ -28,15 +31,14 @@
         <div class="col-md-6">
             <label for="category" class="form-label">Category</label>
             @* TO CHANGE LATER *@
-            @* <InputSelect id="category" class="form-select" @bind-Value="ticketRequest.Category">
+            <InputSelect id="category" class="form-select" @bind-Value="ticketRequest.TicketCategoryId">
                 <option value="">-- Select --</option>
                 @foreach (var category in categories)
                 {
                     <option value="@category.Id">@category.CategoryName</option>
                 }
             </InputSelect>
-            <ValidationMessage For="@(() => ticketRequest.Category)" /> *@
-            <a class="btn btn-primary" href="/tickets/create/categories" >Edit Categories</a>
+            <ValidationMessage For="@(() => ticketRequest.TicketCategoryId)" />
 
         </div>
 
@@ -53,63 +55,94 @@
             <label for="priority" class="form-label">Priority</label>
             <InputSelect id="priority" class="form-select" @bind-Value="ticketRequest.Priority">
                 <option value="">-- Select --</option>
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-                <option>Critical</option>
+                @foreach (Priority priority in Enum.GetValues(typeof(Priority)))
+                {
+                    <option value="@priority">@priority</option>
+                }
             </InputSelect>
             <ValidationMessage For="@(() => ticketRequest.Priority)" />
         </div>
 
-        <div class="col-md-6">
-            <label for="file" class="form-label">Attachment (optional)</label>
-            <InputFile OnChange="HandleFileChange" multiple/>
-        </div>
+        <MudPaper Class="col-md-6"
+                  Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
+                  @ondrop="OnDrop"
+                  @ondragover:preventDefault>
+            <div>
+                <label for="files" class="form-label">Files</label>
+                <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+                <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
+                <InputFile OnChange="OnFilesChanged" multiple class="border" />
+            </div>
+        </MudPaper>
+
+        @if (files.Any())
+        {
+            <MudTable Items="files" Dense="true">
+                <HeaderContent>
+                    <MudTh>File Name</MudTh>
+                    <MudTh>Size (MB)</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate Context ="newContext">
+                    <MudTd>@newContext.Name</MudTd>
+                    <MudTd>@(Math.Round(newContext.Size / 1024.0 / 1024.0, 2))</MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       OnClick="@(() => RemoveFile(newContext))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+            <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
+        }
 
     </div>
 
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" type="submit">Submit Ticket</button>
 
-
-    <div class="mb-3">
-        <label class="form-label">Assigned To</label>
-        <InputSelect class="form-select" @bind-Value="ticketRequest.AgentId">
-            <option value="">-- Select Agent --</option>
-            @foreach (var agent in agents)
-            {
-                <option value="@agent">@agent</option>
-            }
-        </InputSelect>
+        <a class="btn btn-success" href="/tickets/create/categories">Edit Categories</a>
     </div>
 
 
-    <button class="btn btn-primary" type="submit">Submit Ticket</button>
 </EditForm>
+
 
 @code {
     private TicketCreateRequest ticketRequest = new();
-    private List<string> agents = new() { "Alice", "Bob", "Charlie" };
     private List<TicketCategoryDto> categories = [];
+    private List<IBrowserFile> files = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await TicketCategoryService.GetAllAsync();
+    }
 
     private async Task HandleValidSubmit()
     {
+
+
         var request = new TicketCreateRequest
         {
             Title = ticketRequest.Title,
             Description = ticketRequest.Description,
             Priority = ticketRequest.Priority,
-            AgentId = ticketRequest.AgentId
+            TicketCategoryId = ticketRequest.TicketCategoryId
         };
 
         try
         {
-            await TicketService.CreateAsync(request);
+            var ticketId = await TicketService.CreateAsync(ticketRequest);
+
             // Optional: Navigate or show success message
+            Navigation.NavigateTo($"/tickets/{ticketId}");
+
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine("Ticket creation failed: " + ex.Message);
         }
+
     }
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)
@@ -117,6 +150,21 @@
         var file = e.File;
         Console.WriteLine($"File selected: {file.Name} ({file.Size} bytes)");
         // TODO: Save to backend or buffer
+    }
+
+    private void OnDrop(DragEventArgs e)
+    {
+        // Prevent default browser behavior
+    }
+
+    private void OnFilesChanged(InputFileChangeEventArgs e)
+    {
+        files.AddRange(e.GetMultipleFiles());
+    }
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        files.Remove(file);
     }
 
     public class TicketInputModel
@@ -131,8 +179,7 @@
         public string Description { get; set; }
 
         [Required]
-        public string Priority { get; set; }
+        public Priority? Priority { get; set; }
 
-        public string AssignedTo { get; set; }
     }
 }

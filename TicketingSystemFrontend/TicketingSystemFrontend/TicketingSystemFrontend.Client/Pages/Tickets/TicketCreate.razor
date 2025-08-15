@@ -120,6 +120,8 @@
 
     private async Task HandleValidSubmit()
     {
+
+
         var request = new TicketCreateRequest
         {
             Title = ticketRequest.Title,
@@ -130,13 +132,17 @@
 
         try
         {
-            await TicketService.CreateAsync(request);
+            var ticketId = await TicketService.CreateAsync(ticketRequest);
+
             // Optional: Navigate or show success message
+            Navigation.NavigateTo($"/tickets/{ticketId}");
+
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine("Ticket creation failed: " + ex.Message);
         }
+
     }
 
     private async Task HandleFileChange(InputFileChangeEventArgs e)

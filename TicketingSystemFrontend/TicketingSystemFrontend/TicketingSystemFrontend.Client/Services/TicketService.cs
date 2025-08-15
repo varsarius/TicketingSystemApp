@@ -42,7 +42,8 @@ public class TicketService : ITicketService
         var response = await _http.PostAsJsonAsync("api/tickets", request);
         response.EnsureSuccessStatusCode();
 
-        return null; //TODO: return normall id
+        var ticketId = await response.Content.ReadFromJsonAsync<int>();
+        return ticketId; //TODO: return normall id
 
     }
 

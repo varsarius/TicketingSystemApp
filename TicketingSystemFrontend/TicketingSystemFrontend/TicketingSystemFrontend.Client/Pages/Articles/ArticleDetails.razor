@@ -2,6 +2,7 @@
 
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@using TicketingSystemFrontend.Client.Services.Extensions;
 @inject IJSRuntime JS
 
 @inject IArticleService ArticleService
@@ -72,7 +73,7 @@ else
 
     private ArticleDto? article;
 
-    private List<ArticleFileDto> articleFiles = new();
+    private List<FileDto> articleFiles = new();
 
     protected override async Task OnParametersSetAsync()
     {

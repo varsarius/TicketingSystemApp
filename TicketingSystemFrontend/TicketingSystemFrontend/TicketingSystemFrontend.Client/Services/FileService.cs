@@ -43,7 +43,13 @@ public class FileService : IFileService
 
         foreach (var file in files)
         {
-            var streamContent = new StreamContent(file.OpenReadStream(long.MaxValue));
+            // read each file only once
+            await using var fileStream = file.OpenReadStream(50 * 1024 * 1024); // 50 MB max
+            var memoryStream = new MemoryStream();
+            await fileStream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            var streamContent = new StreamContent(memoryStream);
             streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             content.Add(streamContent, "files", file.Name);
         }

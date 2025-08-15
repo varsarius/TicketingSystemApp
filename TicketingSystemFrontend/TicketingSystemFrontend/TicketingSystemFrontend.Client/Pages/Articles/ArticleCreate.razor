@@ -4,6 +4,7 @@
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@using TicketingSystemFrontend.Client.Services.Extensions;
 @inject IArticleService ArticleService
 @inject IArticleCategoryService ArticleCategoryService
 @inject NavigationManager Navigation
@@ -98,7 +99,7 @@
             {
                 if (articleId is not null)
                 {
-                    await ArticleService.UploadFilesAsync((int) articleId, files);
+                    await ArticleService.UploadFilesAsync((int)articleId, files);
                 }
             }
 
@@ -124,6 +125,7 @@
 
     private void OnFilesChanged(InputFileChangeEventArgs e)
     {
+        files.Clear(); // TODO: TOFIXME: multiple sources of files. If you add some file and then another file - it will crush on uppload now. and remove this line ofc. 
         files.AddRange(e.GetMultipleFiles());
     }
 

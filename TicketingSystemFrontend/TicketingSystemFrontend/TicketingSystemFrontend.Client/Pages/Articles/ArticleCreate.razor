@@ -4,9 +4,11 @@
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@using Blazored.LocalStorage
 @inject IArticleService ArticleService
 @inject IArticleCategoryService ArticleCategoryService
 @inject NavigationManager Navigation
+@inject ILocalStorageService LocalStorage
 
 <h3>Create New Article</h3>
 
@@ -37,7 +39,7 @@
             <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
         </div>
     </div>
-    @*TODO:расширить облать драг н дропа файлов чтобы не приходилось целиться в маленькое окошко, а также выделить эту область рамкой*@
+    @*TODO: расширить облать драг н дропа файлов чтобы не приходилось целиться в маленькое окошко, а также выделить эту область рамкой для красоты*@
     <MudPaper Class="pa-6 d-flex justify-center align-center"
               Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
               @ondrop="OnDrop"
@@ -48,7 +50,7 @@
             <InputFile OnChange="OnFilesChanged" multiple class="border" />
         </div>
     </MudPaper>
-    @*TODO: add "Files:"*@
+    @*TODO: add "Files:" for better UX*@
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>
@@ -82,46 +84,45 @@
     private ArticleCreateRequest newArticle = new();
     private List<ArticleCategoryDto> categories = new();
     private List<IBrowserFile> files = new();
+    private bool isDragging = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        categories = await ArticleCategoryService.GetAllAsync();
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     categories = await ArticleCategoryService.GetAllAsync();
+    //     var savedArticle = await LocalStorage.GetItemAsync<ArticleCreateRequest>("savedArticleCreate");
+    //     if (savedArticle != null)
+    //     {
+    //         newArticle = savedArticle;
+    //     }
+    // }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            // 1️⃣ Create article and get its ID
+            await LocalStorage.RemoveItemAsync("savedArticleCreate");
             var articleId = await ArticleService.CreateAsync(newArticle);
-
-            // 2️⃣ Upload files (if any)
-            if (files.Any())
+            if (files.Any() && articleId.HasValue)
             {
-                if (articleId is not null)
-                {
-                    await ArticleService.UploadFilesAsync((int) articleId, files);
-                }
+                await ArticleService.UploadFilesAsync(articleId.Value, files);
             }
-
-            // Navigate after successful save
             Navigation.NavigateTo($"/articles/{articleId}");
         }
         catch (Exception ex)
         {
-            // handle error (show message, log, etc.)
             Console.Error.WriteLine($"Error creating article: {ex.Message}");
         }
     }
 
-    private void EditCategories()
+    private async Task EditCategories()
     {
-        //TODO: Prevent reseting content that user typed when going to categories
+        await LocalStorage.SetItemAsync("savedArticleCreate", newArticle);
         Navigation.NavigateTo("/articles/create/categories");
     }
 
-    private void Cancel()
+    private async Task Cancel()
     {
+        await LocalStorage.RemoveItemAsync("savedArticleCreate");
         Navigation.NavigateTo("/articles");
     }
 

@@ -2,6 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests
+@using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
@@ -36,7 +37,6 @@
                 }
             </InputSelect>
             <ValidationMessage For="@(() => ticketRequest.Category)" /> *@
-            <a class="btn btn-primary" href="/tickets/create/categories" >Edit Categories</a>
 
         </div>
 
@@ -53,10 +53,10 @@
             <label for="priority" class="form-label">Priority</label>
             <InputSelect id="priority" class="form-select" @bind-Value="ticketRequest.Priority">
                 <option value="">-- Select --</option>
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-                <option>Critical</option>
+                @foreach (Priority priority in Enum.GetValues(typeof(Priority)))
+                {
+                    <option value="@priority">@priority</option>
+                }
             </InputSelect>
             <ValidationMessage For="@(() => ticketRequest.Priority)" />
         </div>
@@ -68,28 +68,19 @@
 
     </div>
 
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" type="submit">Submit Ticket</button>
 
-
-    <div class="mb-3">
-        <label class="form-label">Assigned To</label>
-        <InputSelect class="form-select" @bind-Value="ticketRequest.AgentId">
-            <option value="">-- Select Agent --</option>
-            @foreach (var agent in agents)
-            {
-                <option value="@agent">@agent</option>
-            }
-        </InputSelect>
+        <a class="btn btn-success" href="/tickets/create/categories">Edit Categories</a>
     </div>
 
 
-    <button class="btn btn-primary" type="submit">Submit Ticket</button>
 </EditForm>
+
 
 @code {
     private TicketCreateRequest ticketRequest = new();
-    private List<string> agents = new() { "Alice", "Bob", "Charlie" };
-    private List<TicketCategoryDto> categories = [];
-
+    private List<ArticleCategoryDto> categories = [];
 
     private async Task HandleValidSubmit()
     {
@@ -98,7 +89,6 @@
             Title = ticketRequest.Title,
             Description = ticketRequest.Description,
             Priority = ticketRequest.Priority,
-            AgentId = ticketRequest.AgentId
         };
 
         try
@@ -131,8 +121,7 @@
         public string Description { get; set; }
 
         [Required]
-        public string Priority { get; set; }
+        public Priority? Priority { get; set; }
 
-        public string AssignedTo { get; set; }
     }
 }

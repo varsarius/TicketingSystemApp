@@ -34,7 +34,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("FilesId");
 
-                    b.ToTable("ArticleFile");
+                    b.ToTable("ArticleFile", (string)null);
                 });
 
             modelBuilder.Entity("FileTicket", b =>
@@ -49,7 +49,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("TicketsId");
 
-                    b.ToTable("FileTicket");
+                    b.ToTable("FileTicket", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -217,7 +217,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.ArticleCategory", b =>
@@ -240,7 +240,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ArticleCategories");
+                    b.ToTable("ArticleCategories", (string)null);
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.File", b =>
@@ -257,7 +257,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.Ticket", b =>
@@ -301,7 +301,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("TicketCategoryId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.TicketCategory", b =>
@@ -324,7 +324,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TicketCategories");
+                    b.ToTable("TicketCategories", (string)null);
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Domain.Entities.TicketComment", b =>
@@ -352,7 +352,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("TicketComments");
+                    b.ToTable("TicketComments", (string)null);
                 });
 
             modelBuilder.Entity("TicketingSystemBackend.Infrastructure.Data.ApplicationUser", b =>
@@ -449,7 +449,7 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("ArticleFile", b =>

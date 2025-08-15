@@ -33,7 +33,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
             .HasOne<ApplicationUser>() // related entity type
             .WithMany() // no collection navigation
             .HasForeignKey(a => a.UserId) // FK in Article
-            .OnDelete(DeleteBehavior.Restrict); // optional
+            .OnDelete(DeleteBehavior.Restrict); // what is this?
 
     }
 

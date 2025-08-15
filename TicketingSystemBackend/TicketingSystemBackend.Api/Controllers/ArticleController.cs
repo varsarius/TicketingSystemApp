@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TicketingSystemBackend.Application.Commands.Articles;
+using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Queries.Articles;
 
 namespace TicketingSystemBackend.Api.Controllers;
@@ -10,10 +11,12 @@ namespace TicketingSystemBackend.Api.Controllers;
 public class ArticleController : ControllerBase, IController<CreateArticleCommand, UpdateArticleCommand>
 {
     private readonly IMediator _mediator;
+    private readonly IWebHostEnvironment _env;
 
-    public ArticleController(IMediator mediator)
+    public ArticleController(IMediator mediator, IWebHostEnvironment env)
     {
         _mediator = mediator;
+        _env = env;
     }
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateArticleCommand command)
@@ -71,4 +74,44 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
         await _mediator.Send(command);
         return Ok();
     }
+
+    [HttpGet("{articleId}/files")]
+    public async Task<ActionResult<List<ArticleFileDto>>> GetArticleFiles(int articleId)
+    {
+        var files = await _mediator.Send(new GetArticleFilesQuery(articleId));
+        return Ok(files);
+    }
+
+    [HttpGet("{articleId}/files/{fileId}")]
+    public async Task<IActionResult> DownloadFile(int articleId, int fileId)
+    {
+        var file = await _mediator.Send(new GetArticleFileByIdQuery(articleId, fileId));
+
+        if (file == null)
+            return NotFound();
+
+        var relativePath = file.Path.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var fullPath = Path.Combine(_env.WebRootPath, relativePath);
+
+        if (!System.IO.File.Exists(fullPath))
+            return NotFound();
+
+        // Detect content type
+        var contentType = GetContentType(fullPath);
+
+        // Return physical file with name
+        return PhysicalFile(fullPath, contentType, Path.GetFileName(fullPath));
+    }
+
+    // Detects MIME type from file extension
+    private static string GetContentType(string path)
+    {
+        var provider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+        if (!provider.TryGetContentType(path, out var contentType))
+        {
+            contentType = "application/octet-stream"; // fallback
+        }
+        return contentType;
+    }
+
 }

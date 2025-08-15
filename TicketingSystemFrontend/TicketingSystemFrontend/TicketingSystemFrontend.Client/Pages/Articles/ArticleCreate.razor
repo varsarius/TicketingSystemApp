@@ -37,23 +37,25 @@
             <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
         </div>
     </div>
-
+    @*TODO:расширить облать драг н дропа файлов чтобы не приходилось целиться в маленькое окошко, а также выделить эту область рамкой*@
+    <MudPaper Class="pa-6 d-flex justify-center align-center"
+              Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
+              @ondrop="OnDrop"
+              @ondragover:preventDefault>
+        <div>
+            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+            <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
+            <InputFile OnChange="OnFilesChanged" multiple class="border" />
+        </div>
+    </MudPaper>
+    @*TODO: add "Files:"*@
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>
 
 <hr />
 
-<MudPaper Class="pa-6 d-flex justify-center align-center"
-          Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
-          @ondrop="OnDrop"
-          @ondragover:preventDefault>
-    <div>
-        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
-        <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
-        <InputFile OnChange="OnFilesChanged" multiple class="border" />
-    </div>
-</MudPaper>
+
 
 @if (files.Any())
 {
@@ -103,7 +105,7 @@
             }
 
             // Navigate after successful save
-            Navigation.NavigateTo("/articles");
+            Navigation.NavigateTo($"/articles/{articleId}");
         }
         catch (Exception ex)
         {
@@ -114,6 +116,7 @@
 
     private void EditCategories()
     {
+        //TODO: Prevent reseting content that user typed when going to categories
         Navigation.NavigateTo("/articles/create/categories");
     }
 

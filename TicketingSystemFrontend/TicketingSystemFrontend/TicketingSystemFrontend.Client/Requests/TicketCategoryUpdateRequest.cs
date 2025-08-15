@@ -1,7 +1,12 @@
-﻿namespace TicketingSystemFrontend.Client.Requests;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TicketingSystemFrontend.Client.Requests;
 
 public class TicketCategoryUpdateRequest
 {
-    public int Id;
-    public string CategoryName;
+    public int Id { get; set; }
+    [Required]
+    public string CategoryName { get; set; } = null!;
+
+    
 }

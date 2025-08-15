@@ -20,8 +20,8 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateTicketCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        var ticketId = await _mediator.Send(command);
+        return Ok(ticketId);
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(int id)

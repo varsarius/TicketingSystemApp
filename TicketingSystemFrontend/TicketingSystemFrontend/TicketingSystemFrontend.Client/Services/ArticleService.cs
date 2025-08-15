@@ -14,7 +14,7 @@ public class ArticleService : IArticleService
 {
     private readonly HttpClient _http;
     private readonly CustomAuthProvider _authenticationStateProvider;
-    private readonly IFileUploadService _fileUploadService;
+    private readonly IFileService _fileUploadService;
 
     public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider, IFileUploadService fileUploadService)
     {

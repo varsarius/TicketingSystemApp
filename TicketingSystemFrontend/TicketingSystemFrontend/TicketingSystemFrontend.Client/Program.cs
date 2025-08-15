@@ -49,7 +49,7 @@ builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddScoped<IFileUploadService, FileService>();
 
 builder.Services.AddMudServices();
 

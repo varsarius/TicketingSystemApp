@@ -114,4 +114,23 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
         return contentType;
     }
 
+    [HttpDelete("{articleId}/files/{fileId}")]
+    public async Task<IActionResult> DeleteFile(int articleId, int fileId)
+    {
+        try
+        {
+            await _mediator.Send(new DeleteArticleFileCommand(articleId, fileId));
+            return Ok();
+        }
+        catch (FileNotFoundException)
+        {
+            return NotFound($"File with ID {fileId} not found for article {articleId}.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
 }

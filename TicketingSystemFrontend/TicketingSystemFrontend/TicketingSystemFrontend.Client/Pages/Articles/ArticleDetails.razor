@@ -43,16 +43,13 @@ else
             else
             {
                 <ul>
-                    @* @foreach (var f in articleFiles)
-                    {
-                        <li>
-                            <a href="@($"/api/articles/{id}/files/{f.Id}")" target="_blank">File @f.Id</a>
-                        </li>
-                    } *@
                     @foreach (var f in articleFiles)
                     {
                         <li>
                             <button class="btn btn-link" @onclick="() => DownloadFile(f.Id, f.FileName)">Download @f.FileName</button>
+                            <button class="btn btn-sm btn-danger ms-2" @onclick="() => DeleteFile(f.Id)">
+                                Delete
+                            </button>
                         </li>
                     }
                 </ul>
@@ -100,5 +97,22 @@ else
         var bytes = await ArticleService.DownloadFileAsync(id, fileId); // new service method
         var base64 = Convert.ToBase64String(bytes);
         await JS.InvokeVoidAsync("downloadFileFromBytes", fileName, base64);
+    }
+
+    private async Task DeleteFile(int fileId)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete this file?");
+        if (!confirmed) return;
+
+        try
+        {
+            await ArticleService.DeleteFileAsync(id, fileId);
+            articleFiles = await ArticleService.GetFilesAsync(id); // refresh list
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting file: {ex.Message}");
+            // Optionally show a user-facing alert
+        }
     }
 }

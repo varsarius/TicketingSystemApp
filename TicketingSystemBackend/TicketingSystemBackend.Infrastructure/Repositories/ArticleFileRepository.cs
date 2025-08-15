@@ -23,6 +23,18 @@ public class ArticleFileRepository : IArticleFileRepository
         await _context.Files.AddAsync(file);
     }
 
+    public async Task DeleteAsync(Domain.Entities.File file)
+    {
+        _context.Files.Remove(file);
+        await SaveChangesAsync();
+    }
+
+    public async Task<Domain.Entities.File?> GetByIdAsync(int id)
+    {
+        return await _context.Files
+            .FirstOrDefaultAsync(f => f.Id == id);
+    }
+
     public async Task<Domain.Entities.File?> GetFileByIdAndArticleIdAsync(int fileId, int articleId, CancellationToken cancellationToken)
     {
         return await _context.Files

@@ -83,4 +83,20 @@ public class ArticleService : IArticleService
         await _fileUploadService.UploadFilesAsync(articleId, files, "articles");
     }
 
+    public async Task<List<ArticleFileDto>> GetFilesAsync(int articleId)
+    {
+        var result = await _http.GetFromJsonAsync<List<ArticleFileDto>>(
+            $"api/articles/{articleId}/files");
+
+        return result ?? new List<ArticleFileDto>();
+    }
+
+
+    public async Task<byte[]> DownloadFileAsync(int articleId, int fileId)
+    {
+        var response = await _http.GetAsync($"api/articles/{articleId}/files/{fileId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsByteArrayAsync();
+    }
+
 }

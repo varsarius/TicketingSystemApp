@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketingSystemBackend.Application.DTOs;
 
 namespace TicketingSystemBackend.Application.Interfaces;
-public interface IArticleReadRepository : IReadRepository<ArticleDto>
+public interface IReadRepository<TDto> where TDto : class
 {
-
+    Task<List<TDto>> GetAllAsync();
+    Task<TDto?> GetByIdAsync(int id);
 }

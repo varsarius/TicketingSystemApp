@@ -39,7 +39,6 @@
             <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
         </div>
     </div>
-    @*TODO: расширить облать драг н дропа файлов чтобы не приходилось целиться в маленькое окошко, а также выделить эту область рамкой для красоты*@
     <MudPaper Class="pa-6 d-flex align-center"
               Style="border:2px dashed var(--mud-palette-primary); min-height:150px;"
               @ondrop="OnDrop"
@@ -59,7 +58,6 @@
                 box-shadow: 0 0 5px rgba(0, 0, 0, 1);" />
         </div>
     </MudPaper>
-    @*TODO: add "Files:" for better UX*@
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>

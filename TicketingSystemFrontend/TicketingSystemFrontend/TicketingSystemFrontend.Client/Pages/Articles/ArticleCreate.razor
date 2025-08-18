@@ -95,15 +95,15 @@
     private List<IBrowserFile> files = new();
     private bool isDragging = false;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     categories = await ArticleCategoryService.GetAllAsync();
-    //     var savedArticle = await LocalStorage.GetItemAsync<ArticleCreateRequest>("savedArticleCreate");
-    //     if (savedArticle != null)
-    //     {
-    //         newArticle = savedArticle;
-    //     }
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await ArticleCategoryService.GetAllAsync();
+        var savedArticle = await LocalStorage.GetItemAsync<ArticleCreateRequest>("savedArticleCreate");
+        if (savedArticle != null)
+        {
+            newArticle = savedArticle;
+        }
+    }
 
     private async Task HandleValidSubmit()
     {

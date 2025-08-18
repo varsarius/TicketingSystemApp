@@ -1,5 +1,6 @@
 ﻿@page "/tickets/{id:int}"
 
+@using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
@@ -27,7 +28,7 @@ else
                 Priority: <b class="@(GetPriorityClass(ticket.Priority))">@ticket.Priority </b>
             </h6>
             <h6 class="card-subtitle mb-2 text-muted">
-                Status: <b class="@(GetStatusClass(ticket.Status))">@ticket.Status</b>
+                Status: <b class="@(GetStatusClass(ticket.Status))">@GetDisplayName(ticket.Status)</b>
             </h6>
             <h6 class="card-subtitle mb-2 text-muted">
                 Created: @ticket.CreatedAt
@@ -88,4 +89,12 @@ else
         Status.Resolved => "text-success",
         Status.Closed => "text-secondary"
     };
+
+    private string GetDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                              .FirstOrDefault() as DisplayAttribute;
+        return attribute?.Name ?? value.ToString();
+    }
 }

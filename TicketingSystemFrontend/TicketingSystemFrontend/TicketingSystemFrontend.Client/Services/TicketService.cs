@@ -77,14 +77,14 @@ public class TicketService : ITicketService
     public async Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId)
     {
         var comments = await _http.GetFromJsonAsync<List<TicketCommentDto>>(
-            $"api/tickets/comments?ticketId={ticketId}"
+            $"api/tickets/{ticketId}/comments"
         );
         return comments ?? new List<TicketCommentDto>();
     }
 
-    public async Task<bool> AddCommentAsync(TicketCommentCreateRequest request)
+    public async Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request)
     {
-        var response = await _http.PostAsJsonAsync("api/tickets/comments", request);
+        var response = await _http.PostAsJsonAsync($"api/tickets/{ticketId}/comments", request);
         return response.IsSuccessStatusCode;
     }
 }

@@ -6,6 +6,6 @@ namespace TicketingSystemFrontend.Client.Services.Interfaces
     public interface ITicketService : ICrudService<TicketDto, TicketCreateRequest, TicketUpdateRequest>
     {
         Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId);
-        Task<bool> AddCommentAsync(TicketCommentCreateRequest request);
+        Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request);
     }
 }

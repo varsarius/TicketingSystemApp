@@ -12,7 +12,7 @@ using TicketingSystemBackend.Infrastructure.Data;
 namespace TicketingSystemBackend.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250818132737_InitialCreate")]
+    [Migration("20250818135725_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

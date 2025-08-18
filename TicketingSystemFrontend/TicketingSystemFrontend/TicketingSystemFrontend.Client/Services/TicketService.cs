@@ -77,7 +77,7 @@ public class TicketService : ITicketService
     public async Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId)
     {
         var comments = await _http.GetFromJsonAsync<List<TicketCommentDto>>(
-            $"api/tickets/comments?ticketId={ticketId}"
+            $"api/tickets/{ticketId}/comments"
         );
         return comments ?? new List<TicketCommentDto>();
     }

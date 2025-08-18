@@ -1,5 +1,6 @@
 ﻿@page "/articles"
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Articles.ArticleComponents
 @using TicketingSystemFrontend.Client.Services.Interfaces
 
 @inject IArticleService ArticleService
@@ -23,34 +24,7 @@ else
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var article in articles)
         {
-            //Вытащить в отдельный компонент и вызвать его здесь {
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title text-primary">@article.Title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">
-                            Category: @article.ArticleCategoryName
-                        </h6>
-
-                        <!-- Truncated description -->
-                        <p class="card-text flex-grow-1 text-truncate-3">
-                            @article.Description
-                        </p>
-
-                        <p class="text-muted small mt-3 mb-2">
-                            By: @article.UserName <br />
-                            Created: @article.CreatedAt.ToShortDateString() <br />
-                            @(article.UpdatedAt?.ToShortDateString() != null ? "Edited: " + article.UpdatedAt?.ToShortDateString() : "")
-                        </p>
-
-                        <!-- View More button -->
-                        <a class="btn btn-sm btn-outline-primary" href="/articles/@article.Id">
-                            Read More
-                        </a>
-                    </div>
-                </div>
-            </div>
-            //}
+            <ArticleCard Article="article" />
         }
     </div>
 }

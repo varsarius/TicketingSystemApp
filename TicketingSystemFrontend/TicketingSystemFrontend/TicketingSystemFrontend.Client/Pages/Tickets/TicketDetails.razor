@@ -94,7 +94,7 @@ else
     protected override async Task OnParametersSetAsync()
     {
         ticket = await TicketService.GetByIdAsync(id);
-        comments = await TicketService.GetCommentsByTicketIdAsync(id);
+        //comments = await TicketService.GetCommentsByTicketIdAsync(id);
     }
 
     private async Task DeleteTicket()
@@ -137,18 +137,18 @@ else
 
     private async Task AddCommentAsync()
     {
-        var success = await TicketService.AddCommentAsync(new TicketCommentCreateRequest
-        {
-            TicketId = id,
-            Description = newComment,
-            UserId = currentUserId
-        });
+        // var success = await TicketService.AddCommentAsync(new TicketCommentCreateRequest
+        // {
+        //     TicketId = id,
+        //     Description = newComment,
+        //     UserId = currentUserId
+        // });
 
-        if (success)
-        {
-            newComment = string.Empty;
-            // reload comments list after successful add
-            comments = await TicketService.GetCommentsByTicketIdAsync(id);
-        }
+        // if (success)
+        // {
+        //     newComment = string.Empty;
+        //     reload comments list after successful add
+        //     comments = await TicketService.GetCommentsByTicketIdAsync(id);
+        // }
     }
 }

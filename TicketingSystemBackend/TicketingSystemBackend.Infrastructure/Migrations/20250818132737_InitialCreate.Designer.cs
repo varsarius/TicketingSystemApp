@@ -12,7 +12,7 @@ using TicketingSystemBackend.Infrastructure.Data;
 namespace TicketingSystemBackend.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250818115536_InitialCreate")]
+    [Migration("20250818132737_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -350,6 +350,9 @@ namespace TicketingSystemBackend.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

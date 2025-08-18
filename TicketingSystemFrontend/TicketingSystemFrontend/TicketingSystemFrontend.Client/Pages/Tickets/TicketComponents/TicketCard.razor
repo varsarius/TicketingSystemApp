@@ -1,0 +1,65 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests.Enums
+@using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject NavigationManager NavigationManager
+
+
+<div class="card mb-3">
+    <div class="row g-0 align-items-center">
+        <div class="col-md-3 p-3 border-end">
+            <h5 class="card-title mb-1">Ticket #@Ticket.Id</h5>
+            <p class="text-muted mb-0 small">
+                Priority:
+                @* TO CHANGE LATER *@
+                <span class="badge @(GetPriorityClass(Ticket.Priority))">@Ticket.Priority</span>
+            </p>
+            <p class="text-muted mb-0 small">
+                Category:
+                <span class="badge bg-primary">@Ticket.CategoryName</span>
+            </p>
+            <p class="text-muted mb-0 small">
+                Status:
+                <span class="badge @(GetStatusClass(Ticket.Status))">@Ticket.Status</span> 
+            </p>
+        </div>
+        <div class="col-md-6 p-3">
+            <h6 class="card-subtitle mb-2 text-truncate" title="@Ticket.Title">@Ticket.Title</h6>
+            <p class="card-text text-truncate" title="@Ticket.Description">@Ticket.Description</p>
+            <small class="text-muted">Submitted by: @Ticket.UserName</small> 
+        </div>
+        <div class="col-md-3 p-3 text-end">
+            <p class="mb-1"><strong>Assigned to:</strong> @Ticket.AgentName</p> 
+            <p class="mb-0"><small class="text-muted">Created: @Ticket.CreatedAt.ToString("yyyy-MM-dd")</small></p>
+            <p><small class="text-muted">Last update: @Ticket.CreatedAt.AddHours(1).ToString("yyyy-MM-dd")</small></p>
+            <button class="btn btn-sm btn-outline-primary" @onclick="NavigateToViewDetails">View Details</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    //private List<TicketDto> tickets = [];
+    [Parameter]
+    public TicketDto Ticket { get; set; }
+
+    private string GetPriorityClass(Priority priority) => priority switch
+    {
+        Priority.High => "bg-danger",
+        Priority.Medium => "bg-warning text-dark",
+        Priority.Low => "bg-success",
+        Priority.Critical => "bg-dark"
+    };
+
+    private string GetStatusClass(Status status) => status switch
+    {
+        Status.Open => "bg-primary",
+        Status.InProgress => "bg-info",
+        Status.Resolved => "bg-success",
+        Status.Closed => "bg-secondary"
+    };
+
+    private void NavigateToViewDetails()
+    {
+        NavigationManager.NavigateTo($"/tickets/{@Ticket.Id}");
+    }
+}

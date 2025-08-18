@@ -1,0 +1,49 @@
+﻿
+        <div class="col-md-3 mt-5">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Filter
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label">Category</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Hardware</option>
+                            <option>Software</option>
+                            <option>Network</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Status</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Open</option>
+                            <option>In Progress</option>
+                            <option>Resolved</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-2">Apply</button>
+                </div>
+            </div>
+        </div>
+
+@code {
+    private string GetPriorityClass(string priority) => priority switch
+    {
+        "High" => "bg-danger",
+        "Medium" => "bg-warning text-dark",
+        "Low" => "bg-success",
+        _ => "bg-secondary"
+    };
+}

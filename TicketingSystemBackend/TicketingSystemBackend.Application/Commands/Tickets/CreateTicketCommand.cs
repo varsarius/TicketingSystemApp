@@ -10,7 +10,7 @@ public record CreateTicketCommand
     [Required] string Description,
     Priority Priority,
     Status Status,
-    Guid UserId,
-    Guid? AgentId,
+    Guid UserId,//
+    Guid? AgentId,//
     int TicketCategoryId
 ) : IRequest<int>;

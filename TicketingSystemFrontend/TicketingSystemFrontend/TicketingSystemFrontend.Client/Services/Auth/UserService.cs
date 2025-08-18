@@ -1,8 +1,11 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
 using TicketingSystemFrontend.Client.Pages;
+using TicketingSystemFrontend.Client.Pages.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
-using static TicketingSystemFrontend.Client.Pages.AdminPanel;
+using static TicketingSystemFrontend.Client.Pages.Auth.AdminPanel;
+//using static TicketingSystemFrontend.Client.Pages.Auth.AdminPanel;
+
 
 namespace TicketingSystemFrontend.Client.Services.Auth;
 
@@ -15,7 +18,7 @@ public class UserService : IUserService
         _http = http;
     }
 
-    public async Task<List<AdminPanel.UserDto>> GetUsersAsync()
+    public async Task<List<UserDto>> GetUsersAsync()
     {      
         var users = await _http.GetFromJsonAsync<List<UserDto>>("api/admin/users");
         return users ?? new List<UserDto>();
@@ -71,4 +74,5 @@ public class UserService : IUserService
             );
         }
     }
+
 }

@@ -1,4 +1,4 @@
-﻿using static TicketingSystemFrontend.Client.Pages.AdminPanel;
+﻿using static TicketingSystemFrontend.Client.Pages.Auth.AdminPanel;
 
 namespace TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 

@@ -5,7 +5,7 @@ using TicketingSystemBackend.Application.Queries.TicketComments;
 
 namespace TicketingSystemBackend.Api.Controllers;
 [ApiController]
-[Route("/api/tickets/comments")]
+[Route("api/tickets/{ticketId}/comments")]
 public class TicketCommentController : ControllerBase, IController<CreateTicketCommentCommand, UpdateTicketCommentCommand>
 {
     private readonly IMediator _mediator;

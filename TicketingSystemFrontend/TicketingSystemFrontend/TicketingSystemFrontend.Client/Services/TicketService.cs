@@ -74,4 +74,17 @@ public class TicketService : ITicketService
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId)
+    {
+        var comments = await _http.GetFromJsonAsync<List<TicketCommentDto>>(
+            $"api/tickets/comments?ticketId={ticketId}"
+        );
+        return comments ?? new List<TicketCommentDto>();
+    }
+
+    public async Task<bool> AddCommentAsync(TicketCommentCreateRequest request)
+    {
+        var response = await _http.PostAsJsonAsync("api/tickets/comments", request);
+        return response.IsSuccessStatusCode;
+    }
 }

@@ -5,6 +5,7 @@
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@using TicketingSystemFrontend.Client.Requests;
 @inject ITicketService TicketService
 @inject NavigationManager Navigation
 
@@ -17,7 +18,7 @@
 }
 else
 {
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-body">
             <h4 class="card-title">@ticket.Title</h4>
             <h5 class="card-subtitle mb-2">Assigned to: @ticket.AgentName</h5>
@@ -47,17 +48,53 @@ else
             </div>
         </div>
     </div>
+    <div class="mt-4">
+        <h5>Comments</h5>
+
+        @if (comments == null || comments.Count == 0)
+        {
+            <p><em>No comments available...</em></p>
+        }
+        else
+        {
+            @foreach (var c in comments)
+            {
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <p class="card-text">@c.Description</p>
+                        <small class="text-muted">
+                            By @c.UserId on @c.CreatedAt
+                        </small>
+                    </div>
+                </div>
+            }
+        }
+
+        <EditForm OnValidSubmit="AddCommentAsync">
+            <InputTextArea @bind-Value="newComment" class="form-control" placeholder="Leave a comment..." />
+            <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+        </EditForm>
+
+
+    </div>
+
 }
 
 @code {
     [Parameter]
     public int id { get; set; }
 
+    private List<TicketCommentDto> comments = new();
+    private string newComment = string.Empty;
+
+    private Guid currentUserId = Guid.NewGuid();
+
     private TicketDto? ticket;
 
     protected override async Task OnParametersSetAsync()
     {
         ticket = await TicketService.GetByIdAsync(id);
+        comments = await TicketService.GetCommentsByTicketIdAsync(id);
     }
 
     private async Task DeleteTicket()
@@ -96,5 +133,22 @@ else
         var attribute = field?.GetCustomAttributes(typeof(DisplayAttribute), false)
                               .FirstOrDefault() as DisplayAttribute;
         return attribute?.Name ?? value.ToString();
+    }
+
+    private async Task AddCommentAsync()
+    {
+        var success = await TicketService.AddCommentAsync(new TicketCommentCreateRequest
+        {
+            TicketId = id,
+            Description = newComment,
+            UserId = currentUserId
+        });
+
+        if (success)
+        {
+            newComment = string.Empty;
+            // reload comments list after successful add
+            comments = await TicketService.GetCommentsByTicketIdAsync(id);
+        }
     }
 }

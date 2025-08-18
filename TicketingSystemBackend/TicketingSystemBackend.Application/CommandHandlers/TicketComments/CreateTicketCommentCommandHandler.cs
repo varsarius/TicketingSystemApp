@@ -23,6 +23,8 @@ public class CreateTicketCommentCommandHandler : IRequestHandler<CreateTicketCom
         var ticketComment = new TicketComment
         {
             Description = request.Description,
+            UserId = request.UserId,
+            TicketId = request.TicketId,
             UpdatedAt = null
         };
         await _repository.CreateAsync(ticketComment);

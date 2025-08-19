@@ -1,0 +1,91 @@
+﻿@page "/tickets/{id:int}"
+
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests.Enums
+@using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+@inject NavigationManager Navigation
+
+
+<h3>Ticket Details</h3>
+
+@if (ticket == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">@ticket.Title</h4>
+            <h5 class="card-subtitle mb-2">Assigned to: @ticket.AgentName</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                By @ticket.UserName | Category: @ticket.CategoryName
+            </h6>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Priority: <b class="@(GetPriorityClass(ticket.Priority))">@ticket.Priority </b>
+            </h6>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Status: <b class="@(GetStatusClass(ticket.Status))">@ticket.Status</b>
+            </h6>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Created: @ticket.CreatedAt
+            </h6>
+            @if (@ticket.UpdatedAt != null)
+            {
+                <h6 class="card-subtitle mb-2 text-muted">
+                    Edited:  @ticket.UpdatedAt
+                </h6>
+            }
+            <p class="card-text text-muted">@ticket.Description</p>
+
+            <div class="mt-3">
+                <a class="btn btn-primary me-2" href="/tickets/@id/edit">Update</a>
+                <button class="btn btn-danger" @onclick="DeleteTicket">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private TicketDto? ticket;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ticket = await TicketService.GetByIdAsync(id);
+    }
+
+    private async Task DeleteTicket()
+    {
+        var success = await TicketService.DeleteByIdAsync(id);
+        if (success)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            // Optionally handle failure
+            Console.WriteLine("Failed to delete ticket");
+        }
+    }
+
+    private string GetPriorityClass(Priority priority) => priority switch
+    {
+        Priority.High => "text-danger",
+        Priority.Medium => "text-warning",
+        Priority.Low => "text-success",
+        Priority.Critical => "text-dark"
+    };
+
+    private string GetStatusClass(Status status) => status switch
+    {
+        Status.Open => "text-primary",
+        Status.InProgress => "text-info",
+        Status.Resolved => "text-success",
+        Status.Closed => "text-secondary"
+    };
+}

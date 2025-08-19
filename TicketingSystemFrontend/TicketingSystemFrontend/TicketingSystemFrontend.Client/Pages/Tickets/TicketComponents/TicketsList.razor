@@ -1,0 +1,26 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+
+@if (tickets.Count == 0)
+{
+    <p>Loading tickets...</p>
+}
+else
+{
+    @foreach (var ticket in tickets)
+    {
+        <TicketCard Ticket="ticket" />
+    }
+}
+
+@code {
+    private List<TicketDto> tickets = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await TicketService.GetAllAsync();
+    }
+
+}

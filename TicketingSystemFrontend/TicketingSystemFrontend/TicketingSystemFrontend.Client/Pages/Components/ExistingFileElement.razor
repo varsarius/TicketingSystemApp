@@ -1,0 +1,43 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services.Extensions
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject IJSRuntime JS
+@inject IArticleService ArticleService
+
+<li>
+    <button class="btn btn-link" @onclick="DownloadFile">Download @File.FileName</button>
+    <button class="btn btn-sm btn-danger ms-2" @onclick="DeleteFile">
+        Delete
+    </button>
+</li>
+
+@code {
+    [Parameter]
+    public FileDto File { get; set; } = new();
+
+    [Parameter]
+    public int ArticleId { get; set; }
+
+    [Parameter]
+    public EventCallback<FileDto> OnFileDeleted { get; set; }
+
+    private async Task DownloadFile()
+    {
+        try
+        {
+            var bytes = await ArticleService.DownloadFileAsync(ArticleId, File.Id);
+            var base64 = Convert.ToBase64String(bytes);
+            await JS.InvokeVoidAsync("downloadFileFromBytes", File.FileName, base64);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error downloading file: {ex.Message}");
+            await JS.InvokeVoidAsync("alert", "Failed to download file.");
+        }
+    }
+
+    private async Task DeleteFile()
+    {
+        await OnFileDeleted.InvokeAsync(File);
+    }
+}

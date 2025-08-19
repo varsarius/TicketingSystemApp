@@ -5,7 +5,7 @@
 @using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
-@using TicketingSystemFrontend.Client.Services.Extensions;
+@using TicketingSystemFrontend.Client.Services.Extensions
 @using Blazored.LocalStorage
 
 @inject IArticleService ArticleService
@@ -45,26 +45,8 @@
 
     <UploadFilesField OnDrop="OnDrop" OnFilesChanged="OnFilesChanged" />
 
-    @if (files.Any())
-    {
-        <MudTable Items="files" Dense="true" Hover="true" Bordered="true" Striped="true">
-            <HeaderContent>
-                <MudTh>File Name</MudTh>
-                <MudTh>Size (MB)</MudTh>
-                <MudTh>Actions</MudTh>
-            </HeaderContent>
-            <RowTemplate Context="sameContext">
-                <MudTd>@sameContext.Name</MudTd>
-                <MudTd>@Math.Round(sameContext.Size / 1024.0 / 1024.0, 2)</MudTd>
-                <MudTd>
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                   Color="Color.Error"
-                                   OnClick="@(() => RemoveFile(sameContext))" />
-                </MudTd>
-            </RowTemplate>
-        </MudTable>
-        <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
-    }
+    <FileListing Files="files" />
+
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>
@@ -116,17 +98,12 @@
 
     private void OnFilesChanged(InputFileChangeEventArgs e)
     {
-        files.Clear(); // TODO: TOFIXME: multiple sources of files. If you add some file and then another file - it will crush on uppload now. and remove this line ofc. 
+        files.Clear(); // TODO: TOFIXME: multiple sources of files. If you add some file and then another file - it will crush on upload now. and remove this line ofc.
         files.AddRange(e.GetMultipleFiles());
     }
 
     private void OnDrop(DragEventArgs e)
     {
         // Prevent default browser behavior
-    }
-
-    private void RemoveFile(IBrowserFile file)
-    {
-        files.Remove(file);
     }
 }

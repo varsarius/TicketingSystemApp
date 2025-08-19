@@ -3,6 +3,7 @@
 @using MudBlazor
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
@@ -63,38 +64,7 @@
             <ValidationMessage For="@(() => ticketRequest.Priority)" />
         </div>
 
-        <MudPaper Class="col-md-6"
-                  Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
-                  @ondrop="OnDrop"
-                  @ondragover:preventDefault>
-            <div>
-                <label for="files" class="form-label">Files</label>
-                <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
-                <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
-                <InputFile OnChange="OnFilesChanged" multiple class="border" />
-            </div>
-        </MudPaper>
-
-        @if (files.Any())
-        {
-            <MudTable Items="files" Dense="true">
-                <HeaderContent>
-                    <MudTh>File Name</MudTh>
-                    <MudTh>Size (MB)</MudTh>
-                    <MudTh></MudTh>
-                </HeaderContent>
-                <RowTemplate Context ="newContext">
-                    <MudTd>@newContext.Name</MudTd>
-                    <MudTd>@(Math.Round(newContext.Size / 1024.0 / 1024.0, 2))</MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       Color="Color.Error"
-                                       OnClick="@(() => RemoveFile(newContext))" />
-                    </MudTd>
-                </RowTemplate>
-            </MudTable>
-            <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
-        }
+        <FileForm @bind-Files="files" />
 
     </div>
 

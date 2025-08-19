@@ -2,6 +2,7 @@
 @using TicketingSystemFrontend.Client.Services.Interfaces.Auth
 @inject CustomAuthProvider AuthenticationStateProvider
 @inject IUserService UserService
+@inject ITokenRefresher TokenRefresher
 @if (userName != null)
 {
     @if (!isEditing)
@@ -63,8 +64,13 @@
             Console.WriteLine("Changes saved");
             // Update original values
             await UserService.UpdateUserName(originalUserName, userName);
-            await AuthenticationStateProvider.LogoutAsync();
-            Navigation.NavigateTo("/login");
+            originalUserName = userName;
+            // Force refresh tokens so JWT claims are up to date
+            await TokenRefresher.TryRefreshAsync();
+            await OnInitializedAsync();
+
+            //await AuthenticationStateProvider.LogoutAsync();
+            //Navigation.NavigateTo("/login");
             // originalUserName = userName;
 
             // Here you would typically call your backend to save changes

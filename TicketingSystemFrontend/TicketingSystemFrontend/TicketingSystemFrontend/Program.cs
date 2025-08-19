@@ -41,6 +41,7 @@ builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileService, FileService>();
+//builder.Services.AddScoped<ITokenRefresher, TokenRefresher>();
 
 builder.Services.AddMudServices();
 

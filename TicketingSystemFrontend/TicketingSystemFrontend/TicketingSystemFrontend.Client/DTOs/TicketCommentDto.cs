@@ -7,6 +7,8 @@ public class TicketCommentDto
     public int Id { get; set; }
     public Guid UserId { get; set; }
     public int TicketId { get; set; }
+    public string UserName { get; set; } = string.Empty;
+
 
     [Required]
     public string Description { get; set; } = null!;

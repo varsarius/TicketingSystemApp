@@ -7,6 +7,8 @@
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @using TicketingSystemFrontend.Client.Requests;
 @inject ITicketService TicketService
+@inject ITicketCommentService TicketCommentService
+
 @inject NavigationManager Navigation
 
 
@@ -59,15 +61,27 @@ else
         {
             @foreach (var c in comments)
             {
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <p class="card-text">@c.Description</p>
-                        <small class="text-muted">
-                            By @c.UserId on @c.CreatedAt
-                        </small>
+                @if (editingCommentId == c.Id)
+                {
+
+                    <InputTextArea @bind-Value="editingCommentText" class="form-control" />
+                    <div class="mb-4">
+                        <button class="btn btn-sm btn-primary me-1" @onclick="SaveEditedComment">Save</button>
+                        <button class="btn btn-sm btn-secondary" @onclick="() => editingCommentId = null">Cancel</button>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <p class="card-text">@c.Description</p>
+                    <small class="text-muted">By @c.UserName on @c.CreatedAt</small>
+                    <div class="mb-4">
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditComment(c)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteComment(c.Id)">Delete</button>
+                    </div>
+                }
+
             }
+
         }
 
         <EditForm Model="@this" OnValidSubmit="AddCommentAsync">
@@ -81,6 +95,10 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
+
+    private int? editingCommentId = null;
+    private string editingCommentText = string.Empty;
+
 
     private List<TicketCommentDto> comments = new();
     private string newComment = string.Empty;
@@ -149,4 +167,37 @@ else
             comments = await TicketService.GetCommentsByTicketIdAsync(id);
         }
     }
+
+    private void EditComment(TicketCommentDto comment)
+    {
+        editingCommentId = comment.Id;
+        editingCommentText = comment.Description;
+    }
+
+    private async Task SaveEditedComment()
+    {
+        if (editingCommentId.HasValue)
+        {
+            await TicketService.UpdateCommentAsync(editingCommentId.Value, new TicketCommentUpdateRequest
+            {
+                Description = editingCommentText
+            });
+
+            // Refresh the list
+            comments = await TicketService.GetCommentsByTicketIdAsync(id);
+
+            editingCommentId = null;
+            editingCommentText = string.Empty;
+        }
+    }
+
+    private async Task DeleteComment(int commentId)
+    {
+        var success = await TicketService.DeleteCommentAsync(commentId);
+        if (success)
+        {
+            comments = await TicketService.GetCommentsByTicketIdAsync(id);
+        }
+    }
+
 }

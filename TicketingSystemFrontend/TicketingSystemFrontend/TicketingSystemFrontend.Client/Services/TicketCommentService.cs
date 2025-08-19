@@ -88,4 +88,17 @@ public class TicketCommentService : ICrudService<TicketCommentDto, TicketComment
         var response = await _http.PutAsJsonAsync($"api/tickets/comments/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
+
+
+    public async Task<bool> DeleteCommentAsync(int commentId)
+    {
+        var response = await _http.DeleteAsync($"api/tickets/comments/{commentId}");
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request)
+    {
+        var response = await _http.PutAsJsonAsync($"api/tickets/comments/{commentId}", request);
+        return response.IsSuccessStatusCode;
+    }
 }

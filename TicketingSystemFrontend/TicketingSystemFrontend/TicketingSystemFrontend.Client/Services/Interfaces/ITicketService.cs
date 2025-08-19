@@ -7,5 +7,7 @@ namespace TicketingSystemFrontend.Client.Services.Interfaces
     {
         Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId);
         Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request);
+        Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request);
+        Task<bool> DeleteCommentAsync(int commentId);
     }
 }

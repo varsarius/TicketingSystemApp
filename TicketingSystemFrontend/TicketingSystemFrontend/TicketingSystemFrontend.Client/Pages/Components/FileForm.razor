@@ -1,0 +1,12 @@
+﻿@using MudBlazor
+
+<UploadFilesField @bind-Files="Files" />
+<FileListing Files="Files" />
+
+@code {
+    [Parameter]
+    public List<IBrowserFile> Files { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
+}

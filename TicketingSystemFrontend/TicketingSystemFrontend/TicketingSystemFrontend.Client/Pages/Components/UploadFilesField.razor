@@ -1,4 +1,5 @@
 ﻿@using MudBlazor
+@using Microsoft.AspNetCore.Components.Forms
 
 <MudPaper Class="pa-6 d-flex align-center"
           Style="border:2px dashed var(--mud-palette-primary); min-height:150px;"
@@ -16,14 +17,27 @@
             padding-left: 150%;
             border: 2px solid var(--mud-palette-primary);
             border-radius: 4px;
+            cursor: pointer;
             box-shadow: 0 0 5px rgba(0, 0, 0, 1);" />
     </div>
 </MudPaper>
 
 @code {
     [Parameter]
-    public EventCallback<DragEventArgs> OnDrop { get; set; }
+    public List<IBrowserFile> Files { get; set; } = new();
 
     [Parameter]
-    public EventCallback<InputFileChangeEventArgs> OnFilesChanged { get; set; }
+    public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
+
+    private void OnFilesChanged(InputFileChangeEventArgs e)
+    {
+        Files.Clear();
+        Files.AddRange(e.GetMultipleFiles());
+        FilesChanged.InvokeAsync(Files);
+    }
+
+    private void OnDrop(DragEventArgs e)
+    {
+        // e.PreventDefault();
+    }
 }

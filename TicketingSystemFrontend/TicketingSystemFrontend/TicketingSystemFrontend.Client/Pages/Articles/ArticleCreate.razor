@@ -43,9 +43,7 @@
         </div>
     </div>
 
-    <UploadFilesField OnDrop="OnDrop" OnFilesChanged="OnFilesChanged" />
-
-    <FileListing Files="files" />
+    <FileForm @bind-Files="files" />
 
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
@@ -94,16 +92,5 @@
     {
         await LocalStorage.RemoveItemAsync("savedArticleCreate");
         Navigation.NavigateTo("/articles");
-    }
-
-    private void OnFilesChanged(InputFileChangeEventArgs e)
-    {
-        files.Clear(); // TODO: TOFIXME: multiple sources of files. If you add some file and then another file - it will crush on upload now. and remove this line ofc.
-        files.AddRange(e.GetMultipleFiles());
-    }
-
-    private void OnDrop(DragEventArgs e)
-    {
-        // Prevent default browser behavior
     }
 }

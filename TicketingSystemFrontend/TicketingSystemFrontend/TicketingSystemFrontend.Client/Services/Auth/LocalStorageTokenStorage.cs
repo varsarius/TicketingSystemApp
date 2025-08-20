@@ -3,7 +3,7 @@ using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 
 namespace TicketingSystemFrontend.Client.Services.Auth;
 
-public class LocalStorageTokenStorage : ITokenStorage
+public class LocalStorageTokenStorage //: ITokenStorage
 {
     private readonly ILocalStorageService _localStorage;
 

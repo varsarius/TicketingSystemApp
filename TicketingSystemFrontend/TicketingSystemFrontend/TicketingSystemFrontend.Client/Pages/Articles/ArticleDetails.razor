@@ -98,11 +98,12 @@ else
             isAdmin = user.IsInRole("Admin");
             isAgent = user.IsInRole("Agent");
             isEndUser = user.IsInRole("EndUser");
+            UserId = await AuthService.GetUserIdFromTokenAsync();
         }
 
         article = await ArticleService.GetByIdAsync(id);
         articleFiles = await ArticleService.GetFilesAsync(id);
-        UserId = await AuthService.GetUserIdFromTokenAsync();
+        
 
         isLoading = false;
     }

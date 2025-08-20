@@ -5,5 +5,5 @@ namespace TicketingSystemFrontend.Client.Services.Interfaces;
 
 public interface ITicketCommentService : ICrudService<TicketCommentDto, TicketCommentCreateRequest, TicketCommentUpdateRequest>
 {
-
+    Task<bool> DeleteCommentAsync(int ticketId, int commentId);
 }

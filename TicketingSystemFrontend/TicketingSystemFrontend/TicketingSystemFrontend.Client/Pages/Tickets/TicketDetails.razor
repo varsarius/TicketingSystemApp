@@ -178,9 +178,11 @@ else
     {
         if (editingCommentId.HasValue)
         {
-            await TicketService.UpdateCommentAsync(editingCommentId.Value, new TicketCommentUpdateRequest
+            await TicketCommentService.UpdateAsync(new TicketCommentUpdateRequest
             {
-                Description = editingCommentText
+                Id = editingCommentId.Value,
+                Description = editingCommentText,
+                ArticleId = id
             });
 
             // Refresh the list
@@ -193,7 +195,7 @@ else
 
     private async Task DeleteComment(int commentId)
     {
-        var success = await TicketService.DeleteCommentAsync(commentId);
+        var success = await TicketCommentService.DeleteCommentAsync(id, commentId);
         if (success)
         {
             comments = await TicketService.GetCommentsByTicketIdAsync(id);

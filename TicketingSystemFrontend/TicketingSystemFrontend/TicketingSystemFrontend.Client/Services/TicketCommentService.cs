@@ -8,7 +8,7 @@ using TicketingSystemFrontend.Client.Services.Interfaces;
 
 namespace TicketingSystemFrontend.Client.Services;
 
-public class TicketCommentService : ICrudService<TicketCommentDto, TicketCommentCreateRequest, TicketCommentUpdateRequest>
+public class TicketCommentService : ITicketCommentService
 {
     private readonly HttpClient _http;
     private readonly CustomAuthProvider _authenticationStateProvider;
@@ -85,20 +85,20 @@ public class TicketCommentService : ICrudService<TicketCommentDto, TicketComment
         var userId = Guid.Parse(userIdClaim.Value);
         request.UserId = userId;
 
-        var response = await _http.PutAsJsonAsync($"api/tickets/comments/{request.Id}", request);
+        var response = await _http.PutAsJsonAsync($"api/tickets/{request.ArticleId}/comments/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
 
 
-    public async Task<bool> DeleteCommentAsync(int commentId)
+    public async Task<bool> DeleteCommentAsync(int ticketId, int commentId)
     {
-        var response = await _http.DeleteAsync($"api/tickets/comments/{commentId}");
+        var response = await _http.DeleteAsync($"api/tickets/{ticketId}/comments/{commentId}");
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request)
-    {
-        var response = await _http.PutAsJsonAsync($"api/tickets/comments/{commentId}", request);
-        return response.IsSuccessStatusCode;
-    }
+    //public async Task<bool> UpdateCommentAsync(int ticketId, int commentId, TicketCommentUpdateRequest request)
+    //{
+    //    var response = await _http.PutAsJsonAsync($"api/tickets/{ticketId}/comments/{commentId}", request);
+    //    return response.IsSuccessStatusCode;
+    //}
 }

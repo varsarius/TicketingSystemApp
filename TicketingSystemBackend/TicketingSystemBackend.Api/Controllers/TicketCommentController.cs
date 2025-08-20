@@ -44,4 +44,12 @@ public class TicketCommentController : ControllerBase, IController<CreateTicketC
         await _mediator.Send(command);
         return Ok();
     }
+
+    [Route("byTicket")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllByTicketIdAsync([FromRoute] int ticketId)
+    {
+        var ticketComments = await _mediator.Send(new GetTicketCommentsByTicketIdQuery(ticketId));
+        return Ok(ticketComments);
+    }
 }

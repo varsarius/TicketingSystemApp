@@ -73,30 +73,4 @@ public class TicketService : ITicketService
         var response = await _http.PutAsJsonAsync($"api/tickets/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
-
-    public async Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId)
-    {
-        var comments = await _http.GetFromJsonAsync<List<TicketCommentDto>>(
-            $"api/tickets/{ticketId}/comments"
-        );
-        return comments ?? new List<TicketCommentDto>();
-    }
-
-    public async Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request)
-    {
-        var response = await _http.PostAsJsonAsync($"api/tickets/{ticketId}/comments", request);
-        return response.IsSuccessStatusCode;
-    }
-
-    public async Task<bool> DeleteCommentAsync(int commentId)
-    {
-        var response = await _http.DeleteAsync($"api/tickets/comments/{commentId}");
-        return response.IsSuccessStatusCode;
-    }
-
-    public async Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request)
-    {
-        var response = await _http.PutAsJsonAsync($"api/tickets/comments/{commentId}", request);
-        return response.IsSuccessStatusCode;
-    }
 }

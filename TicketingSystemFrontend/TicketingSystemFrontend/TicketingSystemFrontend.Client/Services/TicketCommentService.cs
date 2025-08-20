@@ -38,7 +38,8 @@ public class TicketCommentService : ITicketCommentService
         var userId = Guid.Parse(userIdClaim.Value);
         request.UserId = userId;
 
-        var response = await _http.PostAsJsonAsync("api/tickets/comments", request);
+        //var response = await _http.PostAsJsonAsync("api/tickets/comments", request);
+        var response = await _http.PostAsJsonAsync($"api/tickets/{request.TicketId}/comments", request);
         response.EnsureSuccessStatusCode();
 
         return null; //TODO: return normall id
@@ -101,4 +102,27 @@ public class TicketCommentService : ITicketCommentService
     //    var response = await _http.PutAsJsonAsync($"api/tickets/{ticketId}/comments/{commentId}", request);
     //    return response.IsSuccessStatusCode;
     //}
+
+
+    public async Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId)
+    {
+        var comments = await _http.GetFromJsonAsync<List<TicketCommentDto>>(
+            $"api/tickets/{ticketId}/comments/byTicket"
+        );
+        return comments ?? new List<TicketCommentDto>();
+    }
+
+    //public async Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request)
+    //{
+    //    var response = await _http.PostAsJsonAsync($"api/tickets/{request.TicketId}/comments", request);
+    //    return response.IsSuccessStatusCode;
+    //}
+
+    public async Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request)
+    {
+        var response = await _http.PutAsJsonAsync($"api/tickets/comments/{commentId}", request);
+        return response.IsSuccessStatusCode;
+    }
+
+
 }

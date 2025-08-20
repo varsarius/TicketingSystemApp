@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Queries.TicketComments;
-using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.QueryHandlers.TicketComments;
-public class GetTicketCommentByIdQueryHandler : IRequestHandler<GetTicketCommentByIdQuery, TicketCommentDto>
+public class GetTicketCommentsByTicketIdQueryHandler : IRequestHandler<GetTicketCommentsByTicketIdQuery, List<TicketCommentDto>>
 {
     private readonly ITicketcommentReadRepository _repository;
 
-    public GetTicketCommentByIdQueryHandler(ITicketcommentReadRepository repository)
+    public GetTicketCommentsByTicketIdQueryHandler(ITicketcommentReadRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task<TicketCommentDto> Handle(GetTicketCommentByIdQuery request, CancellationToken cancellationToken)
+    public async Task<List<TicketCommentDto>> Handle(GetTicketCommentsByTicketIdQuery request, CancellationToken cancellationToken)
     {
-        return await _repository.GetByIdAsync(request.Id);
+        return await _repository.GetAllByTicketIdAsync(request.ticketId);
     }
 }

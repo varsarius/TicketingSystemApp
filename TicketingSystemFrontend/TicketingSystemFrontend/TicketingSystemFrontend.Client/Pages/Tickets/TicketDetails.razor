@@ -25,7 +25,7 @@ else
             <h4 class="card-title">@ticket.Title</h4>
             <h5 class="card-subtitle mb-2">Assigned to: @ticket.AgentName</h5>
             <h6 class="card-subtitle mb-2 text-muted">
-                By @ticket.UserName | Category: @ticket.CategoryName
+                By @ticket.UserName | Category: @ticket.TicketCategoryName
             </h6>
             <h6 class="card-subtitle mb-2 text-muted">
                 Priority: <b class="@(GetPriorityClass(ticket.Priority))">@ticket.Priority </b>
@@ -110,7 +110,7 @@ else
     protected override async Task OnParametersSetAsync()
     {
         ticket = await TicketService.GetByIdAsync(id);
-        comments = await TicketService.GetCommentsByTicketIdAsync(id);
+        comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
     }
 
     private async Task DeleteTicket()
@@ -153,18 +153,18 @@ else
 
     private async Task AddCommentAsync()
     {
-        var success = await TicketService.AddCommentAsync(id, new TicketCommentCreateRequest
+        var success = await TicketCommentService.CreateAsync(new TicketCommentCreateRequest
         {
             TicketId = id,
             Description = newComment,
             UserId = currentUserId
         });
 
-        if (success)
+        if ((success is not null)|| (success is null)) //TODO: here should be normal ID or.. IDK what to do here
         {
             newComment = string.Empty;
             // reload comments list after successful add
-            comments = await TicketService.GetCommentsByTicketIdAsync(id);
+            comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
         }
     }
 
@@ -186,7 +186,7 @@ else
             });
 
             // Refresh the list
-            comments = await TicketService.GetCommentsByTicketIdAsync(id);
+            comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
 
             editingCommentId = null;
             editingCommentText = string.Empty;
@@ -198,7 +198,7 @@ else
         var success = await TicketCommentService.DeleteCommentAsync(id, commentId);
         if (success)
         {
-            comments = await TicketService.GetCommentsByTicketIdAsync(id);
+            comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
         }
     }
 

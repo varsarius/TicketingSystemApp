@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
-using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.Queries.TicketComments;
-public record GetTicketCommentByIdQuery(int Id) : IRequest<TicketCommentDto>;
+public record GetTicketCommentsByTicketIdQuery(int ticketId) : IRequest<List<TicketCommentDto>>;

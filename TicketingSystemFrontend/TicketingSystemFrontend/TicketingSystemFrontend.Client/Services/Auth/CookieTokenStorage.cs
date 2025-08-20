@@ -1,4 +1,7 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
+using System.IdentityModel.Tokens.Jwt;
+using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 
 namespace TicketingSystemFrontend.Client.Services.Auth;
@@ -25,6 +28,8 @@ public class CookieTokenStorage : ITokenStorage
         return (string.IsNullOrEmpty(access) ? null : access,
                 string.IsNullOrEmpty(refresh) ? null : refresh);
     }
+
+    
 
     public async Task SaveTokensAsync(string accessToken, string refreshToken)
     {

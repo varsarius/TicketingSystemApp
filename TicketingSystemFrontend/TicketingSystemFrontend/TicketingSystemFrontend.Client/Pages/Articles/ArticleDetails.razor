@@ -19,7 +19,7 @@
     <p><em>Loading...</em></p>
 }
 else
-{  
+{
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">@article.Title</h5>
@@ -42,7 +42,7 @@ else
             <h6>Attachments:</h6>
             <ExistingFiles EntityApiType="articles" EntityId="@id" />
 
-            @if (isAdmin || (UserId == article.UserId))
+            @if (isAdmin || UserId == article.UserId)
             {
                 <div class="mt-3">
                     <a class="btn btn-primary me-2" href="/articles/edit/@id">Update</a>
@@ -54,17 +54,15 @@ else
 }
 
 @code {
-    [Parameter] public int id { get; set; }
+    [Parameter]
+    public int id { get; set; }
 
     private ArticleDto? article;
-    private List<FileDto> articleFiles = new();
-
-    public Guid UserId { get; set; }
-
     private bool isLoading = true;
     private bool isAdmin = false;
     private bool isAgent = false;
     private bool isEndUser = false;
+    private Guid UserId;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -80,7 +78,6 @@ else
         }
 
         article = await ArticleService.GetByIdAsync(id);
-
         isLoading = false;
     }
 

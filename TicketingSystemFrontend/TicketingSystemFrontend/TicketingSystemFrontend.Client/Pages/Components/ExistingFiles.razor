@@ -1,6 +1,5 @@
 ﻿@using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Services.Interfaces
-@inject IJSRuntime JS
 @inject IFileService FileService
 
 @if (Files.Count == 0)
@@ -12,7 +11,7 @@ else
     <ul>
         @foreach (var f in Files)
         {
-            <ExistingFileElement File="f" EntityApiType="EntityApiType" EntityId="EntityId" OnFileDeleted="HandleFileDeleted" />
+            <ExistingFileElement File="f" EntityApiType="EntityApiType" EntityId="EntityId" />
         }
     </ul>
 }
@@ -29,24 +28,5 @@ else
     protected override async Task OnInitializedAsync()
     {
         Files = await FileService.GetFilesAsync(EntityId, EntityApiType) ?? new List<FileDto>();
-    }
-
-    private async Task HandleFileDeleted(FileDto file)
-    {
-        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {file.FileName}?");
-        if (confirmed)
-        {
-            try
-            {
-                await FileService.DeleteAsync(EntityId, file.Id, EntityApiType);
-                Files.Remove(file); // Update local list
-                StateHasChanged(); // Refresh UI
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting file: {ex.Message}");
-                await JS.InvokeVoidAsync("alert", "Failed to delete file.");
-            }
-        }
     }
 }

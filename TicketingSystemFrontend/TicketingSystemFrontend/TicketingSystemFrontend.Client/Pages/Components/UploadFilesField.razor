@@ -1,0 +1,43 @@
+﻿@using MudBlazor
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudPaper Class="pa-6 d-flex align-center"
+          Style="border:2px dashed var(--mud-palette-primary); min-height:150px;"
+          @ondrop="@OnDrop"
+          @ondragover:preventDefault>
+    <div>
+        <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+        <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
+        <InputFile OnChange="@OnFilesChanged" multiple style="
+            width: 100%;
+            height: 100%;
+            font-size: 18px;
+            padding: 15%;
+            padding-right: 200%;
+            padding-left: 150%;
+            border: 2px solid var(--mud-palette-primary);
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 1);" />
+    </div>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public List<IBrowserFile> Files { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
+
+    private void OnFilesChanged(InputFileChangeEventArgs e)
+    {
+        Files.Clear();
+        Files.AddRange(e.GetMultipleFiles());
+        FilesChanged.InvokeAsync(Files);
+    }
+
+    private void OnDrop(DragEventArgs e)
+    {
+        // e.PreventDefault();
+    }
+}

@@ -1,11 +1,12 @@
 ﻿@page "/articles/edit/{id:int}"
 
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests
+@using TicketingSystemFrontend.Client.Services.Extensions
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IArticleService ArticleService
 @inject IArticleCategoryService ArticleCategoryService
-
 @inject NavigationManager Navigation
 
 <h3>Edit Article</h3>
@@ -43,6 +44,8 @@ else
             </div>
         </div>
 
+        <FileForm @bind-Files="files" />
+
         <button type="submit" class="btn btn-success me-2">Save</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
     </EditForm>
@@ -52,9 +55,11 @@ else
     [Parameter]
     public int id { get; set; }
     private List<ArticleCategoryDto> categories = [];
+    private List<IBrowserFile> files = new();
 
     private ArticleDto? article;
     private ArticleUpdateRequest articleEditRequest = new();
+
     protected override async Task OnInitializedAsync()
     {
         categories = await ArticleCategoryService.GetAllAsync();
@@ -66,18 +71,35 @@ else
 
         if (article != null)
         {
-            // Map ArticleDto to ArticleCreateRequest (or create an UpdateRequest DTO if you want)
+            // Map ArticleDto to ArticleUpdateRequest
             articleEditRequest.ArticleCategoryId = article.ArticleCategoryId;
             articleEditRequest.Title = article.Title;
             articleEditRequest.Description = article.Description;
-            articleEditRequest.Id = id; // If needed, populate appropriately
+            articleEditRequest.Id = id;
+
+            // Load existing file metadata (not used directly in files for now)
+            // var existingFiles = await ArticleService.GetFilesAsync(id);
+            // Note: Existing files are not loaded into 'files' as IBrowserFile requires content
+            // Consider enhancing FileForm to display FileDto separately if needed
         }
     }
 
     private async Task HandleValidSubmit()
     {
-        await ArticleService.UpdateAsync(articleEditRequest);
-        Navigation.NavigateTo($"/articles/{id}");
+        try
+        {
+            await ArticleService.UpdateAsync(articleEditRequest);
+            if (files.Any())
+            {
+                // Upload new files for the existing article
+                await ArticleService.UploadFilesAsync(id, files);
+            }
+            Navigation.NavigateTo($"/articles/{id}");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating article: {ex.Message}");
+        }
     }
 
     private void Cancel()

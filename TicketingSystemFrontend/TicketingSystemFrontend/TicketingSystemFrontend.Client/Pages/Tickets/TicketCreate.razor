@@ -1,17 +1,18 @@
 ﻿@page "/tickets/create"
 
+@using Blazored.LocalStorage
 @using MudBlazor
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
 @inject ITicketCategoryService TicketCategoryService
-
-
 @inject NavigationManager Navigation
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Create Ticket</PageTitle>
 
@@ -30,7 +31,6 @@
 
         <div class="col-md-6">
             <label for="category" class="form-label">Category</label>
-            @* TO CHANGE LATER *@
             <InputSelect id="category" class="form-select" @bind-Value="ticketRequest.TicketCategoryId">
                 <option value="">-- Select --</option>
                 @foreach (var category in categories)
@@ -39,9 +39,7 @@
                 }
             </InputSelect>
             <ValidationMessage For="@(() => ticketRequest.TicketCategoryId)" />
-
         </div>
-
     </div>
 
     <div class="mb-3">
@@ -63,50 +61,14 @@
             <ValidationMessage For="@(() => ticketRequest.Priority)" />
         </div>
 
-        <MudPaper Class="col-md-6"
-                  Style="border:2px dashed var(--mud-palette-primary); min-height:150px; cursor:pointer"
-                  @ondrop="OnDrop"
-                  @ondragover:preventDefault>
-            <div>
-                <label for="files" class="form-label">Files</label>
-                <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
-                <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
-                <InputFile OnChange="OnFilesChanged" multiple class="border" />
-            </div>
-        </MudPaper>
-
-        @if (files.Any())
-        {
-            <MudTable Items="files" Dense="true">
-                <HeaderContent>
-                    <MudTh>File Name</MudTh>
-                    <MudTh>Size (MB)</MudTh>
-                    <MudTh></MudTh>
-                </HeaderContent>
-                <RowTemplate Context ="newContext">
-                    <MudTd>@newContext.Name</MudTd>
-                    <MudTd>@(Math.Round(newContext.Size / 1024.0 / 1024.0, 2))</MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       Color="Color.Error"
-                                       OnClick="@(() => RemoveFile(newContext))" />
-                    </MudTd>
-                </RowTemplate>
-            </MudTable>
-            <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
-        }
-
+        <FileForm @bind-Files="files" />
     </div>
 
     <div class="d-flex justify-content-between">
         <button class="btn btn-primary" type="submit">Submit Ticket</button>
-
-        <a class="btn btn-success" href="/tickets/create/categories">Edit Categories</a>
+        <a class="btn btn-success" href="/tickets/create/categories" @onclick="SaveToLocalStorage">Edit Categories</a>
     </div>
-
-
 </EditForm>
-
 
 @code {
     private TicketCreateRequest ticketRequest = new();
@@ -116,12 +78,15 @@
     protected override async Task OnInitializedAsync()
     {
         categories = await TicketCategoryService.GetAllAsync();
+        var savedTicket = await LocalStorage.GetItemAsync<TicketCreateRequest>("savedTicketCreate");
+        if (savedTicket != null)
+        {
+            ticketRequest = savedTicket;
+        }
     }
 
     private async Task HandleValidSubmit()
     {
-
-
         var request = new TicketCreateRequest
         {
             Title = ticketRequest.Title,
@@ -133,38 +98,24 @@
         try
         {
             var ticketId = await TicketService.CreateAsync(ticketRequest);
-
-            // Optional: Navigate or show success message
+            await LocalStorage.RemoveItemAsync("savedTicketCreate");
             Navigation.NavigateTo($"/tickets/{ticketId}");
-
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine("Ticket creation failed: " + ex.Message);
         }
-
     }
 
-    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    private async Task SaveToLocalStorage()
     {
-        var file = e.File;
-        Console.WriteLine($"File selected: {file.Name} ({file.Size} bytes)");
-        // TODO: Save to backend or buffer
+        await LocalStorage.SetItemAsync("savedTicketCreate", ticketRequest);
     }
 
-    private void OnDrop(DragEventArgs e)
+    private async Task Cancel()
     {
-        // Prevent default browser behavior
-    }
-
-    private void OnFilesChanged(InputFileChangeEventArgs e)
-    {
-        files.AddRange(e.GetMultipleFiles());
-    }
-
-    private void RemoveFile(IBrowserFile file)
-    {
-        files.Remove(file);
+        await LocalStorage.RemoveItemAsync("savedTicketCreate");
+        Navigation.NavigateTo("/tickets");
     }
 
     public class TicketInputModel
@@ -180,6 +131,5 @@
 
         [Required]
         public Priority? Priority { get; set; }
-
     }
 }

@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazor
+
+@if (Files.Any())
+{
+    <MudTable Items="Files" Dense="true" Hover="true" Bordered="true" Striped="true">
+        <HeaderContent>
+            <MudTh>File Name</MudTh>
+            <MudTh>Size (MB)</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="sameContext">
+            <MudTd>@sameContext.Name</MudTd>
+            <MudTd>@Math.Round(sameContext.Size / 1024.0 / 1024.0, 2)</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               OnClick="@(() => RemoveFile(sameContext))" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudText>Total size: @Math.Round(Files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
+}
+
+@code {
+    [Parameter]
+    public List<IBrowserFile> Files { get; set; } = new();
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        Files.Remove(file);
+    }
+}

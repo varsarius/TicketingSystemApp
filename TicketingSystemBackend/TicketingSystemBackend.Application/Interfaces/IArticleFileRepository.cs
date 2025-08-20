@@ -19,10 +19,10 @@ public interface IArticleFileRepository
 
     Task<Domain.Entities.File?> GetFileByIdAndArticleIdAsync(int fileId, int articleId, CancellationToken cancellationToken);
     //// Optional: get a single file by Id
-    //Task<File?> GetByIdAsync(int id);
+    Task<Domain.Entities.File?> GetByIdAsync(int id);
 
     //// Optional: delete a file
-    //Task DeleteAsync(File file);
+    Task DeleteAsync(Domain.Entities.File file);
 
 
 }

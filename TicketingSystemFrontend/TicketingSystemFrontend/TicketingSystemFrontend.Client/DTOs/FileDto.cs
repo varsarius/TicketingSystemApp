@@ -1,6 +1,6 @@
 ﻿namespace TicketingSystemFrontend.Client.DTOs;
 
-public class ArticleFileDto
+public class FileDto
 {
     public int Id { get; set; }
     public string FileName { get; set; } = string.Empty;

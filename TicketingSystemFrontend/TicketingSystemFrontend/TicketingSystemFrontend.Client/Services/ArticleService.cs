@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.DTOs;
 using TicketingSystemFrontend.Client.Requests;
+using TicketingSystemFrontend.Client.Services.Extensions;
 using TicketingSystemFrontend.Client.Services.Interfaces;
 
 namespace TicketingSystemFrontend.Client.Services;
@@ -14,13 +15,13 @@ public class ArticleService : IArticleService
 {
     private readonly HttpClient _http;
     private readonly CustomAuthProvider _authenticationStateProvider;
-    private readonly IFileUploadService _fileUploadService;
+    public IFileService FileService { get; }
 
-    public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider, IFileUploadService fileUploadService)
+    public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider, IFileService fileService)
     {
         _http = http;
         _authenticationStateProvider = authenticationStateProvider;
-        _fileUploadService = fileUploadService;
+        FileService = fileService;
     }
     public async Task<int?> CreateAsync(ArticleCreateRequest request)
     {
@@ -76,27 +77,4 @@ public class ArticleService : IArticleService
         var response = await _http.PutAsJsonAsync($"api/articles/{request.Id}", request);
         response.EnsureSuccessStatusCode();
     }
-
-
-    public async Task UploadFilesAsync(int articleId, List<IBrowserFile> files)
-    {
-        await _fileUploadService.UploadFilesAsync(articleId, files, "articles");
-    }
-
-    public async Task<List<ArticleFileDto>> GetFilesAsync(int articleId)
-    {
-        var result = await _http.GetFromJsonAsync<List<ArticleFileDto>>(
-            $"api/articles/{articleId}/files");
-
-        return result ?? new List<ArticleFileDto>();
-    }
-
-
-    public async Task<byte[]> DownloadFileAsync(int articleId, int fileId)
-    {
-        var response = await _http.GetAsync($"api/articles/{articleId}/files/{fileId}");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsByteArrayAsync();
-    }
-
 }

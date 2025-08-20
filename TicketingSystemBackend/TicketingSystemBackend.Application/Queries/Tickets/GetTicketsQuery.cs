@@ -4,4 +4,10 @@ using TicketingSystemBackend.Domain.Entities;
 
 namespace TicketingSystemBackend.Application.Queries.Tickets;
 
-public record GetTicketsQuery : IRequest<List<TicketDto>>;
+public record GetTicketsQuery(
+    string? SortBy = null,
+    string? SortOrder = null,
+    int? CategoryId = null,
+    string? Status = null,
+    string? Priority = null
+) : IRequest<List<TicketDto>>;

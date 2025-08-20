@@ -16,6 +16,12 @@ public class GetTicketsQueryHandler : IRequestHandler<GetTicketsQuery, List<Tick
 
     public async Task<List<TicketDto>> Handle(GetTicketsQuery request, CancellationToken cancellationToken)
     {
-        return await _repository.GetAllAsync();
+        return await _repository.GetAllSortFilterAsync(
+            request.SortBy,
+            request.SortOrder,
+            request.CategoryId,
+            request.Status,
+            request.Priority
+        );
     }
 }

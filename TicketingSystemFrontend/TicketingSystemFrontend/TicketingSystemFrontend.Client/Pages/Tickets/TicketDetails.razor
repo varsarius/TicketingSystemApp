@@ -1,12 +1,13 @@
 ﻿@page "/tickets/{id:int}"
 
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
 @inject NavigationManager Navigation
-
+@inject IFileService FileService
 
 <h3>Ticket Details</h3>
 
@@ -32,13 +33,16 @@ else
             <h6 class="card-subtitle mb-2 text-muted">
                 Created: @ticket.CreatedAt
             </h6>
-            @if (@ticket.UpdatedAt != null)
+            @if (ticket.UpdatedAt != null)
             {
                 <h6 class="card-subtitle mb-2 text-muted">
-                    Edited:  @ticket.UpdatedAt
+                    Edited: @ticket.UpdatedAt
                 </h6>
             }
             <p class="card-text text-muted">@ticket.Description</p>
+
+            <h6>Attachments:</h6>
+            <ExistingFiles EntityApiType="tickets" Id="@id" />
 
             <div class="mt-3">
                 <a class="btn btn-primary me-2" href="/tickets/@id/edit">Update</a>

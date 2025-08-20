@@ -53,7 +53,7 @@ else
                                 Download @f.FileName
                             </button>
 
-                            @if (isAdmin || isAgent)
+                            @if (isAdmin || (UserId == article.UserId))
                             {
                                 <button class="btn btn-sm btn-danger ms-2" @onclick="() => DeleteFile(f.Id)">
                                     Delete

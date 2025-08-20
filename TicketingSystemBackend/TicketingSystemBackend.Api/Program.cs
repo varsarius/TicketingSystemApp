@@ -93,6 +93,8 @@ builder.Services.AddScoped<ITicketReadRepository, TicketReadRepository>();
 builder.Services.AddScoped<ITicketcommentReadRepository, TicketCommentReadRepository>();
 
 builder.Services.AddScoped<IReadRepository<TicketDto>, TicketReadRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+
 
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 

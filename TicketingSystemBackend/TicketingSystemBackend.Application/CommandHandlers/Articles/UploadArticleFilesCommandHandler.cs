@@ -14,16 +14,16 @@ namespace TicketingSystemBackend.Application.CommandHandlers.Articles;
 public class UploadArticleFilesCommandHandler : IRequestHandler<UploadArticleFilesCommand>
 {
     private readonly IArticleRepository _articleRepository;
-    private readonly IArticleFileRepository _articleFileRepository;
+    private readonly IFileRepository _fileRepository;
     private readonly IWebHostEnvironment _env;
 
     public UploadArticleFilesCommandHandler(
         IArticleRepository articleRepository,
-        IArticleFileRepository articleFileRepository,
+        IFileRepository fileRepository,
         IWebHostEnvironment env)
     {
         _articleRepository = articleRepository;
-        _articleFileRepository = articleFileRepository;
+        _fileRepository = fileRepository;
         _env = env;
     }
 
@@ -69,10 +69,10 @@ public class UploadArticleFilesCommandHandler : IRequestHandler<UploadArticleFil
 
             fileEntity.Articles.Add(article); // link to article
 
-            await _articleFileRepository.AddAsync(fileEntity);
+            await _fileRepository.AddAsync(fileEntity);
         }
 
-        await _articleFileRepository.SaveChangesAsync();
+        await _fileRepository.SaveChangesAsync();
 
     }
 }

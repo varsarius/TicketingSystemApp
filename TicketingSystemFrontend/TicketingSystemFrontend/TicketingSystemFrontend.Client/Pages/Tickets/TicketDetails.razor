@@ -7,8 +7,11 @@
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @using TicketingSystemFrontend.Client.Requests;
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
 @inject ITicketService TicketService
 @inject ITicketCommentService TicketCommentService
+@inject IAuthService AuthService
+@inject AuthenticationStateProvider AuthStateProvider
 
 @inject NavigationManager Navigation
 @inject IFileService FileService
@@ -48,10 +51,13 @@ else
             <h6>Attachments:</h6>
             <ExistingFiles EntityApiType="tickets" EntityId="@id" />
 
-            <div class="mt-3">
-                <a class="btn btn-primary me-2" href="/tickets/@id/edit">Update</a>
-                <button class="btn btn-danger" @onclick="DeleteTicket">Delete</button>
-            </div>
+            @if (isAdmin || currentUserId == ticket.UserId)
+            {
+                <div class="mt-3">
+                    <a class="btn btn-primary me-2" href="/tickets/@id/edit">Update</a>
+                    <button class="btn btn-danger" @onclick="DeleteTicket">Delete</button>
+                </div>
+            }
         </div>
     </div>
     <div class="mt-4">
@@ -78,10 +84,21 @@ else
                 {
                     <p class="card-text">@c.Description</p>
                     <small class="text-muted">By @c.UserName on @c.CreatedAt</small>
+
                     <div class="mb-4">
-                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditComment(c)">Edit</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteComment(c.Id)">Delete</button>
+                        @* Edit allowed for Admin or Comment owner *@
+                        @if (isAdmin || currentUserId == c.UserId)
+                        {
+                            <button class="btn btn-sm btn-warning me-1" @onclick="() => EditComment(c)">Edit</button>
+                        }
+
+                        @* Delete allowed for Admin, Ticket owner, or Comment owner *@
+                        @if (isAdmin || currentUserId == ticket.UserId || currentUserId == c.UserId)
+                        {
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteComment(c.Id)">Delete</button>
+                        }
                     </div>
+                    
                 }
 
             }
@@ -107,12 +124,29 @@ else
     private List<TicketCommentDto> comments = new();
     private string newComment = string.Empty;
 
-    private Guid currentUserId = Guid.NewGuid();
+    private Guid currentUserId;
+    private bool isLoading = true;
+    private bool isAdmin = false;
+    private bool isAgent = false;
+    private bool isEndUser = false;
 
     private TicketDto? ticket;
 
     protected override async Task OnParametersSetAsync()
     {
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            isAdmin = user.IsInRole("Admin");
+            isAgent = user.IsInRole("Agent");
+            isEndUser = user.IsInRole("EndUser");
+            currentUserId = await AuthService.GetUserIdFromTokenAsync();
+        }
+
+
         ticket = await TicketService.GetByIdAsync(id);
         comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
     }
@@ -164,7 +198,7 @@ else
             UserId = currentUserId
         });
 
-        if ((success is not null)|| (success is null)) //TODO: here should be normal ID or.. IDK what to do here
+        if ((success is not null) || (success is null)) //TODO: here should be normal ID or.. IDK what to do here
         {
             newComment = string.Empty;
             // reload comments list after successful add

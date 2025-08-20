@@ -5,7 +5,7 @@ using TicketingSystemBackend.Application.Queries.TicketComments;
 
 namespace TicketingSystemBackend.Api.Controllers;
 [ApiController]
-[Route("/api/tickets/comments")]
+[Route("api/tickets/{ticketId}/comments")]
 public class TicketCommentController : ControllerBase, IController<CreateTicketCommentCommand, UpdateTicketCommentCommand>
 {
     private readonly IMediator _mediator;
@@ -43,5 +43,13 @@ public class TicketCommentController : ControllerBase, IController<CreateTicketC
     {
         await _mediator.Send(command);
         return Ok();
+    }
+
+    [Route("byTicket")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllByTicketIdAsync([FromRoute] int ticketId)
+    {
+        var ticketComments = await _mediator.Send(new GetTicketCommentsByTicketIdQuery(ticketId));
+        return Ok(ticketComments);
     }
 }

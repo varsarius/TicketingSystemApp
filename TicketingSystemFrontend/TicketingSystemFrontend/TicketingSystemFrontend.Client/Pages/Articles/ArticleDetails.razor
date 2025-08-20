@@ -4,13 +4,17 @@
 @using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @using TicketingSystemFrontend.Client.Services.Extensions
+@using Microsoft.AspNetCore.Components.Authorization
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
 @inject IJSRuntime JS
 @inject IArticleService ArticleService
+@inject IAuthService AuthService
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
 
 <h3>Article Details</h3>
 
-@if (article == null)
+@if (article == null || isLoading)
 {
     <p><em>Loading...</em></p>
 }
@@ -32,27 +36,49 @@ else
                     Edited: @article.UpdatedAt
                 </h6>
             }
+
             <p class="card-text">@article.Description</p>
 
             <h6>Attachments:</h6>
             <ExistingFiles EntityApiType="articles" Id="@id" />
 
-            <div class="mt-3">
-                <a class="btn btn-primary me-2" href="/articles/edit/@id">Update</a>
-                <button class="btn btn-danger" @onclick="DeleteArticle">Delete</button>
-            </div>
+            @if (isAdmin || (UserId == article.UserId))
+            {
+                <div class="mt-3">
+                    <a class="btn btn-primary me-2" href="/articles/edit/@id">Update</a>
+                    <button class="btn btn-danger" @onclick="DeleteArticle">Delete</button>
+                </div>
+            }
         </div>
     </div>
 }
 
 @code {
-    [Parameter]
-    public int id { get; set; }
+    [Parameter] public int id { get; set; }
 
     private ArticleDto? article;
+    private List<FileDto> articleFiles = new();
+
+    public Guid UserId { get; set; }
+
+    private bool isLoading = true;
+    private bool isAdmin = false;
+    private bool isAgent = false;
+    private bool isEndUser = false;
 
     protected override async Task OnParametersSetAsync()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            isAdmin = user.IsInRole("Admin");
+            isAgent = user.IsInRole("Agent");
+            isEndUser = user.IsInRole("EndUser");
+            UserId = await AuthService.GetUserIdFromTokenAsync();
+        }
+
         article = await ArticleService.GetByIdAsync(id);
     }
 

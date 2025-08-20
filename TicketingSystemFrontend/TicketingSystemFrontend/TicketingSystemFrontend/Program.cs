@@ -29,6 +29,8 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IArticleCategoryService, ArticleCategoryService>();
 builder.Services.AddScoped<ITicketCategoryService, TicketCategoryService>();
+builder.Services.AddScoped<ITicketCommentService, TicketCommentService>();
+
 
 
 builder.Services.AddScoped(sp => new HttpClient
@@ -41,6 +43,7 @@ builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileService, FileService>();
+//builder.Services.AddScoped<ITokenRefresher, TokenRefresher>();
 
 builder.Services.AddMudServices();
 

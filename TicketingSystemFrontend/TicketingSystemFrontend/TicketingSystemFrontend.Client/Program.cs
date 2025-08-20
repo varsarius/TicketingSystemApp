@@ -22,6 +22,9 @@ builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IArticleCategoryService, ArticleCategoryService>();
 
 builder.Services.AddScoped<ITicketCategoryService, TicketCategoryService>();
+builder.Services.AddScoped<ITicketCommentService, TicketCommentService>();
+
+
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(sp => new HttpClient
@@ -38,6 +41,13 @@ builder.Services.AddHttpClient("ApiClient", client =>
 })
 .AddHttpMessageHandler<AuthTokenHandler>();
 
+builder.Services.AddHttpClient("NoAuth", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!); // Or your API base URL, e.g., "https://yourapi.com/"
+});
+
+
+
 builder.Services.AddScoped(sp =>
 {
     var factory = sp.GetRequiredService<IHttpClientFactory>();
@@ -50,6 +60,8 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ITokenRefresher, TokenRefresher>();
+
 
 builder.Services.AddMudServices();
 

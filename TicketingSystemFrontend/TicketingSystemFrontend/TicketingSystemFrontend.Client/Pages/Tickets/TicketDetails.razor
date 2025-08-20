@@ -1,11 +1,15 @@
 ﻿@page "/tickets/{id:int}"
 
+@using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
+@using TicketingSystemFrontend.Client.Requests;
 @inject ITicketService TicketService
+@inject ITicketCommentService TicketCommentService
+
 @inject NavigationManager Navigation
 @inject IFileService FileService
 
@@ -17,18 +21,18 @@
 }
 else
 {
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-body">
             <h4 class="card-title">@ticket.Title</h4>
             <h5 class="card-subtitle mb-2">Assigned to: @ticket.AgentName</h5>
             <h6 class="card-subtitle mb-2 text-muted">
-                By @ticket.UserName | Category: @ticket.CategoryName
+                By @ticket.UserName | Category: @ticket.TicketCategoryName
             </h6>
             <h6 class="card-subtitle mb-2 text-muted">
                 Priority: <b class="@(GetPriorityClass(ticket.Priority))">@ticket.Priority </b>
             </h6>
             <h6 class="card-subtitle mb-2 text-muted">
-                Status: <b class="@(GetStatusClass(ticket.Status))">@ticket.Status</b>
+                Status: <b class="@(GetStatusClass(ticket.Status))">@GetDisplayName(ticket.Status)</b>
             </h6>
             <h6 class="card-subtitle mb-2 text-muted">
                 Created: @ticket.CreatedAt
@@ -50,17 +54,67 @@ else
             </div>
         </div>
     </div>
+    <div class="mt-4">
+        <h5>Comments</h5>
+
+        @if (comments == null || comments.Count == 0)
+        {
+            <p><em>No comments available...</em></p>
+        }
+        else
+        {
+            @foreach (var c in comments)
+            {
+                @if (editingCommentId == c.Id)
+                {
+
+                    <InputTextArea @bind-Value="editingCommentText" class="form-control" />
+                    <div class="mb-4">
+                        <button class="btn btn-sm btn-primary me-1" @onclick="SaveEditedComment">Save</button>
+                        <button class="btn btn-sm btn-secondary" @onclick="() => editingCommentId = null">Cancel</button>
+                    </div>
+                }
+                else
+                {
+                    <p class="card-text">@c.Description</p>
+                    <small class="text-muted">By @c.UserName on @c.CreatedAt</small>
+                    <div class="mb-4">
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditComment(c)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteComment(c.Id)">Delete</button>
+                    </div>
+                }
+
+            }
+
+        }
+
+        <EditForm Model="@this" OnValidSubmit="AddCommentAsync">
+            <InputTextArea @bind-Value="newComment" class="form-control" placeholder="Leave a comment..." />
+            <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+        </EditForm>
+    </div>
+
 }
 
 @code {
     [Parameter]
     public int id { get; set; }
 
+    private int? editingCommentId = null;
+    private string editingCommentText = string.Empty;
+
+
+    private List<TicketCommentDto> comments = new();
+    private string newComment = string.Empty;
+
+    private Guid currentUserId = Guid.NewGuid();
+
     private TicketDto? ticket;
 
     protected override async Task OnParametersSetAsync()
     {
         ticket = await TicketService.GetByIdAsync(id);
+        comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
     }
 
     private async Task DeleteTicket()
@@ -92,4 +146,64 @@ else
         Status.Resolved => "text-success",
         Status.Closed => "text-secondary"
     };
+
+    private string GetDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                              .FirstOrDefault() as DisplayAttribute;
+        return attribute?.Name ?? value.ToString();
+    }
+
+    private async Task AddCommentAsync()
+    {
+        var success = await TicketCommentService.CreateAsync(new TicketCommentCreateRequest
+        {
+            TicketId = id,
+            Description = newComment,
+            UserId = currentUserId
+        });
+
+        if ((success is not null)|| (success is null)) //TODO: here should be normal ID or.. IDK what to do here
+        {
+            newComment = string.Empty;
+            // reload comments list after successful add
+            comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
+        }
+    }
+
+    private void EditComment(TicketCommentDto comment)
+    {
+        editingCommentId = comment.Id;
+        editingCommentText = comment.Description;
+    }
+
+    private async Task SaveEditedComment()
+    {
+        if (editingCommentId.HasValue)
+        {
+            await TicketCommentService.UpdateAsync(new TicketCommentUpdateRequest
+            {
+                Id = editingCommentId.Value,
+                Description = editingCommentText,
+                ArticleId = id
+            });
+
+            // Refresh the list
+            comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
+
+            editingCommentId = null;
+            editingCommentText = string.Empty;
+        }
+    }
+
+    private async Task DeleteComment(int commentId)
+    {
+        var success = await TicketCommentService.DeleteCommentAsync(id, commentId);
+        if (success)
+        {
+            comments = await TicketCommentService.GetCommentsByTicketIdAsync(id);
+        }
+    }
+
 }

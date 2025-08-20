@@ -74,4 +74,33 @@ public class TicketService : ITicketService
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task<List<TicketDto>> GetAllSortFilterAsync(string? sortBy = null, string? sortOrder = null, int? categoryId = null, string? status = null, string? priority = null)
+    {
+        var queryParams = new List<string>();
+
+        if (!string.IsNullOrEmpty(sortBy))
+            queryParams.Add($"sortBy={Uri.EscapeDataString(sortBy)}");
+
+        if (!string.IsNullOrEmpty(sortOrder))
+            queryParams.Add($"sortOrder={Uri.EscapeDataString(sortOrder)}");
+
+        if (categoryId.HasValue)
+            queryParams.Add($"categoryId={categoryId.Value}");
+
+        if (!string.IsNullOrEmpty(status))
+            queryParams.Add($"status={Uri.EscapeDataString(status)}");
+
+        if (!string.IsNullOrEmpty(priority))
+            queryParams.Add($"priority={Uri.EscapeDataString(priority)}");
+
+        var queryString = queryParams.Count > 0
+            ? "?" + string.Join("&", queryParams)
+            : string.Empty;
+
+        var url = $"api/tickets{queryString}";
+
+        var tickets = await _http.GetFromJsonAsync<List<TicketDto>>(url);
+
+        return tickets ?? new List<TicketDto>();
+    }
 }

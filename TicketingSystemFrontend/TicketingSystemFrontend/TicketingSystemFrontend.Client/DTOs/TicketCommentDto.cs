@@ -5,10 +5,14 @@ namespace TicketingSystemFrontend.Client.DTOs;
 public class TicketCommentDto
 {
     public int Id { get; set; }
+    public Guid UserId { get; set; }
+    public int TicketId { get; set; }
+    public string UserName { get; set; } = string.Empty;
+
+
     [Required]
     public string Description { get; set; } = null!;
-    public Guid UserId { get; set; } // Added
-    public int TicketId { get; set; } // Added
     public DateTime CreatedAt { get; init; }
     public DateTime? UpdatedAt { get; set; }
+
 }

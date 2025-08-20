@@ -1,4 +1,5 @@
-﻿@using TicketingSystemFrontend.Client.DTOs
+﻿@using System.ComponentModel.DataAnnotations
+@using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
@@ -16,11 +17,11 @@
             </p>
             <p class="text-muted mb-0 small">
                 Category:
-                <span class="badge bg-primary">@Ticket.CategoryName</span>
+                <span class="badge bg-primary">@Ticket.TicketCategoryName</span>
             </p>
             <p class="text-muted mb-0 small">
                 Status:
-                <span class="badge @(GetStatusClass(Ticket.Status))">@Ticket.Status</span> 
+                <span class="badge @(GetStatusClass(Ticket.Status))">@GetDisplayName(Ticket.Status)</span>
             </p>
         </div>
         <div class="col-md-6 p-3">
@@ -61,5 +62,13 @@
     private void NavigateToViewDetails()
     {
         NavigationManager.NavigateTo($"/tickets/{@Ticket.Id}");
+    }
+
+    private string GetDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                              .FirstOrDefault() as DisplayAttribute;
+        return attribute?.Name ?? value.ToString();
     }
 }

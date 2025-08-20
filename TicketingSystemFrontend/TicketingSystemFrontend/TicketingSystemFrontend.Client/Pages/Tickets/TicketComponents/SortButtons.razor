@@ -3,14 +3,51 @@
     <div>
         <a href="tickets/create" class="btn btn-primary me-2">+ Add Ticket</a>
         <div class="btn-group" role="group">
-            <button class="btn btn-outline-secondary btn-sm">Newest</button>
-            <button class="btn btn-outline-secondary btn-sm">Oldest</button>
-            <button class="btn btn-outline-secondary btn-sm">Priority ↑</button>
-            <button class="btn btn-outline-secondary btn-sm">Priority ↓</button>
+            @foreach (var option in SortOptions)
+            {
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="() => ApplySort(option.SortBy, option.SortOrder)">
+                    @option.Label
+                </button>
+            }
+            <button class="btn btn-outline-secondary btn-sm" @onclick="ResetSort">
+                Reset
+            </button>
         </div>
     </div>
 </div>
 
 @code {
+    [Parameter] public EventCallback<(string sortBy, string sortOrder)> SortChanged { get; set; }
 
+    private async Task ApplySort(string sortBy, string sortOrder)
+    {
+        if (SortChanged.HasDelegate)
+        {
+            await SortChanged.InvokeAsync((sortBy, sortOrder));
+        }
+    }
+
+    private class SortOption
+    {
+        public string SortBy { get; set; } = "";
+        public string SortOrder { get; set; } = "";
+        public string Label { get; set; } = "";
+    }
+
+    private List<SortOption> SortOptions = new List<SortOption>
+    {
+        new SortOption { SortBy = "createdAt", SortOrder = "desc", Label = "Newest" },
+        new SortOption { SortBy = "createdAt", SortOrder = "asc", Label = "Oldest" },
+        new SortOption { SortBy = "priority", SortOrder = "asc", Label = "Priority ↑" },
+        new SortOption { SortBy = "priority", SortOrder = "desc", Label = "Priority ↓" },
+    };
+
+    private async Task ResetSort()
+    {
+        if (SortChanged.HasDelegate)
+        {
+            await SortChanged.InvokeAsync(("", "")); // No sorting
+        }
+    }
 }

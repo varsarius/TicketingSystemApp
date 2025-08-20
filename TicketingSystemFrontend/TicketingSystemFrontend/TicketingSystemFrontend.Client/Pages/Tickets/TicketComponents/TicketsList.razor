@@ -3,24 +3,20 @@
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
 
-@if (tickets.Count == 0)
+@if (Tickets.Count == 0)
 {
     <p>Loading tickets...</p>
 }
 else
 {
-    @foreach (var ticket in tickets)
+    @foreach (var ticket in Tickets)
     {
         <TicketCard Ticket="ticket" />
     }
 }
 
 @code {
-    private List<TicketDto> tickets = [];
-
-    protected override async Task OnInitializedAsync()
-    {
-        tickets = await TicketService.GetAllAsync();
-    }
+    [Parameter]
+    public List<TicketDto> Tickets { get; set; } = new();
 
 }

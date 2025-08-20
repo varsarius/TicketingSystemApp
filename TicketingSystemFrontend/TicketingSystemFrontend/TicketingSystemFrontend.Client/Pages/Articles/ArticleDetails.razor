@@ -1,6 +1,7 @@
 ﻿@page "/articles/{id:int}"
 
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @using TicketingSystemFrontend.Client.Services.Extensions;
 @inject IJSRuntime JS
@@ -36,7 +37,7 @@ else
 
 
             <h6>Attachments:</h6>
-            @if (articleFiles.Count == 0)
+            @* @if (articleFiles.Count == 0)
             {
                 <p><em>No files attached.</em></p>
             }
@@ -53,7 +54,10 @@ else
                         </li>
                     }
                 </ul>
-            }
+            } *@
+
+            <ExistingFiles Files="articleFiles" EntityType="article" ArticleId="@id" OnFileDeleted="DeleteFile" />
+            @* asd           NOT                 NUJNOE               NUJNOE              NOT *@
 
             <div class="mt-3">
                 <a class="btn btn-primary me-2" href="/articles/edit/@id">Update</a>

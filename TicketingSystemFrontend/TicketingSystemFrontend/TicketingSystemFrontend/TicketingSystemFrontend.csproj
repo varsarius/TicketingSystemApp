@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\TicketingSystemFrontend.Client\Pages\Articles\ArticleCategoryCard.razor" Link="ArticleCategoryCard.razor" />
     <None Include="..\TicketingSystemFrontend.Client\Pages\Component.razor" Link="Component.razor" />
   </ItemGroup>
 

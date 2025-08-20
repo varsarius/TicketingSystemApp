@@ -2,7 +2,7 @@
 @using TicketingSystemFrontend.Client.Services.Extensions
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IJSRuntime JS
-@inject IArticleService ArticleService
+@inject IFileService FileService
 
 <li>
     <button class="btn btn-link" @onclick="DownloadFile">Download @File.FileName</button>
@@ -21,11 +21,15 @@
     [Parameter]
     public EventCallback<FileDto> OnFileDeleted { get; set; }
 
+    [Parameter]
+    public string EntityType { get; set; }
+
+
     private async Task DownloadFile()
     {
         try
         {
-            var bytes = await ArticleService.DownloadFileAsync(ArticleId, File.Id);
+            var bytes = await FileService.DownloadAsync(ArticleId, File.Id, EntityType);
             var base64 = Convert.ToBase64String(bytes);
             await JS.InvokeVoidAsync("downloadFileFromBytes", File.FileName, base64);
         }

@@ -5,9 +5,10 @@ namespace TicketingSystemFrontend.Client.Services.Interfaces
 {
     public interface ITicketService : ICrudService<TicketDto, TicketCreateRequest, TicketUpdateRequest>
     {
-        Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId);
-        Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request);
-        Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request);
-        Task<bool> DeleteCommentAsync(int commentId);
+        Task<List<TicketDto>> GetAllSortFilterAsync(string? sortBy = null,
+            string? sortOrder = null,
+            int? categoryId = null,
+            string? status = null,
+            string? priority = null);
     }
 }

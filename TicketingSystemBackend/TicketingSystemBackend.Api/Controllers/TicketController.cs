@@ -29,12 +29,32 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
         var ticket = await _mediator.Send(new GetTicketByIdQuery(id));
         return Ok(ticket);
     }
+
+
+
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllSortFilterAsync(
+        [FromQuery] string? sortBy,
+        [FromQuery] string? sortOrder,
+        [FromQuery] int? categoryId,
+        [FromQuery] string? status,
+        [FromQuery] string? priority)
     {
-        var tickets = await _mediator.Send(new GetTicketsQuery());
+
+        var query = new GetTicketsQuery(
+            sortBy,
+            sortOrder,
+            categoryId,
+            status,
+            priority
+        );
+
+        var tickets = await _mediator.Send(query);
         return Ok(tickets);
     }
+
+
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateTicketCommand command)
     {
@@ -58,4 +78,11 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
         return Ok();
     }
 
+    [HttpGet]
+    [Route("allall")]
+    public async Task<IActionResult> GetAllAsync()
+    {
+        var tickets = await _mediator.Send(new GetTicketsQuery());
+        return Ok(tickets);
+    }
 }

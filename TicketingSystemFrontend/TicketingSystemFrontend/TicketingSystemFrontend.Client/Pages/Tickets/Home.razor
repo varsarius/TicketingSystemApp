@@ -12,18 +12,51 @@
     <SearchBar />
 
     <div class="row">
-        <FiltersColumn />
+        <FiltersColumn FiltersChanged="@(args => OnFilterChanged(args.categoryId, args.status, args.priority))" />
 
         <div class="col-md-9">
-            <SortButtons />
+            <SortButtons SortChanged="@(args => OnSortChanged(args.sortBy, args.sortOrder))" />
 
             <!-- (Repeated Card Snippets) -->
-            <TicketsList />
+            <TicketsList Tickets="tickets" />
         </div>
     </div>
 </div>
 
 
 @code {
+    private List<TicketDto> tickets = [];
 
+    // Filter/Sort state
+    private string? sortBy = null;
+    private string? sortOrder = null;
+    private int? categoryId = null;
+    private string? status = null;
+    private string? priority = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTicketsAsync();
+    }
+
+    public async Task LoadTicketsAsync()
+    {
+        tickets = await TicketService.GetAllSortFilterAsync(sortBy, sortOrder, categoryId, status, priority);
+    }
+
+    // Methods to update filters/sort from child components
+    private async Task OnSortChanged(string newSortBy, string newSortOrder)
+    {
+        sortBy = newSortBy;
+        sortOrder = newSortOrder;
+        await LoadTicketsAsync();
+    }
+
+    private async Task OnFilterChanged(int? newCategoryId, string? newStatus, string? newPriority)
+    {
+        categoryId = newCategoryId;
+        status = newStatus;
+        priority = newPriority;
+        await LoadTicketsAsync();
+    }
 }

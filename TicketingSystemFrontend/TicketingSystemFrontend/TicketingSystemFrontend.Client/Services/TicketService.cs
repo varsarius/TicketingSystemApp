@@ -74,29 +74,33 @@ public class TicketService : ITicketService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<List<TicketCommentDto>> GetCommentsByTicketIdAsync(int ticketId)
+    public async Task<List<TicketDto>> GetAllSortFilterAsync(string? sortBy = null, string? sortOrder = null, int? categoryId = null, string? status = null, string? priority = null)
     {
-        var comments = await _http.GetFromJsonAsync<List<TicketCommentDto>>(
-            $"api/tickets/{ticketId}/comments"
-        );
-        return comments ?? new List<TicketCommentDto>();
-    }
+        var queryParams = new List<string>();
 
-    public async Task<bool> AddCommentAsync(int ticketId, TicketCommentCreateRequest request)
-    {
-        var response = await _http.PostAsJsonAsync($"api/tickets/{ticketId}/comments", request);
-        return response.IsSuccessStatusCode;
-    }
+        if (!string.IsNullOrEmpty(sortBy))
+            queryParams.Add($"sortBy={Uri.EscapeDataString(sortBy)}");
 
-    public async Task<bool> DeleteCommentAsync(int commentId)
-    {
-        var response = await _http.DeleteAsync($"api/tickets/comments/{commentId}");
-        return response.IsSuccessStatusCode;
-    }
+        if (!string.IsNullOrEmpty(sortOrder))
+            queryParams.Add($"sortOrder={Uri.EscapeDataString(sortOrder)}");
 
-    public async Task<bool> UpdateCommentAsync(int commentId, TicketCommentUpdateRequest request)
-    {
-        var response = await _http.PutAsJsonAsync($"api/tickets/comments/{commentId}", request);
-        return response.IsSuccessStatusCode;
+        if (categoryId.HasValue)
+            queryParams.Add($"categoryId={categoryId.Value}");
+
+        if (!string.IsNullOrEmpty(status))
+            queryParams.Add($"status={Uri.EscapeDataString(status)}");
+
+        if (!string.IsNullOrEmpty(priority))
+            queryParams.Add($"priority={Uri.EscapeDataString(priority)}");
+
+        var queryString = queryParams.Count > 0
+            ? "?" + string.Join("&", queryParams)
+            : string.Empty;
+
+        var url = $"api/tickets{queryString}";
+
+        var tickets = await _http.GetFromJsonAsync<List<TicketDto>>(url);
+
+        return tickets ?? new List<TicketDto>();
     }
 }

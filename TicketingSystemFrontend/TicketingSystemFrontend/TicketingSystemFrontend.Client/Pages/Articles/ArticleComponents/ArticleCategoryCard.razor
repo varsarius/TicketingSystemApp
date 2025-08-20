@@ -1,0 +1,57 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+
+<li class="list-group-item d-flex justify-content-between align-items-center">
+    @if (!IsEditing)
+    {
+        @Category.CategoryName
+        <div>
+            <button type="button" class="btn btn-warning me-2" @onclick="HandleStartEditing">Edit</button>
+            <button type="button" class="btn btn-danger" @onclick="HandleDelete">Delete</button>
+            <span class="badge bg-secondary">ID: @Category.Id</span>
+        </div>
+    }
+    else
+    {
+        <input class="form-control me-3" @bind="Category.CategoryName" style="max-width: 300px;" />
+    }
+</li>
+
+@code {
+    [Parameter]
+    public ArticleCategoryDto Category { get; set; } = null!;
+
+    [Parameter]
+    public bool IsEditing { get; set; }
+
+    [Parameter]
+    public EventCallback<ArticleCategoryDto> OnStartEditing { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<ArticleCategoryDto> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task HandleStartEditing()
+    {
+        await OnStartEditing.InvokeAsync(Category);
+    }
+
+    private async Task HandleDelete()
+    {
+        await OnDelete.InvokeAsync(Category.Id);
+    }
+
+    private async Task HandleSave()
+    {
+        await OnSave.InvokeAsync(Category);
+    }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

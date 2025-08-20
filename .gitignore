@@ -427,4 +427,4 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-TicketingSystemBackend/TicketingSystemBackend.Api/wwwroot/uploads/
+**/wwwroot/uploads/

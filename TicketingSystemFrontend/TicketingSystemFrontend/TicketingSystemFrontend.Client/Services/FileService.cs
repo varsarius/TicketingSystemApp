@@ -16,26 +16,26 @@ public class FileService : IFileService
         _http = http;
     }
 
-    public async Task DeleteAsync(int entityId, int fileId, string entityType)
+    public async Task DeleteAsync(int entityId, int fileId, string entityApiType)
     {
-        var response = await _http.DeleteAsync($"api/{entityType}/{entityId}/files/{fileId}");
+        var response = await _http.DeleteAsync($"api/{entityApiType}/{entityId}/files/{fileId}");
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<byte[]> DownloadAsync(int entityId, int fileId, string entityType)
+    public async Task<byte[]> DownloadAsync(int entityId, int fileId, string entityApiType)
     {
-        var response = await _http.GetAsync($"api/{entityType}/{entityId}/files/{fileId}");
+        var response = await _http.GetAsync($"api/{entityApiType}/{entityId}/files/{fileId}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsByteArrayAsync();
     }
 
-    public async Task<List<FileDto>> GetFilesAsync(int entityId, string entityType)
+    public async Task<List<FileDto>> GetFilesAsync(int entityId, string entityApiType)
     {
-        return await _http.GetFromJsonAsync<List<FileDto>>($"api/{entityType}/{entityId}/files")
+        return await _http.GetFromJsonAsync<List<FileDto>>($"api/{entityApiType}/{entityId}/files")
             ?? new List<FileDto>();
     }
 
-    public async Task UploadAsync(int entityId, List<IBrowserFile> files, string entityType)
+    public async Task UploadAsync(int entityId, List<IBrowserFile> files, string entityApiType)
     {
         if (!files.Any()) return;
 
@@ -54,7 +54,7 @@ public class FileService : IFileService
             content.Add(streamContent, "files", file.Name);
         }
 
-        var response = await _http.PostAsync($"api/{entityType}/{entityId}/files", content);
+        var response = await _http.PostAsync($"api/{entityApiType}/{entityId}/files", content);
         response.EnsureSuccessStatusCode();
     }
 }

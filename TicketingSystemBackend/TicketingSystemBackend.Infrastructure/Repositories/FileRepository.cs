@@ -22,10 +22,10 @@ public class FileRepository : IFileRepository
         await _context.Files.AddAsync(file, cancellationToken);
     }
 
-    public Task DeleteAsync(Domain.Entities.File file, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Domain.Entities.File file, CancellationToken cancellationToken = default)
     {
         _context.Files.Remove(file);
-        return Task.CompletedTask;
+        await SaveChangesAsync();
     }
 
     public async Task<Domain.Entities.File?> GetByIdAsync(int id, CancellationToken cancellationToken = default)

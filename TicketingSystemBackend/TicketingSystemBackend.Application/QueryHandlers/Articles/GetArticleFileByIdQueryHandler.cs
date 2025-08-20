@@ -10,11 +10,11 @@ using TicketingSystemBackend.Application.Queries.Articles;
 namespace TicketingSystemBackend.Application.QueryHandlers.Articles;
 public class GetArticleFileByIdQueryHandler : IRequestHandler<GetArticleFileByIdQuery, Domain.Entities.File?>
 {
-    private readonly IArticleFileRepository _fileRepository;
+    private readonly IFileRepository _fileRepository;
 
-    public GetArticleFileByIdQueryHandler(IArticleFileRepository articleFileRepository)
+    public GetArticleFileByIdQueryHandler(IFileRepository fileRepository)
     {
-        _fileRepository = articleFileRepository;
+        _fileRepository = fileRepository;
     }
 
     public async Task<Domain.Entities.File?> Handle(GetArticleFileByIdQuery request, CancellationToken cancellationToken)

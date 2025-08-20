@@ -11,8 +11,8 @@ using TicketingSystemBackend.Application.Queries.Articles;
 namespace TicketingSystemBackend.Application.QueryHandlers.Articles;
 public class GetArticleFilesQueryHandler : IRequestHandler<GetArticleFilesQuery, List<ArticleFileDto>>
 {
-    private readonly IArticleFileRepository _fileRepository;
-    public GetArticleFilesQueryHandler(IArticleFileRepository fileRepository)
+    private readonly IFileRepository _fileRepository;
+    public GetArticleFilesQueryHandler(IFileRepository fileRepository)
     {
         _fileRepository = fileRepository;
     }

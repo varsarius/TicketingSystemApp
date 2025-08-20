@@ -1,0 +1,32 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject IFileService FileService
+
+@if (Files.Count == 0)
+{
+    <p><em>No files attached.</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var f in Files)
+        {
+            <ExistingFileElement File="f" EntityApiType="@EntityApiType" EntityId="EntityId" />
+        }
+    </ul>
+}
+
+@code {
+    private List<FileDto> Files { get; set; } = new();
+
+    [Parameter]
+    public string EntityApiType { get; set; } = string.Empty;
+
+    [Parameter]
+    public int EntityId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Files = await FileService.GetFilesAsync(EntityId, EntityApiType) ?? new List<FileDto>();
+    }
+}

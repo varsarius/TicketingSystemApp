@@ -1,0 +1,88 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IJSRuntime JS
+@inject IFileService FileService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IAuthService AuthService
+@inject IUserService UserService
+
+<li>
+    <button class="btn btn-link" @onclick="DownloadFile">Download @File.FileName</button>
+    @if (CanDelete)
+    {
+        <button class="btn btn-sm btn-danger ms-2" @onclick="DeleteFile">
+            Delete
+        </button>
+    }
+</li>
+
+@code {
+    [Parameter]
+    public FileDto File { get; set; } = new();
+
+    [Parameter]
+    public string EntityApiType { get; set; } = string.Empty;
+
+    [Parameter]
+    public int EntityId { get; set; }
+
+    private bool CanDelete { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                bool isAdmin = user.IsInRole("Admin");
+                Guid userId = await AuthService.GetUserIdFromTokenAsync();
+                Guid? authorId = await UserService.GetUserIdByEntityId(EntityId, EntityApiType);
+
+                CanDelete = isAdmin || (authorId.HasValue && userId == authorId.Value);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking authorization: {ex.Message}");
+            CanDelete = false; // Prevent unauthorized access
+        }
+    }
+
+    private async Task DownloadFile()
+    {
+        try
+        {
+            var bytes = await FileService.DownloadAsync(EntityId, File.Id, EntityApiType);
+            var base64 = Convert.ToBase64String(bytes);
+            await JS.InvokeVoidAsync("downloadFileFromBytes", File.FileName, base64);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error downloading file: {ex.Message}");
+            await JS.InvokeVoidAsync("alert", "Failed to download file.");
+        }
+    }
+
+    private async Task DeleteFile()
+    {
+        try
+        {
+            var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {File.FileName}?");
+            if (confirmed)
+            {
+                await FileService.DeleteAsync(EntityId, File.Id, EntityApiType);
+                await InvokeAsync(StateHasChanged); // Notify parent to refresh UI
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting file: {ex.Message}");
+            await JS.InvokeVoidAsync("alert", "Failed to delete file.");
+        }
+    }
+}

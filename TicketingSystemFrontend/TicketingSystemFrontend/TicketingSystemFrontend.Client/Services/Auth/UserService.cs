@@ -1,11 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
-using TicketingSystemFrontend.Client.Pages;
-using TicketingSystemFrontend.Client.Pages.Auth;
 using TicketingSystemFrontend.Client.Services.Interfaces.Auth;
 using static TicketingSystemFrontend.Client.Pages.Auth.AdminPanel;
-//using static TicketingSystemFrontend.Client.Pages.Auth.AdminPanel;
-
 
 namespace TicketingSystemFrontend.Client.Services.Auth;
 
@@ -19,7 +15,7 @@ public class UserService : IUserService
     }
 
     public async Task<List<UserDto>> GetUsersAsync()
-    {      
+    {
         var users = await _http.GetFromJsonAsync<List<UserDto>>("api/admin/users");
         return users ?? new List<UserDto>();
     }
@@ -33,20 +29,15 @@ public class UserService : IUserService
             throw new ArgumentException("New username cannot be empty.", nameof(newUserName));
 
         var url = $"api/auth/users/{username}/name";
-
         var content = new { newUserName };
-
         var response = await _http.PatchAsJsonAsync(url, content);
 
         if (!response.IsSuccessStatusCode)
         {
             var errorMessage = await response.Content.ReadAsStringAsync();
-            throw new HttpRequestException(
-                $"Failed to update username ({response.StatusCode}): {errorMessage}"
-            );
+            throw new HttpRequestException($"Failed to update username ({response.StatusCode}): {errorMessage}");
         }
     }
-
 
     public async Task UpdateUserRoleAsync(string username, string newRole)
     {
@@ -56,23 +47,36 @@ public class UserService : IUserService
         if (string.IsNullOrWhiteSpace(newRole))
             throw new ArgumentException("Role cannot be empty.", nameof(newRole));
 
-
-
         var url = $"api/auth/users/{username}/role";
-
-        var content = new { newRole = newRole };
-
+        var content = new { newRole };
         var response = await _http.PatchAsJsonAsync(url, content);
 
-        
-        
         if (!response.IsSuccessStatusCode)
         {
             var errorMessage = await response.Content.ReadAsStringAsync();
-            throw new HttpRequestException(
-                $"Failed to update role ({response.StatusCode}): {errorMessage}"
-            );
+            throw new HttpRequestException($"Failed to update role ({response.StatusCode}): {errorMessage}");
         }
     }
 
+    public async Task<Guid?> GetUserIdByEntityId(int entityId, string entityApiType)
+    {
+        if (string.IsNullOrWhiteSpace(entityApiType))
+            throw new ArgumentException("EntityApiType cannot be empty.", nameof(entityApiType));
+
+        var url = $"api/{entityApiType}/{entityId}";
+        var response = await _http.GetAsync(url);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var userResponse = await response.Content.ReadFromJsonAsync<EntityResponse>();
+            return userResponse.UserId;
+        }
+
+        return null;
+    }
+}
+
+public class EntityResponse
+{
+    public Guid UserId { get; set; }
 }

@@ -2,10 +2,12 @@
 
 @using MudBlazor
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Services.Interfaces
-@using TicketingSystemFrontend.Client.Services.Extensions;
+@using TicketingSystemFrontend.Client.Services.Extensions
 @using Blazored.LocalStorage
+
 @inject IArticleService ArticleService
 @inject IArticleCategoryService ArticleCategoryService
 @inject NavigationManager Navigation
@@ -40,59 +42,17 @@
             <button class="btn btn-primary" type="button" @onclick="EditCategories">Edit Categories</button>
         </div>
     </div>
-    <MudPaper Class="pa-6 d-flex align-center"
-              Style="border:2px dashed var(--mud-palette-primary); min-height:150px;"
-              @ondrop="OnDrop"
-              @ondragover:preventDefault>
-        <div>
-            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
-            <MudText Typo="Typo.subtitle1">Drag & drop files here or click below</MudText>
-            <InputFile OnChange="OnFilesChanged" multiple style="
-                width: 100%;
-                height: 100%;
-                font-size: 18px;
-                padding: 15%;
-                padding-right: 200%;
-                padding-left: 150%;
-                border: 2px solid var(--mud-palette-primary);
-                border-radius: 4px;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 1);" />
-        </div>
-    </MudPaper>
+
+    <FileForm @bind-Files="files" />
+
     <button type="submit" class="btn btn-primary me-2">Create</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 </EditForm>
-
-<hr />
-
-
-
-@if (files.Any())
-{
-    <MudTable Items="files" Dense="true">
-        <HeaderContent>
-            <MudTh>File Name</MudTh>
-            <MudTh>Size (MB)</MudTh>
-            <MudTh></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>@context.Name</MudTd>
-            <MudTd>@(Math.Round(context.Size / 1024.0 / 1024.0, 2))</MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               OnClick="@(() => RemoveFile(context))" />
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
-    <MudText>Total size: @Math.Round(files.Sum(f => f.Size) / 1024.0 / 1024.0, 2) MB</MudText>
-}
 
 @code {
     private ArticleCreateRequest newArticle = new();
     private List<ArticleCategoryDto> categories = new();
     private List<IBrowserFile> files = new();
-    private bool isDragging = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -132,21 +92,5 @@
     {
         await LocalStorage.RemoveItemAsync("savedArticleCreate");
         Navigation.NavigateTo("/articles");
-    }
-
-    private void OnFilesChanged(InputFileChangeEventArgs e)
-    {
-        files.Clear(); // TODO: TOFIXME: multiple sources of files. If you add some file and then another file - it will crush on uppload now. and remove this line ofc. 
-        files.AddRange(e.GetMultipleFiles());
-    }
-
-    private void OnDrop(DragEventArgs e)
-    {
-        // Prevent default browser behavior
-    }
-
-    private void RemoveFile(IBrowserFile file)
-    {
-        files.Remove(file);
     }
 }

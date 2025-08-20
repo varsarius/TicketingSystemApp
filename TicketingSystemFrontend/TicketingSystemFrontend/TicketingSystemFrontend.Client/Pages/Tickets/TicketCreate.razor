@@ -1,5 +1,6 @@
 ﻿@page "/tickets/create"
 
+@using Blazored.LocalStorage
 @using MudBlazor
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
@@ -10,9 +11,8 @@
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
 @inject ITicketCategoryService TicketCategoryService
-
-
 @inject NavigationManager Navigation
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Create Ticket</PageTitle>
 
@@ -31,7 +31,6 @@
 
         <div class="col-md-6">
             <label for="category" class="form-label">Category</label>
-            @* TO CHANGE LATER *@
             <InputSelect id="category" class="form-select" @bind-Value="ticketRequest.TicketCategoryId">
                 <option value="">-- Select --</option>
                 @foreach (var category in categories)
@@ -40,9 +39,7 @@
                 }
             </InputSelect>
             <ValidationMessage For="@(() => ticketRequest.TicketCategoryId)" />
-
         </div>
-
     </div>
 
     <div class="mb-3">
@@ -65,18 +62,13 @@
         </div>
 
         <FileForm @bind-Files="files" />
-
     </div>
 
     <div class="d-flex justify-content-between">
         <button class="btn btn-primary" type="submit">Submit Ticket</button>
-
-        <a class="btn btn-success" href="/tickets/create/categories">Edit Categories</a>
+        <a class="btn btn-success" href="/tickets/create/categories" @onclick="SaveToLocalStorage">Edit Categories</a>
     </div>
-
-
 </EditForm>
-
 
 @code {
     private TicketCreateRequest ticketRequest = new();
@@ -86,12 +78,15 @@
     protected override async Task OnInitializedAsync()
     {
         categories = await TicketCategoryService.GetAllAsync();
+        var savedTicket = await LocalStorage.GetItemAsync<TicketCreateRequest>("savedTicketCreate");
+        if (savedTicket != null)
+        {
+            ticketRequest = savedTicket;
+        }
     }
 
     private async Task HandleValidSubmit()
     {
-
-
         var request = new TicketCreateRequest
         {
             Title = ticketRequest.Title,
@@ -103,38 +98,24 @@
         try
         {
             var ticketId = await TicketService.CreateAsync(ticketRequest);
-
-            // Optional: Navigate or show success message
+            await LocalStorage.RemoveItemAsync("savedTicketCreate");
             Navigation.NavigateTo($"/tickets/{ticketId}");
-
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine("Ticket creation failed: " + ex.Message);
         }
-
     }
 
-    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    private async Task SaveToLocalStorage()
     {
-        var file = e.File;
-        Console.WriteLine($"File selected: {file.Name} ({file.Size} bytes)");
-        // TODO: Save to backend or buffer
+        await LocalStorage.SetItemAsync("savedTicketCreate", ticketRequest);
     }
 
-    private void OnDrop(DragEventArgs e)
+    private async Task Cancel()
     {
-        // Prevent default browser behavior
-    }
-
-    private void OnFilesChanged(InputFileChangeEventArgs e)
-    {
-        files.AddRange(e.GetMultipleFiles());
-    }
-
-    private void RemoveFile(IBrowserFile file)
-    {
-        files.Remove(file);
+        await LocalStorage.RemoveItemAsync("savedTicketCreate");
+        Navigation.NavigateTo("/tickets");
     }
 
     public class TicketInputModel
@@ -150,6 +131,5 @@
 
         [Required]
         public Priority? Priority { get; set; }
-
     }
 }

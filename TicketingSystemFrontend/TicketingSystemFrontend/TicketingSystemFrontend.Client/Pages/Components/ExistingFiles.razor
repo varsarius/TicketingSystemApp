@@ -12,7 +12,7 @@ else
     <ul>
         @foreach (var f in Files)
         {
-            <ExistingFileElement File="f" EntityApiType="EntityApiType" Id="Id" OnFileDeleted="HandleFileDeleted" />
+            <ExistingFileElement File="f" EntityApiType="EntityApiType" EntityId="EntityId" OnFileDeleted="HandleFileDeleted" />
         }
     </ul>
 }
@@ -24,11 +24,11 @@ else
     public string EntityApiType { get; set; } = string.Empty;
 
     [Parameter]
-    public int Id { get; set; }
+    public int EntityId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Files = await FileService.GetFilesAsync(Id, EntityApiType) ?? new List<FileDto>();
+        Files = await FileService.GetFilesAsync(EntityId, EntityApiType) ?? new List<FileDto>();
     }
 
     private async Task HandleFileDeleted(FileDto file)
@@ -38,7 +38,7 @@ else
         {
             try
             {
-                await FileService.DeleteAsync(Id, file.Id, EntityApiType);
+                await FileService.DeleteAsync(EntityId, file.Id, EntityApiType);
                 Files.Remove(file); // Update local list
                 StateHasChanged(); // Refresh UI
             }

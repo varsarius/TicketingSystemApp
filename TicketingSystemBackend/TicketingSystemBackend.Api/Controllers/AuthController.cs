@@ -91,7 +91,7 @@ public class AuthController : ControllerBase
         }
         catch (KeyNotFoundException)
         {
-            return NotFound();
+            return NotFound("the user with that name were nit found");
         }
         catch (InvalidOperationException ex)
         {

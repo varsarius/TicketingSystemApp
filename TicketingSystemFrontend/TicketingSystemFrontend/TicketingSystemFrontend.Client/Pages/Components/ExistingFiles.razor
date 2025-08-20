@@ -1,5 +1,4 @@
 ﻿@using TicketingSystemFrontend.Client.DTOs
-@using TicketingSystemFrontend.Client.Services.Extensions
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IJSRuntime JS
 @inject IFileService FileService
@@ -13,25 +12,24 @@ else
     <ul>
         @foreach (var f in Files)
         {
-            <ExistingFileElement File="f" ArticleId="ArticleId" OnFileDeleted="HandleFileDeleted" EntityType="@EntityType" />
+            <ExistingFileElement File="f" EntityApiType="EntityApiType" Id="Id" OnFileDeleted="HandleFileDeleted" />
         }
     </ul>
 }
 
 @code {
-    [Parameter]
-    public List<FileDto> Files { get; set; } = new();
+    private List<FileDto> Files { get; set; } = new();
 
     [Parameter]
-    public int ArticleId { get; set; }
+    public string EntityApiType { get; set; } = string.Empty;
 
     [Parameter]
-    public EventCallback<FileDto> OnFileDeleted { get; set; }
+    public int Id { get; set; }
 
-    //parameter for indicating which entity to show (string parameter)
-    [Parameter]
-    public string EntityType { get; set; }
-
+    protected override async Task OnInitializedAsync()
+    {
+        Files = await FileService.GetFilesAsync(Id, EntityApiType) ?? new List<FileDto>();
+    }
 
     private async Task HandleFileDeleted(FileDto file)
     {
@@ -40,8 +38,9 @@ else
         {
             try
             {
-                await FileService.DeleteAsync(ArticleId, file.Id, EntityType);
-                await OnFileDeleted.InvokeAsync(file); // Notify parent to refresh or remove the file
+                await FileService.DeleteAsync(Id, file.Id, EntityApiType);
+                Files.Remove(file); // Update local list
+                StateHasChanged(); // Refresh UI
             }
             catch (Exception ex)
             {

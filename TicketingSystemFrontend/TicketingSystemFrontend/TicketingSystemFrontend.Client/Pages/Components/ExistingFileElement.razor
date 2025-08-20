@@ -1,5 +1,4 @@
 ﻿@using TicketingSystemFrontend.Client.DTOs
-@using TicketingSystemFrontend.Client.Services.Extensions
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject IJSRuntime JS
 @inject IFileService FileService
@@ -16,20 +15,19 @@
     public FileDto File { get; set; } = new();
 
     [Parameter]
-    public int ArticleId { get; set; }
+    public string EntityApiType { get; set; } = string.Empty;
+
+    [Parameter]
+    public int Id { get; set; }
 
     [Parameter]
     public EventCallback<FileDto> OnFileDeleted { get; set; }
-
-    [Parameter]
-    public string EntityType { get; set; }
-
 
     private async Task DownloadFile()
     {
         try
         {
-            var bytes = await FileService.DownloadAsync(ArticleId, File.Id, EntityType);
+            var bytes = await FileService.DownloadAsync(Id, File.Id, EntityApiType);
             var base64 = Convert.ToBase64String(bytes);
             await JS.InvokeVoidAsync("downloadFileFromBytes", File.FileName, base64);
         }

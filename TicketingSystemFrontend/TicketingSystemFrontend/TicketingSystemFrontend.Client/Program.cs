@@ -16,7 +16,7 @@ builder.Services.AddScoped<CustomAuthProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthProvider>());
 
 
-
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IArticleCategoryService, ArticleCategoryService>();
@@ -59,7 +59,7 @@ builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
 builder.Services.AddScoped<ITokenStorage, CookieTokenStorage>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IFileService, FileService>();
+
 builder.Services.AddScoped<ITokenRefresher, TokenRefresher>();
 
 

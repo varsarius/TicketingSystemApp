@@ -5,22 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketingSystemBackend.Application.Commands.Articles;
+using TicketingSystemBackend.Application.Commands.Articles.Files;
+using TicketingSystemBackend.Application.Commands.Tickets.Files;
 using TicketingSystemBackend.Application.Interfaces;
 
-namespace TicketingSystemBackend.Application.CommandHandlers.Articles;
-public class DeleteArticleFileCommandHandler : IRequestHandler<DeleteArticleFileCommand>
+namespace TicketingSystemBackend.Application.CommandHandlers.Tickets.Files;
+public class DeleteTicketFileCommandHandler : IRequestHandler<DeleteTicketFileCommand>
 {
     private readonly IFileRepository _fileRepository;
     private readonly IWebHostEnvironment _env;
 
-    public DeleteArticleFileCommandHandler(IFileRepository fileRepository, IWebHostEnvironment env)
+    public DeleteTicketFileCommandHandler(IFileRepository fileRepository, IWebHostEnvironment env)
     {
         _fileRepository = fileRepository;
         _env = env;
     }
 
-    public async Task Handle(DeleteArticleFileCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteTicketFileCommand request, CancellationToken cancellationToken)
     {
         // 1️⃣ Find file info from DB
         var file = await _fileRepository.GetByIdAsync(request.FileId);

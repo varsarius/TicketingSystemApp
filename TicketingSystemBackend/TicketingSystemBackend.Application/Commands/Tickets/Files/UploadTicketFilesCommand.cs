@@ -1,15 +1,15 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
+namespace TicketingSystemBackend.Application.Commands.Tickets.Files;
 
-namespace TicketingSystemBackend.Application.Commands.Articles;
-public class UploadArticleFilesCommand : IRequest
+public class UploadTicketFilesCommand : IRequest
 {
-    public int ArticleId { get; set; }
+    public int TicketId { get; set; }
     public List<IFormFile> Files { get; set; } = new();
 }

@@ -8,11 +8,13 @@
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
+@using TicketingSystemFrontend.Client.Services.Extensions
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
 @inject ITicketCategoryService TicketCategoryService
 @inject NavigationManager Navigation
 @inject ILocalStorageService LocalStorage
+@inject IFileService FileService
 
 <PageTitle>Create Ticket</PageTitle>
 
@@ -97,8 +99,12 @@
 
         try
         {
-            var ticketId = await TicketService.CreateAsync(ticketRequest);
             await LocalStorage.RemoveItemAsync("savedTicketCreate");
+            var ticketId = await TicketService.CreateAsync(ticketRequest);
+            if (files.Any() && ticketId.HasValue)
+            {
+                await FileService.UploadAsync(ticketId.Value, files, "tickets");
+            }
             Navigation.NavigateTo($"/tickets/{ticketId}");
         }
         catch (Exception ex)

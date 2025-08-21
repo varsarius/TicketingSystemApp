@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TicketingSystemBackend.Application.Commands.Articles;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using TicketingSystemBackend.Application.Commands.Articles.Files;
 
 
-namespace TicketingSystemBackend.Application.CommandHandlers.Articles;
+namespace TicketingSystemBackend.Application.CommandHandlers.Articles.Files;
 public class UploadArticleFilesCommandHandler : IRequestHandler<UploadArticleFilesCommand>
 {
     private readonly IArticleRepository _articleRepository;
@@ -66,7 +66,7 @@ public class UploadArticleFilesCommandHandler : IRequestHandler<UploadArticleFil
             {
                 Path = $"/uploads/articles/{request.ArticleId}/{uniqueFileName}"
             };
-
+            Console.WriteLine($"File saved to: {fileEntity.Path}");
             fileEntity.Articles.Add(article); // link to article
 
             await _fileRepository.AddAsync(fileEntity);

@@ -17,6 +17,7 @@ public class ArticleService : IArticleService
     private readonly CustomAuthProvider _authenticationStateProvider;
     public IFileService FileService { get; }
 
+    public string EntityApiType => "articles";
     public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider, IFileService fileService)
     {
         _http = http;

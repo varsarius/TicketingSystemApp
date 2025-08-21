@@ -9,7 +9,7 @@ public class TicketCommentUpdateRequest
 
     public int ArticleId { get; set; }
 
-    public string Description { get; set; } = null!;
+    public string Description { get; set; } = string.Empty;
     public Guid UserId { get; set; } // Added for authentication
     public int TicketId { get; set; } // Added to link to a ticket
 }

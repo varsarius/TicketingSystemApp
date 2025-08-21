@@ -8,10 +8,7 @@ public class TicketCommentDto
     public Guid UserId { get; set; }
     public int TicketId { get; set; }
     public string UserName { get; set; } = string.Empty;
-
-
-    [Required]
-    public string Description { get; set; } = null!;
+    public string Description { get; set; } = string.Empty;
     public DateTime CreatedAt { get; init; }
     public DateTime? UpdatedAt { get; set; }
 

@@ -37,7 +37,7 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
         return Ok(ticket);
     }
 
-
+    // put max upload size on file (validation on backend - but first on UI)
 
     [HttpGet]
     public async Task<IActionResult> GetAllSortFilterAsync(

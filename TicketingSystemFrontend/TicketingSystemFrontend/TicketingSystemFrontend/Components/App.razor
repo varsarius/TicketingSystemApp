@@ -14,14 +14,18 @@
 
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-
 </head>
 
 <body class="">
     <CascadingAuthenticationState>
-        <Routes @rendermode="InteractiveWebAssembly" />
+        <Routes @rendermode="@(new InteractiveWebAssemblyRenderMode(prerender: false))" />
     </CascadingAuthenticationState>
-    <script src="_framework/blazor.web.js"></script>
+    <script src="_framework/blazor.web.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            webAssembly: {}
+        });
+    </script>
     <script src="js/cookies.js"></script>
     <script src="js/downloadFile.js"></script>
 </body>

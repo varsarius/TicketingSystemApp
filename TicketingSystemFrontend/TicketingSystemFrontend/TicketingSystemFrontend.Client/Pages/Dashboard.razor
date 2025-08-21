@@ -1,7 +1,25 @@
 ﻿@page "/dashboard"
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
 
 <h3>Dashboard</h3>
 
-@code {
+@if (tickets is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <TicketDonut Tickets="tickets" />
+}
 
+@code {
+    private List<TicketDto>? tickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Получаем все тикеты (без сортировки и фильтрации)
+        tickets = await TicketService.GetAllSortFilterAsync();
+    }
 }

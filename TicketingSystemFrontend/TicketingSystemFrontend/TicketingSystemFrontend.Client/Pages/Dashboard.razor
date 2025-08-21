@@ -11,7 +11,11 @@
 }
 else
 {
-    <TicketDonut Tickets="tickets" />
+    <div class="d-flex justify-content-around">
+        <StatusDonut Tickets="tickets" />
+        <PriorityDonut Tickets="tickets" />
+        <CategoryDonut Tickets="tickets" />
+    </div>
 }
 
 @code {

@@ -17,6 +17,8 @@ public class TicketDto
     public DateTime? UpdatedAt { get; set; }
     public Priority Priority { get; set; }
     public Status Status { get; set; }
+    public int CategoryId { get; set; }
+
 
 }
 

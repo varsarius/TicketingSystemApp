@@ -1,0 +1,61 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+
+@code {
+    [Parameter] public IEnumerable<TicketDto> Tickets { get; set; } = [];
+    [Parameter] public IEnumerable<ArticleCategoryDto> Categories { get; set; } = [];
+
+    private string[] colors = [
+        "#4CAF50", "#FFC107", "#ff3333", "#1a1a1a", "#2196F3", "#9C27B0"
+    ];
+
+    private record Segment(string Name, int Count, string Color);
+
+    private List<Segment> Segments => Categories
+        .Select((cat, index) =>
+        {
+            int count = Tickets.Count(t => t.CategoryId == cat.Id);
+            return new Segment(cat.CategoryName, count, colors[index % colors.Length]);
+        })
+        .Where(s => s.Count > 0)
+        .ToList();
+
+    private double Total => Segments.Sum(s => s.Count);
+}
+
+<div class="text-center">
+    <h4>Ticket Categories</h4>
+    <svg viewBox="0 0 36 36" class="donut">
+        @if (Total > 0)
+        {
+            double cumulative = 0;
+            @foreach (var seg in Segments)
+            {
+                var percent = seg.Count / Total * 100.0;
+                var dashArray = $"{percent} {100 - percent}";
+                var dashOffset = 25 - cumulative;
+
+                <circle class="donut-segment"
+                        cx="18" cy="18" r="15.91549430918954"
+                        fill="transparent"
+                        stroke="@seg.Color"
+                        stroke-width="3"
+                        stroke-dasharray="@dashArray"
+                        stroke-dashoffset="@dashOffset" />
+
+                cumulative += percent;
+            }
+        }
+        else
+        {
+            <circle cx="18" cy="18" r="15.91549430918954"
+                    fill="transparent" stroke="#eee" stroke-width="3" />
+        }
+    </svg>
+
+    <div class="legend">
+        @foreach (var seg in Segments)
+        {
+            <span style="color:@seg.Color">● @seg.Name (@seg.Count)</span>
+        }
+    </div>
+</div>

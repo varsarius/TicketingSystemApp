@@ -6,9 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
 
-namespace TicketingSystemBackend.Application.Queries.Articles;
-public class GetArticleFilesQuery : IRequest<List<ArticleFileDto>>
+namespace TicketingSystemBackend.Application.Queries.Tickets.Files;
+
+public class GetTicketFilesQuery : IRequest<List<ArticleFileDto>>
 {
     public int ArticleId { get; set; }
-    public GetArticleFilesQuery(int articleId) => ArticleId = articleId;
+    public GetTicketFilesQuery(int articleId) => ArticleId = articleId;
 }

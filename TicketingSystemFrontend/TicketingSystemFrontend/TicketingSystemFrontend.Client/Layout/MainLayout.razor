@@ -13,6 +13,13 @@
                 <li><NavLink href="/" class="nav-link px-2 link-dark">Tickets</NavLink></li>
                 <li><NavLink href="/dashboard" class="nav-link px-2 link-dark">Dashboard</NavLink></li>
                 <li><NavLink href="/articles" class="nav-link px-2 link-dark">Articles</NavLink></li>
+                <AuthorizeView Roles="Admin">
+                    <li>
+                        <NavLink href="/adminpanel" class="nav-link px-2 link-danger fw-bold">
+                            Admin Panel
+                        </NavLink>
+                    </li>
+                </AuthorizeView>
             </ul>
 
             <!-- Auth buttons -->

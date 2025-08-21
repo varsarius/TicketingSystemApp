@@ -14,6 +14,9 @@ public class TicketService : ITicketService
     private readonly HttpClient _http;
     private readonly CustomAuthProvider _authenticationStateProvider;
 
+    public IFileService FileService { get; }
+    public string EntityApiType => "tickets";
+
     public TicketService(HttpClient http, CustomAuthProvider authenticationStateProvider)
     {
         _http = http;

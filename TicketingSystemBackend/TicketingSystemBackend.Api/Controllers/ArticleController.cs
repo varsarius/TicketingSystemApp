@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TicketingSystemBackend.Application.Commands.Articles;
+using TicketingSystemBackend.Application.Commands.Articles.Files;
 using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Queries.Articles;
+using TicketingSystemBackend.Application.Queries.Articles.Files;
 
 namespace TicketingSystemBackend.Api.Controllers;
 
@@ -62,6 +64,7 @@ public class ArticleController : ControllerBase, IController<CreateArticleComman
     [HttpPost("{articleId}/files")]
     public async Task<IActionResult> UploadFiles(int articleId, [FromForm] List<IFormFile> files)
     {
+        Console.WriteLine("file creation controller called for uploading on article");
         if (files == null || !files.Any())
             return BadRequest("No files provided.");
 

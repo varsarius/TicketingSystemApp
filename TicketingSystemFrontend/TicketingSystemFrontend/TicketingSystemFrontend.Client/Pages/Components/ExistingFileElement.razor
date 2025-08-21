@@ -28,6 +28,9 @@
     [Parameter]
     public int EntityId { get; set; }
 
+    [Parameter]
+    public EventCallback OnFileDeleted { get; set; }
+
     private bool CanDelete { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
@@ -76,7 +79,7 @@
             if (confirmed)
             {
                 await FileService.DeleteAsync(EntityId, File.Id, EntityApiType);
-                await InvokeAsync(StateHasChanged); // Notify parent to refresh UI
+                await OnFileDeleted.InvokeAsync();
             }
         }
         catch (Exception ex)

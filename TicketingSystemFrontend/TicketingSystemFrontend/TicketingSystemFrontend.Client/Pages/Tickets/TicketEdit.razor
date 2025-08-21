@@ -1,12 +1,14 @@
 ﻿@page "/tickets/{id:int}/edit"
 @using System.ComponentModel.DataAnnotations
 @using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Pages.Components
 @using TicketingSystemFrontend.Client.Requests
 @using TicketingSystemFrontend.Client.Requests.Enums
 @using TicketingSystemFrontend.Client.Services
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
 @inject ITicketCategoryService TicketCategoryService
+@inject IFileService FileService
 
 @inject NavigationManager Navigation
 
@@ -72,6 +74,10 @@ else
             </div>
         </div>
 
+
+        <FileForm @bind-Files="files" />
+
+
         <button type="submit" class="btn btn-success me-2">Save</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
     </EditForm>
@@ -85,6 +91,8 @@ else
     private List<TicketCategoryDto> categories = [];
     private TicketDto? ticket;
     private TicketUpdateRequest ticketEditRequest = new();
+    private List<IBrowserFile> files = new();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -108,6 +116,15 @@ else
     private async Task HandleValidSubmit()
     {
         await TicketService.UpdateAsync(ticketEditRequest);
+
+
+        if (files.Any())
+        {
+            // Upload new files for the existing article
+            await FileService.UploadAsync(id, files, "tickets");
+        }
+
+
         Navigation.NavigateTo($"/tickets/{id}");
     }
     private void Cancel()

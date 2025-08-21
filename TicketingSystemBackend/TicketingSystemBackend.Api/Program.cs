@@ -88,11 +88,13 @@ builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>(
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IArticleReadRepository, ArticleReadRepository>();
 builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
-builder.Services.AddScoped<IArticleFileRepository, ArticleFileRepository>();
+//builder.Services.AddScoped<IArticleFileRepository, ArticleFileRepository>();
 builder.Services.AddScoped<ITicketReadRepository, TicketReadRepository>();
 builder.Services.AddScoped<ITicketcommentReadRepository, TicketCommentReadRepository>();
 
 builder.Services.AddScoped<IReadRepository<TicketDto>, TicketReadRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+
 
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 

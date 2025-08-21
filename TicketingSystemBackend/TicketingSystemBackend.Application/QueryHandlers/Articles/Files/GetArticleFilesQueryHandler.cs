@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Interfaces;
-using TicketingSystemBackend.Application.Queries.Articles;
+using TicketingSystemBackend.Application.Queries.Articles.Files;
 
-namespace TicketingSystemBackend.Application.QueryHandlers.Articles;
+namespace TicketingSystemBackend.Application.QueryHandlers.Articles.Files;
 public class GetArticleFilesQueryHandler : IRequestHandler<GetArticleFilesQuery, List<ArticleFileDto>>
 {
-    private readonly IArticleFileRepository _fileRepository;
-    public GetArticleFilesQueryHandler(IArticleFileRepository fileRepository)
+    private readonly IFileRepository _fileRepository;
+    public GetArticleFilesQueryHandler(IFileRepository fileRepository)
     {
         _fileRepository = fileRepository;
     }

@@ -1,0 +1,84 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests.Enums
+
+@code {
+    [Parameter] public IEnumerable<TicketDto> Tickets { get; set; } = [];
+
+    private int low => Tickets.Count(t => t.Priority == Priority.Low);
+    private int medium => Tickets.Count(t => t.Priority == Priority.Medium);
+    private int high => Tickets.Count(t => t.Priority == Priority.High);
+    private int critical => Tickets.Count(t => t.Priority == Priority.Critical);
+
+    private double Total => low + medium + high + critical;
+
+    private List<(double percent, string color)> Segments => Total == 0
+        ? new()
+        : new()
+        {
+            (medium / Total * 100, "#FFC107"),
+            (high / Total * 100, "#ff3333"),
+            (critical / Total * 100, "black"),
+            (low / Total * 100, "#1a1a1a")
+        };
+}
+<div class="text-center">
+    <h4>Ticket Priorities</h4>
+    <svg viewBox="0 0 36 36" class="donut">
+        @if (Total > 0)
+        {
+            double cumulative = 0;
+            @foreach (var (percent, color) in Segments)
+            {
+                // Ensure we don't try to render segments with 0 or negative percentage
+                @if (percent > 0)
+                {
+                    var dashArray = $"{percent} {100 - percent}";
+                    var dashOffset = 25 - cumulative; // 25 = 100/4, starts at top
+
+                    <circle class="donut-segment"
+                            cx="18" cy="18" r="15.91549430918954"
+                            fill="transparent"
+                            stroke="@color"
+                            stroke-width="3"
+                            stroke-dasharray="@dashArray"
+                            stroke-dashoffset="@dashOffset" />
+
+                    cumulative += percent;
+                }
+            }
+        }
+        else
+        {
+            <!-- Optional: Show empty state -->
+            <circle cx="18" cy="18" r="15.91549430918954"
+                    fill="transparent" stroke="#eee" stroke-width="3" />
+        }
+    </svg>
+
+    <div class="legend">
+        <span style="color:#4CAF50">● Low (@low)</span>
+        <span style="color:#FFC107">● Medium (@medium)</span>
+        <span style="color:#ff3333">● High (@high)</span>
+        <span style="color:#1a1a1a">● Critical (@critical)</span>
+    </div>
+</div>
+
+<style>
+    .donut {
+        width: 200px;
+        height: 200px;
+        transform: rotate(-90deg);
+    }
+
+    .donut-segment {
+        transition: stroke-dasharray 0.3s;
+    }
+
+    .legend {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+    }
+</style>

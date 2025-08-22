@@ -1,0 +1,82 @@
+﻿@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Requests.Enums
+
+@code {
+    [Parameter] public IEnumerable<TicketDto> Tickets { get; set; } = [];
+
+    private int open => Tickets.Count(t => t.Status == Status.Open);
+    private int inProgress => Tickets.Count(t => t.Status == Status.InProgress);
+    private int resolved => Tickets.Count(t => t.Status == Status.Resolved);
+    private int closed => Tickets.Count(t => t.Status == Status.Closed);
+
+    private double Total => open + inProgress + resolved + closed;
+
+    private List<(double percent, string color)> Segments => Total == 0
+        ? new()
+        : new()
+        {
+            (inProgress / Total * 100, "#FFC107"), 
+            (resolved / Total * 100, "#4CAF50"),   
+            (closed / Total * 100, "#9E9E9E"),
+            (open / Total * 100, "#2196F3") 
+        };
+}
+<div class="text-center">
+    <h4>Ticket Statuses</h4>
+    <svg viewBox="0 0 36 36" class="donut">
+        @if (Total > 0)
+        {
+            double cumulative = 0;
+            @foreach (var (percent, color) in Segments)
+            {
+                // Ensure we don't try to render segments with 0 or negative percentage
+                @if (percent > 0)
+                {
+                    var dashArray = $"{percent} {100 - percent}";
+                    var dashOffset = 25 - cumulative; // 25 = 100/4, starts at top
+
+                    <circle class="donut-segment"
+                            cx="18" cy="18" r="15.91549430918954"
+                            fill="transparent"
+                            stroke="@color"
+                            stroke-width="3"
+                            stroke-dasharray="@dashArray"
+                            stroke-dashoffset="@dashOffset" />
+
+                    cumulative += percent;
+                }
+            }
+        }
+        else
+        {
+            <!-- Optional: Show empty state -->
+            <circle cx="18" cy="18" r="15.91549430918954"
+                    fill="transparent" stroke="#eee" stroke-width="3" />
+        }
+    </svg>
+
+    <div class="legend">
+        <span style="color:#2196F3">● Open (@open)</span>
+        <span style="color:#FFC107">● In Progress (@inProgress)</span>
+        <span style="color:#4CAF50">● Resolved (@resolved)</span>
+        <span style="color:#9E9E9E">● Closed (@closed)</span>
+    </div>
+</div>
+
+<style>
+    .donut {
+        width: 200px;
+        height: 200px;
+        transform: rotate(-90deg);
+    }
+    .donut-segment {
+        transition: stroke-dasharray 0.3s;
+    }
+    .legend {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+    }
+</style>

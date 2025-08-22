@@ -2,42 +2,75 @@
 
 @code {
     [Parameter] public IEnumerable<TicketDto> Tickets { get; set; } = [];
-    [Parameter] public IEnumerable<ArticleCategoryDto> Categories { get; set; } = [];
+    [Parameter] public IEnumerable<TicketCategoryDto> Categories { get; set; } = [];
 
-    private string[] colors = [
-        "#4CAF50", "#FFC107", "#ff3333", "#1a1a1a", "#2196F3", "#9C27B0"
-    ];
+    private double Total => Tickets.Count();
 
-    private record Segment(string Name, int Count, string Color);
+    private string[] palette = new[]
+    {
+        "#2196F3", "#4CAF50", "#FFC107", "#FF5722",
+        "#9C27B0", "#009688", "#E91E63", "#795548"
+    };
 
-    private List<Segment> Segments => Categories
-        .Select((cat, index) =>
+    // Prefer TicketCategoryId; fallback to CategoryId; -1 if unknown
+    private static int TicketCatKey(TicketDto t)
+        => t.TicketCategoryId != 0 ? t.TicketCategoryId
+           : (t.CategoryId != 0 ? t.CategoryId : -1);
+
+    // Prefer Id; fallback to CategoryId; -1 if unknown
+    private static int CategoryKey(TicketCategoryDto c)
+        => c.Id != 0 ? c.Id
+           : (c.CategoryId != 0 ? c.CategoryId : -1);
+
+    private static string Norm(string? s)
+        => (s ?? string.Empty).Trim().ToLowerInvariant();
+
+    // Build once per render: counts by ID and by name
+    private Dictionary<int, int> TicketCountsById =>
+        Tickets.GroupBy(TicketCatKey).ToDictionary(g => g.Key, g => g.Count());
+
+    private Dictionary<string, int> TicketCountsByName =>
+        Tickets.GroupBy(t => Norm(t.TicketCategoryName))
+               .ToDictionary(g => g.Key, g => g.Count());
+
+    private List<(double percent, string color, string label, int count)> Segments =>
+        Categories.Select((cat, index) =>
         {
-            int count = Tickets.Count(t => t.CategoryId == cat.Id);
-            return new Segment(cat.CategoryName, count, colors[index % colors.Length]);
-        })
-        .Where(s => s.Count > 0)
-        .ToList();
+            var key = CategoryKey(cat);
+            int count = 0;
 
-    private double Total => Segments.Sum(s => s.Count);
+            if (key != -1 && TicketCountsById.TryGetValue(key, out var cById))
+            {
+                count = cById;
+            }
+            else
+            {
+                var nameKey = Norm(cat.CategoryName);
+                if (TicketCountsByName.TryGetValue(nameKey, out var cByName))
+                    count = cByName;
+            }
+
+            double percent = Total > 0 ? (count / Total * 100) : 0;
+            string color = palette[index % palette.Length];
+
+            return (percent, color, cat.CategoryName, count);
+        }).ToList();
 }
-
 <div class="text-center">
     <h4>Ticket Categories</h4>
     <svg viewBox="0 0 36 36" class="donut">
         @if (Total > 0)
         {
             double cumulative = 0;
-            @foreach (var seg in Segments)
+            @foreach (var (percent, color, label, count) in Segments.Where(s => s.count > 0))
             {
-                var percent = seg.Count / Total * 100.0;
                 var dashArray = $"{percent} {100 - percent}";
                 var dashOffset = 25 - cumulative;
 
                 <circle class="donut-segment"
                         cx="18" cy="18" r="15.91549430918954"
                         fill="transparent"
-                        stroke="@seg.Color"
+                        stroke="@color"
                         stroke-width="3"
                         stroke-dasharray="@dashArray"
                         stroke-dashoffset="@dashOffset" />
@@ -53,9 +86,29 @@
     </svg>
 
     <div class="legend">
-        @foreach (var seg in Segments)
+        @foreach (var (percent, color, label, count) in Segments)
         {
-            <span style="color:@seg.Color">● @seg.Name (@seg.Count)</span>
+            <span style="color:@color">● @label (@count)</span>
         }
     </div>
 </div>
+
+<style>
+    .donut {
+        width: 200px;
+        height: 200px;
+        transform: rotate(-90deg);
+    }
+
+    .donut-segment {
+        transition: stroke-dasharray 0.3s;
+    }
+
+    .legend {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+    }
+</style>

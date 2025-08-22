@@ -6,7 +6,7 @@ public class TicketCategoryUpdateRequest
 {
     public int Id { get; set; }
     [Required]
-    public string CategoryName { get; set; } = null!;
+    public string CategoryName { get; set; } = string.Empty;
 
     
 }

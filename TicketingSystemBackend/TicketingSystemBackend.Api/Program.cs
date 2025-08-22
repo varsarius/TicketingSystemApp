@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Scalar.AspNetCore;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using TicketingSystemBackend.Application.Behaviors;
 using TicketingSystemBackend.Application.DTOs;
 using TicketingSystemBackend.Application.Interfaces;
 using TicketingSystemBackend.Application.Services.Auth;
@@ -95,12 +97,18 @@ builder.Services.AddScoped<ITicketcommentReadRepository, TicketCommentReadReposi
 builder.Services.AddScoped<IReadRepository<TicketDto>, TicketReadRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 
+builder.Logging
+    .ClearProviders()
+    .AddConsole()
+    .AddDebug()
+    .SetMinimumLevel(LogLevel.Information);
 
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(
         typeof(TicketingSystemBackend.Application.AssemblyReference).Assembly)
 );
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

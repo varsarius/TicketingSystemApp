@@ -2,10 +2,11 @@
 @using TicketingSystemFrontend.Client.DTOs
 @using TicketingSystemFrontend.Client.Services.Interfaces
 @inject ITicketService TicketService
+@inject ITicketCategoryService TicketCategoryService
 
 <h3>Dashboard</h3>
 
-@if (tickets is null)
+@if (tickets is null || categories is null)
 {
     <p>Loading...</p>
 }
@@ -14,16 +15,23 @@ else
     <div class="d-flex justify-content-around">
         <StatusDonut Tickets="tickets" />
         <PriorityDonut Tickets="tickets" />
-        <CategoryDonut Tickets="tickets" />
+        <CategoryDonut Tickets="tickets" Categories="categories" />
     </div>
 }
 
 @code {
     private List<TicketDto>? tickets;
+    private List<TicketCategoryDto>? categories;
 
     protected override async Task OnInitializedAsync()
     {
-        // Получаем все тикеты (без сортировки и фильтрации)
-        tickets = await TicketService.GetAllSortFilterAsync();
+        // Загружаем тикеты и категории параллельно
+        var ticketsTask = TicketService.GetAllSortFilterAsync();
+        var categoriesTask = TicketCategoryService.GetAllAsync();
+
+        await Task.WhenAll(ticketsTask, categoriesTask);
+
+        tickets = ticketsTask.Result;
+        categories = categoriesTask.Result;
     }
 }

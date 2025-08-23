@@ -19,6 +19,9 @@ using TicketingSystemBackend.Infrastructure.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load optional local settings if exists
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
 // Add services to the container.
 
 // Add CORS policy
@@ -40,6 +43,9 @@ builder.Services.AddControllers()//side effect: properties which cause cycles no
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+
+
 // Add Identity + JWT
 builder.Services.AddScoped<IJwtTokenService, CustomJwtTokenService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>

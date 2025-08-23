@@ -428,3 +428,6 @@ FodyWeavers.xsd
 *.msp
 
 **/wwwroot/uploads/
+
+# Local settings
+appsettings.Local.json

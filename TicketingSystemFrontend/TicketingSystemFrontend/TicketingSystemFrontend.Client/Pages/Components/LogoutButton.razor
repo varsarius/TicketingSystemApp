@@ -16,12 +16,12 @@
 
     private bool isLoggingOut = false;
 
-    private async Task HandleLogout()
+    private void HandleLogout()
     {
         isLoggingOut = true;
         try
         {
-            await AuthService.LogoutAsync();
+            AuthService.LogoutAsync();
             Navigation.NavigateTo("/login");
         }
         finally

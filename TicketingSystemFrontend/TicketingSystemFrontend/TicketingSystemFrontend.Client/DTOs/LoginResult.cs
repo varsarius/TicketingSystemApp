@@ -14,4 +14,5 @@ public class LoginResult
     public string TokenType { get; set; } = "Bearer";
 
     public bool IsSuccess => !string.IsNullOrWhiteSpace(AccessToken);
+
 }

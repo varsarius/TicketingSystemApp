@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 using TicketingSystemFrontend.Client.Auth;
 using TicketingSystemFrontend.Client.DTOs;
@@ -35,7 +37,19 @@ public class TokenRefresher : ITokenRefresher
         if (dto == null)
             return false;
 
-        await _authProvider.SetAuthenticatedUserAsync(dto.AccessToken, dto.RefreshToken);
+        // Decode the JWT to extract claims
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(dto.AccessToken);
+
+        var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+        var user = new ClaimsPrincipal(identity);
+
+        // Notify the auth provider
+        _authProvider.NotifyUserAuthentication(user);
+
+        // Save the new tokens
+        await _tokenStorage.SaveTokensAsync(dto.AccessToken, dto.RefreshToken);
+
         return true;
     }
 }

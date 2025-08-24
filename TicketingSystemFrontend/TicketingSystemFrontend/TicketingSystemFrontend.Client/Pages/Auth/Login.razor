@@ -1,8 +1,9 @@
 ﻿@page "/login"
 @using System.Security.Claims
+@using TicketingSystemFrontend.Client.Auth
 @using TicketingSystemFrontend.Client.Requests.Auth
 @using TicketingSystemFrontend.Client.Services.Interfaces.Auth
-
+@inject CustomAuthProvider CustomAuthProvider
 <h3>Login</h3>
 
 <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
@@ -82,6 +83,12 @@
     private async Task HandleLogin()
     {
         var result = await AuthService.LoginAsync(loginModel);
+
+        // Fetch updated authentication state from server
+        var authState = await CustomAuthProvider.GetAuthenticationStateAsync();
+
+        // Notify Blazor that the user is now authenticated
+        CustomAuthProvider.NotifyUserAuthentication(authState.User);
         resulte = result;
         if (result.IsSuccess)
         {

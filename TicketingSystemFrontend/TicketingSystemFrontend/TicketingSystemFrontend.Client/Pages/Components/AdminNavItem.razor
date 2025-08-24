@@ -1,0 +1,9 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView Roles="Admin">
+    <li>
+        <NavLink href="/adminpanel" class="nav-link px-2 link-danger fw-bold">
+            Admin Panel
+        </NavLink>
+    </li>
+</AuthorizeView>

@@ -27,10 +27,18 @@ builder.Services.AddScoped<ITicketCommentService, TicketCommentService>();
 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped(sp => new HttpClient
+
+
+builder.Services.AddScoped(sp =>
 {
-    BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!)
+    var client = new HttpClient
+    {
+        BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    };
+    // Don't set UseCookies, the browser handles cookies
+    return client;
 });
+
 
 builder.Services.AddScoped<AuthTokenHandler>();
 
@@ -39,20 +47,19 @@ builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
 })
-.AddHttpMessageHandler<AuthTokenHandler>();
-
-builder.Services.AddHttpClient("NoAuth", client =>
+.ConfigureHttpMessageHandlerBuilder(builder =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!); // Or your API base URL, e.g., "https://yourapi.com/"
+    if (builder.PrimaryHandler is HttpMessageHandler handler &&
+        handler is not null &&
+        handler is HttpClientHandler httpHandler)
+    {
+        httpHandler.UseCookies = true;
+    }
 });
+// var client = httpClientFactory.CreateClient("ApiClient");
 
+// var client = httpClientFactory.CreateClient("ApiClient");
 
-
-builder.Services.AddScoped(sp =>
-{
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
-    return factory.CreateClient("ApiClient");
-});
 
 
 builder.Services.AddBlazoredLocalStorage();

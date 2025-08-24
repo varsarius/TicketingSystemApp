@@ -20,44 +20,37 @@ public class AuthService : IAuthService
 
     public async Task<LoginResult> LoginAsync(LoginRequest request)
     {
-        var response = await _http.PostAsJsonAsync("api/auth/login", request);
-        var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
-        if (loginResult is not null && loginResult.IsSuccess)
+        // Call the Blazor Server endpoint, not the backend API directly
+        var response = await _http.PostAsJsonAsync("/server-login", request);
+
+        if (!response.IsSuccessStatusCode)
         {
-            await _authProvider.SetAuthenticatedUserAsync(
-                loginResult.AccessToken,
-                loginResult.RefreshToken
-            );
+            // Login failed
+            return new LoginResult(); // empty, IsSuccess will be false
         }
 
-        return loginResult!;
+        // Since the server sets HttpOnly cookies, we no longer get tokens here
+        // You can optionally return a dummy LoginResult to satisfy the interface
+        return new LoginResult
+        {
+            AccessToken = "b2",      // optional, just to satisfy the DTO
+            RefreshToken = ""
+        };
     }
 
     public async Task<AuthResult> RegisterAsync(RegisterRequest request)
     {
-        var response = await _http.PostAsJsonAsync("api/auth/register", request);
+        var response = await _http.PostAsJsonAsync("/server-register", request);
         if (response.IsSuccessStatusCode)
-        {
             return new AuthResult { IsSuccess = true };
-        }
-
-        if (response.StatusCode == System.Net.HttpStatusCode.Conflict) // 409
-        {
-            var err = await response.Content.ReadAsStringAsync();
-            return new AuthResult
-            {
-                IsSuccess = false,
-                ErrorMessage = err,
-            };
-        }
 
         var error = await response.Content.ReadAsStringAsync();
         return new AuthResult { IsSuccess = false, ErrorMessage = error };
     }
 
-    public async Task LogoutAsync()
+    public void LogoutAsync()
     {
-        await _authProvider.LogoutAsync();
+        _authProvider.NotifyUserLogout();
     }
 
     public async Task<Guid> GetUserIdFromTokenAsync()

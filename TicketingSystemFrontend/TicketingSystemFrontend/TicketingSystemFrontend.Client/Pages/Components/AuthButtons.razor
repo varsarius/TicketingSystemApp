@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized>
+        <div class="text-end">
+            <NavLink href="/profile" class="btn btn-outline-primary">Profile</NavLink>
+            <LogoutButton />
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="text-end">
+            <NavLink href="/login" class="btn btn-outline-primary me-2">Login</NavLink>
+            <NavLink href="/register" class="btn btn-primary">Sign-up</NavLink>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

@@ -48,8 +48,11 @@ public class AuthService : IAuthService
         return new AuthResult { IsSuccess = false, ErrorMessage = error };
     }
 
-    public void LogoutAsync()
+    public async Task LogoutAsync()
     {
+        // Optionally, call a server endpoint to clear cookies/session
+        await _http.PostAsync("/server-logout", null);
+
         _authProvider.NotifyUserLogout();
     }
 

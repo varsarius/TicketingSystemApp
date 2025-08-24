@@ -221,6 +221,12 @@ app.MapPost("/server-register", async (RegisterRequest register, HttpResponse re
     return Results.Ok();
 });
 
+app.MapPost("/server-logout", (HttpResponse response) =>
+{
+    response.Cookies.Delete("access_token");
+    response.Cookies.Delete("refresh_token");
+    return Results.Ok();
+});
 
 
 app.Run();

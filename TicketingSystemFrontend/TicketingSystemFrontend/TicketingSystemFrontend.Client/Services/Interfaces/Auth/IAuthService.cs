@@ -7,7 +7,7 @@ public interface IAuthService
 {
     Task<AuthResult> RegisterAsync(RegisterRequest request);
     Task<LoginResult> LoginAsync(LoginRequest request);
-    void LogoutAsync();
+    Task LogoutAsync();
     Task<Guid> GetUserIdFromTokenAsync();
 
 }

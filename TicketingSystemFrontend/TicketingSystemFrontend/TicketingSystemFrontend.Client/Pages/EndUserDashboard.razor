@@ -1,0 +1,102 @@
+﻿@page "/enduserdashboard"
+@using TicketingSystemFrontend.Client.DTOs
+@using TicketingSystemFrontend.Client.Services.Interfaces
+@inject ITicketService TicketService
+@using TicketingSystemFrontend.Client.Pages.Tickets.TicketComponents
+@using TicketingSystemFrontend.Client.Services.Interfaces.Auth
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IAuthService AuthService
+@using TicketingSystemFrontend.Client.Pages.Components
+
+@implements IDisposable
+
+
+<PageTitle>My Tickets</PageTitle>
+
+@if(!isEndUser && !isAdmin && !isAgent)
+{
+    <div class="container mt-4">
+        <div class="alert alert-danger" role="alert">
+            You do not have permission to view this page.
+        </div>
+    </div>
+
+} else {
+    <div class="container mt-4">
+        <SearchBar />
+
+        <div class="row">
+            <FiltersColumn FiltersChanged="@(args => OnFilterChanged(args.categoryId, args.status, args.priority))" />
+
+            <div class="col-md-9">
+                <SortButtons SortChanged="@(args => OnSortChanged(args.sortBy, args.sortOrder))" />
+
+                <!-- (Repeated Card Snippets) -->
+                <TicketsList Tickets="tickets" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<TicketDto> tickets = [];
+
+    // Filter/Sort state
+    private string? sortBy = null;
+    private string? sortOrder = null;
+    private int? categoryId = null;
+    private string? status = null;
+    private string? priority = null;
+
+    private Guid currentUserId;
+    private bool isLoading = true;
+    private bool isAdmin = false;
+    private bool isAgent = false;
+    private bool isEndUser = false;
+
+    [CascadingParameter] public Action<string> SetPageTitle { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SetPageTitle?.Invoke("My Tickets");
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            isAdmin = user.IsInRole("Admin");
+            isAgent = user.IsInRole("Agent");
+            isEndUser = user.IsInRole("EndUser");
+            currentUserId = await AuthService.GetUserIdFromTokenAsync();
+        }
+
+        await LoadTicketsAsync();
+    }
+
+    public async Task LoadTicketsAsync()
+    {
+        tickets = await TicketService.GetAllSortFilterAsyncByUserId(sortBy, sortOrder, categoryId, status, priority, currentUserId);
+    }
+
+    // Methods to update filters/sort from child components
+    private async Task OnSortChanged(string newSortBy, string newSortOrder)
+    {
+        sortBy = newSortBy;
+        sortOrder = newSortOrder;
+        await LoadTicketsAsync();
+    }
+
+    private async Task OnFilterChanged(int? newCategoryId, string? newStatus, string? newPriority)
+    {
+        categoryId = newCategoryId;
+        status = newStatus;
+        priority = newPriority;
+        await LoadTicketsAsync();
+    }
+
+    void IDisposable.Dispose()
+    {
+        SetPageTitle?.Invoke("Tycketing System");
+    }
+
+}

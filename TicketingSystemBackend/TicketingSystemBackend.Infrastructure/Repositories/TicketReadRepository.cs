@@ -48,7 +48,7 @@ public class TicketReadRepository : ITicketReadRepository
             .ToListAsync();
     }
 
-    public async Task<List<TicketDto>> GetAllSortFilterAsync(string? sortBy = null, string? sortOrder = null, int? categoryId = null, string? status = null, string? priority = null)
+    public async Task<List<TicketDto>> GetAllSortFilterAsync(string? sortBy = null, string? sortOrder = null, int? categoryId = null, string? status = null, string? priority = null, Guid? userId = null)
     {
         var query = _context.Tickets
             .Include(t => t.TicketCategory)
@@ -68,6 +68,11 @@ public class TicketReadRepository : ITicketReadRepository
             Enum.TryParse<Priority>(priority, true, out var priorityEnum))
         {
             query = query.Where(t => t.Priority == priorityEnum);
+        }
+
+        if (userId.HasValue)
+        {
+            query = query.Where(t => t.UserId == userId.Value);
         }
 
         // Sorting

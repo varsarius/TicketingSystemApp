@@ -12,5 +12,12 @@ namespace TicketingSystemFrontend.Client.Services.Interfaces
             int? categoryId = null,
             string? status = null,
             string? priority = null);
+
+        Task<List<TicketDto>> GetAllSortFilterAsyncByUserId(string? sortBy = null,
+            string? sortOrder = null,
+            int? categoryId = null,
+            string? status = null,
+            string? priority = null,
+            Guid? userId = null);
     }
 }

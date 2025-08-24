@@ -45,7 +45,8 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
         [FromQuery] string? sortOrder,
         [FromQuery] int? categoryId,
         [FromQuery] string? status,
-        [FromQuery] string? priority)
+        [FromQuery] string? priority,
+        [FromQuery] Guid? userId)
     {
 
         var query = new GetTicketsQuery(
@@ -53,7 +54,8 @@ public class TicketController : ControllerBase, IController<CreateTicketCommand,
             sortOrder,
             categoryId,
             status,
-            priority
+            priority,
+            userId
         );
 
         var tickets = await _mediator.Send(query);

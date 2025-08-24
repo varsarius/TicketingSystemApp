@@ -12,5 +12,6 @@ public interface ITicketReadRepository : IReadRepository<TicketDto>
         string? sortOrder = null,
         int? categoryId = null,
         string? status = null,
-        string? priority = null);
+        string? priority = null,
+        Guid? userId = null);
 }

@@ -21,7 +21,8 @@ public class GetTicketsQueryHandler : IRequestHandler<GetTicketsQuery, List<Tick
             request.SortOrder,
             request.CategoryId,
             request.Status,
-            request.Priority
+            request.Priority,
+            request.UserId
         );
     }
 }

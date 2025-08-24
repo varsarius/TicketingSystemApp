@@ -5,7 +5,15 @@
 @inject ITicketCategoryService TicketCategoryService
 
 <h3>Dashboard</h3>
-
+<div class="mb-4">
+    <a href="/enduserdashboard" class="btn btn-outline-primary me-2">End User Dashboard</a>
+    <a href="/agentdashboard" class="btn btn-outline-success me-2">Agent Dashboard</a>
+    <a href="/admindashboard" class="btn btn-outline-danger">Admin Dashboard</a>
+</div>
+<div class="mb-4">
+    <h4>Statistics</h4>
+    <p>Here you can see the overall statistics of the ticketing system</p>
+</div>
 @if (tickets is null || categories is null)
 {
     <p>Loading...</p>

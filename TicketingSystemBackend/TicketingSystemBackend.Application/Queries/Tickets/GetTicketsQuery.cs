@@ -9,5 +9,6 @@ public record GetTicketsQuery(
     string? SortOrder = null,
     int? CategoryId = null,
     string? Status = null,
-    string? Priority = null
+    string? Priority = null,
+    Guid? UserId = null
 ) : IRequest<List<TicketDto>>;

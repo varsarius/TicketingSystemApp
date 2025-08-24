@@ -2,26 +2,16 @@
 @using TicketingSystemFrontend.Client.Pages.Components
 <CascadingAuthenticationState>
     <div class="container">
-        <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
-            <!-- Logo -->
-            <a href="/" class="d-flex align-items-center mb-2 mb-md-0 text-dark text-decoration-none">
-                <img src="@Assets["favicon.png"]" alt="My Logo" width="64" height="64" class="me-2" />
-                <span href="/" class="fs-4">@PageHeaderTitle</span>
-            </a>
 
-            <!-- Site title -->
-            
-
-            <!-- Navbar links -->
-            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><NavLink href="/" class="nav-link px-2 link-dark">Tickets</NavLink></li>
-                <li><NavLink href="/dashboard" class="nav-link px-2 link-dark">Dashboard</NavLink></li>
-                <li><NavLink href="/articles" class="nav-link px-2 link-dark">Articles</NavLink></li>
+        <MainHeader Assets="@Assets" PageHeaderTitle="@PageHeaderTitle">
+            <ChildContent>
                 <AdminNavItem />
-            </ul>
+            </ChildContent>
+            <ButtonsContent>
+                <AuthButtons />
+            </ButtonsContent>
+        </MainHeader>
 
-            <AuthButtons />
-        </header>
 
         <CascadingValue Value="SetPageTitle">
             @Body

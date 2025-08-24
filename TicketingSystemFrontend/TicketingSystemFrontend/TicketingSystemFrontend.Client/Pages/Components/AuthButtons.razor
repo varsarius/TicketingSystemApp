@@ -1,16 +1,44 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿<div class="text-end header-buttons" style="width: 200px;">
+    @if (!authStateResolved)
+    {
+        <!-- Render invisible placeholder to prevent blink -->
+        <span style="visibility:hidden;">Loading...</span>
+    }
+    else if (isAuthenticated)
+    {
+        <NavLink href="/profile" class="btn btn-outline-primary">Profile</NavLink>
+        <LogoutButton />
+    }
+    else
+    {
+        <NavLink href="/login" class="btn btn-outline-primary me-2">Login</NavLink>
+        <NavLink href="/register" class="btn btn-primary">Sign-up</NavLink>
+    }
+</div>
 
-<AuthorizeView>
-    <Authorized>
-        <div class="text-end">
-            <NavLink href="/profile" class="btn btn-outline-primary">Profile</NavLink>
-            <LogoutButton />
-        </div>
-    </Authorized>
-    <NotAuthorized>
-        <div class="text-end">
-            <NavLink href="/login" class="btn btn-outline-primary me-2">Login</NavLink>
-            <NavLink href="/register" class="btn btn-primary">Sign-up</NavLink>
-        </div>
-    </NotAuthorized>
-</AuthorizeView>
+@code {
+    private bool isAuthenticated;
+    private bool authStateResolved = false;
+
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateAuthState();
+
+        AuthStateProvider.AuthenticationStateChanged += async newStateTask =>
+        {
+            await UpdateAuthState();
+        };
+    }
+
+    private async Task UpdateAuthState()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity?.IsAuthenticated ?? false;
+        authStateResolved = true;
+        StateHasChanged();
+    }
+
+    
+}

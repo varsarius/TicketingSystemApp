@@ -1,9 +1,30 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<AuthorizeView Roles="Admin">
-    <li>
+<li class="nav-item" style="min-width: 120px;">
+    @if (isAdmin)
+    {
         <NavLink href="/adminpanel" class="nav-link px-2 link-danger fw-bold">
             Admin Panel
         </NavLink>
-    </li>
-</AuthorizeView>
+    }
+</li>
+
+@code {
+    private bool isAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        isAdmin = authState.User.IsInRole("Admin");
+
+        // Subscribe to auth state changes
+        AuthStateProvider.AuthenticationStateChanged += async state =>
+        {
+            var newAuth = await state;
+            isAdmin = newAuth.User.IsInRole("Admin");
+            StateHasChanged();
+        };
+    }
+
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; }
+}

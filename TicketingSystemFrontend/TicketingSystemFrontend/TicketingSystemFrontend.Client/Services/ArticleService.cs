@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,72 +11,51 @@ using TicketingSystemFrontend.Client.Services.Extensions;
 using TicketingSystemFrontend.Client.Services.Interfaces;
 
 namespace TicketingSystemFrontend.Client.Services;
-
 public class ArticleService : IArticleService
 {
     private readonly HttpClient _http;
-    private readonly CustomAuthProvider _authenticationStateProvider;
+    private readonly CustomAuthProvider _authProvider;
+
     public IFileService FileService { get; }
 
     public string EntityApiType => "articles";
-    public ArticleService(HttpClient http, CustomAuthProvider authenticationStateProvider, IFileService fileService)
+    private readonly NavigationManager _nav;
+
+    public ArticleService(HttpClient http, CustomAuthProvider authProvider, NavigationManager nav)
     {
-        _http = http;
-        _authenticationStateProvider = authenticationStateProvider;
-        FileService = fileService;
+        _nav = nav;
+        _http = http; // BaseAddress points to Blazor host
+        _authProvider = authProvider;
     }
-    public async Task<int?> CreateAsync(ArticleCreateRequest request)
-    {
-        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
 
-        if (user.Identity?.IsAuthenticated != true)
-        {
-            throw new Exception("User is not authenticated");
-        }
-
-        var userIdClaim = user.FindFirst("sub");
-        if (userIdClaim == null)
-        {
-            throw new Exception("UserId claim not found");
-        }
-
-        var userId = Guid.Parse(userIdClaim.Value);
-
-        request.UserId = userId;// find from JWT token claim the Id of current authorized user
-
-        var response = await _http.PostAsJsonAsync("api/articles", request);
-        response.EnsureSuccessStatusCode();
-
-        // Read the created article ID from response (assuming API returns int)
-        var articleId = await response.Content.ReadFromJsonAsync<int>();
-        return articleId;
-    }
+    private string Api(string action) => $"{_nav.BaseUri}server-articles/{action}";
 
     public async Task<List<ArticleDto>> GetAllAsync()
-    {
-        var articles = await _http.GetFromJsonAsync<List<ArticleDto>>("api/articles");
-        return articles ?? new List<ArticleDto>();
-    }
+        => await _http.GetFromJsonAsync<List<ArticleDto>>(Api("all")) ?? new();
 
     public async Task<ArticleDto?> GetByIdAsync(int id)
+        => await _http.GetFromJsonAsync<ArticleDto>(Api($"get/{id}"));
+
+    public async Task<int?> CreateAsync(ArticleCreateRequest request)
     {
-        return await _http.GetFromJsonAsync<ArticleDto>($"api/articles/{id}");
+        var authState = await _authProvider.GetAuthenticationStateAsync();
+        var userId = Guid.Parse(authState.User.FindFirst("sub")!.Value);
+        request.UserId = userId;
+
+        var response = await _http.PostAsJsonAsync(Api("create"), request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<int>();
     }
 
     public async Task<bool> DeleteByIdAsync(int id)
     {
-        var response = await _http.DeleteAsync($"api/articles/{id}");
-        if (!response.IsSuccessStatusCode)
-        {
-            return false;
-        }
-        return true;
+        var response = await _http.DeleteAsync(Api($"delete/{id}"));
+        return response.IsSuccessStatusCode;
     }
 
     public async Task UpdateAsync(ArticleUpdateRequest request)
     {
-        var response = await _http.PutAsJsonAsync($"api/articles/{request.Id}", request);
+        var response = await _http.PutAsJsonAsync(Api($"update/{request.Id}"), request);
         response.EnsureSuccessStatusCode();
     }
 }

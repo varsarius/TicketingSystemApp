@@ -15,7 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Security.Claims; // <-- needed for [FromServices]
+using System.Security.Claims;
+using TicketingSystemFrontend.Client.Requests; // <-- needed for [FromServices]
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -227,6 +228,64 @@ app.MapPost("/server-logout", (HttpResponse response) =>
     response.Cookies.Delete("refresh_token");
     return Results.Ok();
 });
+
+// In your Program.cs or a separate minimal API file
+
+app.MapGet("/server-articles/all", async ([FromServices] IHttpClientFactory httpClientFactory) =>
+{
+    Console.WriteLine("Fetching all articles from the server...");
+    var client = httpClientFactory.CreateClient();
+    Console.WriteLine("Created HTTP client for articles");
+    var response = await client.GetAsync("https://localhost:7299/api/articles");
+    Console.WriteLine($"Received response with status code: {response.StatusCode}");
+    response.EnsureSuccessStatusCode();
+    Console.WriteLine("Response is successful, reading articles...");
+    var articles = await response.Content.ReadFromJsonAsync<List<ArticleDto>>();
+    Console.WriteLine($"Fetched {articles?.Count ?? 0} articles");
+    return Results.Ok(articles);
+});
+
+app.MapGet("/server-articles/get/{id:int}", async (int id, [FromServices] IHttpClientFactory httpClientFactory) =>
+{
+    var client = httpClientFactory.CreateClient();
+    var response = await client.GetAsync($"https://localhost:7299/api/articles/{id}");
+    if (!response.IsSuccessStatusCode) return Results.NotFound();
+    var article = await response.Content.ReadFromJsonAsync<ArticleDto>();
+    return Results.Ok(article);
+});
+
+app.MapPost("/server-articles/create", async (ArticleCreateRequest request, HttpResponse response, [FromServices] IHttpClientFactory httpClientFactory, [FromServices] CustomAuthProvider authProvider) =>
+{
+    var authState = await authProvider.GetAuthenticationStateAsync();
+    var userIdClaim = authState.User.FindFirst("sub");
+    if (userIdClaim == null) return Results.Unauthorized();
+
+    request.UserId = Guid.Parse(userIdClaim.Value);
+
+    var client = httpClientFactory.CreateClient();
+    var apiResponse = await client.PostAsJsonAsync("https://localhost:7299/api/articles", request);
+    apiResponse.EnsureSuccessStatusCode();
+
+    var articleId = await apiResponse.Content.ReadFromJsonAsync<int>();
+    return Results.Ok(articleId);
+});
+
+app.MapPut("/server-articles/update/{id:int}", async (int id, ArticleUpdateRequest request, [FromServices] IHttpClientFactory httpClientFactory) =>
+{
+    var client = httpClientFactory.CreateClient();
+    var apiResponse = await client.PutAsJsonAsync($"https://localhost:7299/api/articles/{id}", request);
+    if (!apiResponse.IsSuccessStatusCode) return Results.BadRequest();
+    return Results.Ok();
+});
+
+app.MapDelete("/server-articles/delete/{id:int}", async (int id, [FromServices] IHttpClientFactory httpClientFactory) =>
+{
+    var client = httpClientFactory.CreateClient();
+    var apiResponse = await client.DeleteAsync($"https://localhost:7299/api/articles/{id}");
+    if (!apiResponse.IsSuccessStatusCode) return Results.BadRequest();
+    return Results.Ok();
+});
+
 
 
 app.Run();

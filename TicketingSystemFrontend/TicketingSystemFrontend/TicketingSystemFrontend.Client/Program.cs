@@ -46,15 +46,6 @@ builder.Services.AddScoped<AuthTokenHandler>();
 builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-})
-.ConfigureHttpMessageHandlerBuilder(builder =>
-{
-    if (builder.PrimaryHandler is HttpMessageHandler handler &&
-        handler is not null &&
-        handler is HttpClientHandler httpHandler)
-    {
-        httpHandler.UseCookies = true;
-    }
 });
 // var client = httpClientFactory.CreateClient("ApiClient");
 
